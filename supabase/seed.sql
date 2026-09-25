@@ -1,0 +1,28 @@
+-- Demo metadata only. No artwork or invented character lore. Run after schema.sql.
+begin;
+insert into public.series(id,slug,title,author,published) values ('10000000-0000-4000-8000-000000000001','warlock','Warlock','Daniel Kensington',true);
+insert into public.card_sets(id,series_id,title,code,featured,published) values ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','The Founding Edition','WAR',true,true);
+insert into public.characters(id,series_id,name,bio) values ('30000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','Noah','Editable demo entry. Creator lore has not been supplied.');
+insert into public.cards(id,character_id,set_id,number) values ('40000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','WAR-001');
+insert into public.characters(id,series_id,name,bio) values ('30000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000001','Sam','Editable demo entry. Creator lore has not been supplied.');
+insert into public.cards(id,character_id,set_id,number) values ('40000000-0000-4000-8000-000000000002','30000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000001','WAR-002');
+insert into public.characters(id,series_id,name,bio) values ('30000000-0000-4000-8000-000000000003','10000000-0000-4000-8000-000000000001','Cassandra','Editable demo entry. Creator lore has not been supplied.');
+insert into public.cards(id,character_id,set_id,number) values ('40000000-0000-4000-8000-000000000003','30000000-0000-4000-8000-000000000003','20000000-0000-4000-8000-000000000001','WAR-003');
+insert into public.characters(id,series_id,name,bio) values ('30000000-0000-4000-8000-000000000004','10000000-0000-4000-8000-000000000001','Rachel','Editable demo entry. Creator lore has not been supplied.');
+insert into public.cards(id,character_id,set_id,number) values ('40000000-0000-4000-8000-000000000004','30000000-0000-4000-8000-000000000004','20000000-0000-4000-8000-000000000001','WAR-004');
+insert into public.characters(id,series_id,name,bio) values ('30000000-0000-4000-8000-000000000005','10000000-0000-4000-8000-000000000001','Morgan','Editable demo entry. Creator lore has not been supplied.');
+insert into public.cards(id,character_id,set_id,number) values ('40000000-0000-4000-8000-000000000005','30000000-0000-4000-8000-000000000005','20000000-0000-4000-8000-000000000001','WAR-005');
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000001','Base edition','common',false,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000002','40000000-0000-4000-8000-000000000002','Base edition','common',false,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000003','40000000-0000-4000-8000-000000000003','Base edition','uncommon',false,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000004','40000000-0000-4000-8000-000000000004','Base edition','common',false,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000005','40000000-0000-4000-8000-000000000005','Base edition','uncommon',false,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000006','40000000-0000-4000-8000-000000000001','Foil edition','rare',true,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000007','40000000-0000-4000-8000-000000000002','Foil edition','rare',true,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000008','40000000-0000-4000-8000-000000000003','Foil edition','rare',true,true);
+insert into public.variants(id,card_id,label,rarity,foil,available) values ('50000000-0000-4000-8000-000000000009','40000000-0000-4000-8000-000000000004','Foil edition','legendary',true,true);
+insert into public.taxonomies(kind,label,slug) values ('shelf','His Shelf','his'),('shelf','Her Shelf','hers'),('shelf','Shared Shelf','shared'),('genre','HaremLit','haremlit');
+insert into public.series_taxonomies select '10000000-0000-4000-8000-000000000001',id from public.taxonomies where slug in ('his','haremlit');
+insert into public.packs(id,title,kind,set_id,ink_cost,available) values ('60000000-0000-4000-8000-000000000001','Warlock — The Founding Edition','series','20000000-0000-4000-8000-000000000001',100,true);
+insert into public.pack_pool(pack_id,variant_id) select '60000000-0000-4000-8000-000000000001',id from public.variants;
+commit;
