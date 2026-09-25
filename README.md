@@ -18,18 +18,11 @@ The demo can be deployed publicly to Vercel without Supabase credentials. Collec
 Use Node 22 or newer.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
 Open http://127.0.0.1:3000.
-
-The repository stores the two largest generated source files in `source-parts/` so they can be maintained through the connected GitHub workflow. `npm run prepare-source` reconstructs:
-
-- `components/collection-app.tsx`
-- `app/globals.css`
-
-This runs automatically before `dev`, `typecheck`, and `build`.
 
 Useful checks:
 
@@ -42,7 +35,7 @@ npm run build
 
 ## Vercel
 
-Import this repository as a Next.js project. No custom build command is required: Vercel's normal `npm run build` invokes the reconstruction step automatically.
+Import this repository as a Next.js project. No custom build settings are required; the standard `npm run build` command is enough.
 
 No environment variables are required for the browser-local demo.
 
@@ -78,6 +71,4 @@ Genre/Event/After Dark packs are future editions. Advanced stats, paid themes, h
 
 ## Verification
 
-The source build previously passed production build and TypeScript checks, five economy/request tests, local PostgreSQL schema/RLS tests, desktop and 390px mobile browser checks, pack opening, duplicate Shards, crafting, favorites, daily reward claims, request submission, voting, creator approval, and persistence across navigation.
-
-GitHub Actions also runs install, typecheck, tests, and production build on pushes to `main` and pull requests.
+GitHub Actions runs lockfile install, TypeScript checks, tests, and the production Next.js build on pushes to `main` and pull requests. The exact source files are committed normally in `app/` and `components/`.
