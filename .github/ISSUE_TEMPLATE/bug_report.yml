@@ -1,0 +1,26 @@
+name: Bug report
+description: Report a problem in Tropeamine Packs
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include what you expected and what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or extra context
