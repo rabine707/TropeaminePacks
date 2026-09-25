@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare-source": "node scripts/reconstruct-source.mjs",
+    "predev": "npm run prepare-source",
     "dev": "next dev --hostname 127.0.0.1",
+    "prebuild": "npm run prepare-source",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
+    "pretypecheck": "npm run prepare-source",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test lib/economy.test.ts lib/requests.test.ts",
     "test:schema": "node --test supabase/schema.test.mjs"
