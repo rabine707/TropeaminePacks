@@ -2,7 +2,7 @@
 
 ## Current launch target
 
-Deploy the existing Inkbound local-data demo publicly on Vercel. Supabase is intentionally not connected yet.
+Deploy the existing Tropeamine Packs local-data demo publicly on Vercel. Supabase is intentionally not connected yet.
 
 ## Vercel
 

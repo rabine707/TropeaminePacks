@@ -1,4 +1,4 @@
-# Inkbound
+# Tropeamine Packs
 
 A Next.js / React / TypeScript collectible book-character app for the Tropeamine Packs project. The current build is an interactive browser-local demo; it is not yet a connected multi-user service.
 
