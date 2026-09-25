@@ -1,0 +1,31 @@
+name: Add login link once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-login-link-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/add-login-link.mjs
+      - run: |
+          git config user.name "rabine707"
+          git config user.email "krabinejr@gmail.com"
+          git add components/collection-app.tsx
+          if git diff --cached --quiet; then
+            echo "Login link already present"
+          else
+            git commit -m "Add sign-in link to collection header"
+            git push
+          fi
