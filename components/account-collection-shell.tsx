@@ -54,17 +54,17 @@ export default function AccountCollectionShell(){
   setHydrated(true);
  })();return()=>{active=false}},[client]);
 
- useEffect(()=>{if(!hydrated||!user)return;let stopped=false;async function syncCollection(){
+ useEffect(()=>{if(!hydrated||!user)return;const activeUser=user;let stopped=false;async function syncCollection(){
   let owned:string[]=[];
   try{const raw=localStorage.getItem(LOCAL_KEY);if(!raw)return;const parsed=JSON.parse(raw);owned=normalizedOwned(Array.isArray(parsed?.wallet?.owned)?parsed.wallet.owned.map(String):[])}catch{return}
   const signature=JSON.stringify(owned);if(signature===lastOwnedRef.current)return;
   setSyncing(true);setSyncError('');
   try{
-   const {data:rows,error}=await client.from('collection_items').select('card_id').eq('user_id',user.id);if(error)throw error;
+   const {data:rows,error}=await client.from('collection_items').select('card_id').eq('user_id',activeUser.id);if(error)throw error;
    const current=new Set((rows||[]).map(row=>String(row.card_id))),desired=new Set(owned);
    const add=[...desired].filter(id=>!current.has(id)),remove=[...current].filter(id=>!desired.has(id));
-   if(add.length){const {error:insertError}=await client.from('collection_items').upsert(add.map(card_id=>({user_id:user.id,card_id,quantity:1})),{onConflict:'user_id,card_id'});if(insertError)throw insertError}
-   if(remove.length){const {error:deleteError}=await client.from('collection_items').delete().eq('user_id',user.id).in('card_id',remove);if(deleteError)throw deleteError}
+   if(add.length){const {error:insertError}=await client.from('collection_items').upsert(add.map(card_id=>({user_id:activeUser.id,card_id,quantity:1})),{onConflict:'user_id,card_id'});if(insertError)throw insertError}
+   if(remove.length){const {error:deleteError}=await client.from('collection_items').delete().eq('user_id',activeUser.id).in('card_id',remove);if(deleteError)throw deleteError}
    if(!stopped)lastOwnedRef.current=signature;
   }catch{if(!stopped)setSyncError('Binder sync paused')}
   finally{if(!stopped)setSyncing(false)}
