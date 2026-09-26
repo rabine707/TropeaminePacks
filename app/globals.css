@@ -52,3 +52,6 @@
 
 .binder-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.binder-tools .tabs{margin-bottom:0}.binder-foil-toggle{flex:0 0 auto;white-space:nowrap}.binder-foil .pack-foil-pull{border-radius:6px}
 @media(max-width:600px){.binder-tools{align-items:flex-start;flex-direction:column}.binder-foil-toggle{align-self:flex-end;margin-top:-4px}}
+
+.binder-edition-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}.binder-edition-stats span{display:flex;align-items:baseline;gap:4px;padding:10px 12px;border:1px solid #343d2e;border-radius:7px;background:#191e17;color:#8f9788;font-size:11px}.binder-edition-stats strong{font-family:var(--serif);font-size:22px;font-weight:400;color:#e7e2c8}.binder-edition-stats small{margin-left:auto;font-size:8px;letter-spacing:1px;color:#a9ad8a}
+@media(max-width:600px){.binder-edition-stats span{padding:9px 8px}.binder-edition-stats strong{font-size:18px}.binder-edition-stats small{font-size:7px}}
