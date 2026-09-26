@@ -215,3 +215,14 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .card-grid{gap:18px 9px}.tile-info h3{font-size:16px}
  .sidebar .nav-link{font-size:8px}.pack-catalog-card{grid-template-columns:39% 61%}
 }
+
+/* Collector loop v2 */
+.collector-milestones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+.collector-milestones>div{display:flex;align-items:center;gap:11px;padding:13px 14px;border:1px solid #30382d;border-radius:10px;background:#151a14;color:#6f786b}
+.collector-milestones svg{width:20px;flex:0 0 auto}.collector-milestones span{display:grid;gap:2px}.collector-milestones strong{font-family:var(--serif);font-weight:400;color:#a3aa9d}.collector-milestones small{font-size:10px}
+.collector-milestones .earned{border-color:#6f6949;background:linear-gradient(135deg,#24271d,#1a1f17);color:#d9c991;box-shadow:inset 0 0 20px rgba(217,201,145,.035)}
+.collector-milestones .earned strong{color:#f0ead0}
+.binder-page-nav{display:flex;align-items:center;justify-content:center;gap:18px;padding:20px 0 4px;border-top:1px solid rgba(220,205,155,.12);margin-top:18px}
+.binder-page-nav span{font-size:11px;letter-spacing:1px;color:#a7ad9f}.binder-page-nav strong{color:#e6ddbd;font-size:15px}
+.binder-page-nav .button{min-height:38px;padding:8px 13px}.binder-page-nav .button:disabled{opacity:.3;cursor:not-allowed}
+@media(max-width:600px){.collector-milestones{grid-template-columns:1fr}.collector-milestones>div{padding:11px 12px}.binder-page-nav{gap:8px;justify-content:space-between}.binder-page-nav .button{font-size:10px;padding:7px 9px}.binder-page-nav span{font-size:9px}}
