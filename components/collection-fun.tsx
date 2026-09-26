@@ -102,10 +102,11 @@ export default function CollectionFun(){
     button.disabled=!isOwned;
     button.setAttribute('aria-disabled',String(!isOwned));
     button.title=isOwned?`Open ${name}`:'Collect this card to unlock details';
-    let badge=button.querySelector<HTMLSpanElement>('.popular-lock-state');
+    const badge=button.querySelector<HTMLSpanElement>('.popular-lock-state');
     if(!isOwned){
-     if(!badge){badge=document.createElement('span');badge.className='popular-lock-state';button.appendChild(badge)}
-     badge.innerHTML='<b>LOCKED</b><small>Collect to unlock</small>';
+     if(!badge){
+      const nextBadge=document.createElement('span');nextBadge.className='popular-lock-state';nextBadge.innerHTML='<b>LOCKED</b><small>Collect to unlock</small>';button.appendChild(nextBadge);
+     }
     }else badge?.remove();
    });
   }
@@ -122,7 +123,8 @@ export default function CollectionFun(){
     let hint=tile.querySelector<HTMLDivElement>('.locked-acquire-hint');
     if(!isOwned){
      if(!hint){hint=document.createElement('div');hint.className='locked-acquire-hint';tile.appendChild(hint)}
-     hint.textContent=card.available===false?'Currently unavailable':'Find in packs · Craft for 30 Shards';
+     const nextText=card.available===false?'Currently unavailable':'Find in packs · Craft for 30 Shards';
+     if(hint.textContent!==nextText)hint.textContent=nextText;
     }else hint?.remove();
     const heart=tile.querySelector<HTMLButtonElement>('.heart');
     if(heart&&!isOwned){heart.title='Add to wishlist';heart.setAttribute('aria-label',`Add ${cardName(card)} to wishlist`)}
@@ -156,12 +158,10 @@ export default function CollectionFun(){
    }
   }
 
-  const observer=new MutationObserver(()=>sync());
-  observer.observe(document.body,{childList:true,subtree:true});
   document.addEventListener('click',onClick,true);
   const timer=window.setInterval(sync,750);
   sync();
-  return()=>{observer.disconnect();document.removeEventListener('click',onClick,true);window.clearInterval(timer)};
+  return()=>{document.removeEventListener('click',onClick,true);window.clearInterval(timer)};
  },[]);
  return null;
 }
