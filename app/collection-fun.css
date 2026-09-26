@@ -1,0 +1,37 @@
+.art-button:not(:has(.owned-badge)) .card-art{filter:grayscale(1) brightness(.68) contrast(.92);opacity:1}
+.art-button:not(:has(.owned-badge))::after{opacity:.82}
+
+.popular-grid button.locked-character{cursor:not-allowed;opacity:.72;position:relative;padding-right:112px}
+.popular-grid button.locked-character:hover{transform:none;border-color:#3a4332;background:#20251d}
+.popular-grid button.locked-character>svg{display:none}
+.popular-lock-state{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.popular-lock-state b{font-size:8px;letter-spacing:1.2px;color:#d4c593;border:1px solid #6e6847;border-radius:999px;padding:2px 7px;background:#151812}
+.popular-lock-state small{font-size:8px;color:#858e7c;white-space:nowrap}
+
+.new-card-badge{position:absolute;top:10px;right:10px;z-index:10;border-radius:999px;padding:4px 8px;background:#d4c593;color:#202419;font-size:9px;font-weight:800;letter-spacing:1.2px;box-shadow:0 5px 18px #0008}
+.locked-acquire-hint{margin-top:7px;font-size:9px;letter-spacing:.25px;color:#aeb48f}
+
+.collection-fun-toast{position:fixed;left:50%;bottom:28px;z-index:200;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#1d211a;border:1px solid #5a6044;color:#eeeede;border-radius:999px;padding:10px 16px;font-size:12px;box-shadow:0 16px 45px #000a;transition:opacity .2s,transform .2s}
+.collection-fun-toast.show{opacity:1;transform:translate(-50%,0)}
+
+.new-unlock-overlay{position:fixed;inset:0;z-index:250;display:flex;align-items:center;justify-content:center;background:#080a08c9;backdrop-filter:blur(8px);opacity:0;transition:opacity .3s;pointer-events:none}
+.new-unlock-overlay.show{opacity:1}
+.new-unlock-panel{width:min(360px,86vw);text-align:center;padding:28px;border:1px solid #5c6247;border-radius:14px;background:radial-gradient(circle at 50% 25%,#3b402d,#171a15 65%);box-shadow:0 30px 100px #000;transform:scale(.86) translateY(18px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.new-unlock-overlay.show .new-unlock-panel{transform:scale(1) translateY(0)}
+.new-unlock-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:2.4px;color:#d4c593;margin-bottom:15px}
+.new-unlock-art{width:150px;aspect-ratio:2/3;margin:0 auto 16px;border:1px solid #8e8b59;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#252e21;color:#d4c593;font-family:Georgia,serif;font-size:64px;box-shadow:0 18px 40px #000b;animation:newCardGlow 1.25s ease-in-out infinite alternate}
+.new-unlock-art img{width:100%;height:100%;object-fit:cover}
+.new-unlock-panel strong{display:block;font-family:Georgia,serif;font-size:27px;font-weight:400;color:#eeeede}
+.new-unlock-panel small{display:block;color:#a5ad9a;margin-top:6px}
+@keyframes newCardGlow{from{box-shadow:0 18px 40px #000b,0 0 0 #d4c59300}to{box-shadow:0 18px 40px #000b,0 0 32px #d4c59355}}
+
+.reveal-card.turned>span{font-weight:700}
+.reveal-card.turned>span:first-letter{text-transform:uppercase}
+
+@media(max-width:600px){
+ .popular-grid button.locked-character{padding-right:92px}
+ .popular-lock-state small{display:none}
+ .new-unlock-panel{padding:22px}
+ .new-unlock-art{width:125px}
+ .collection-fun-toast{bottom:18px;max-width:88vw;text-align:center}
+}
