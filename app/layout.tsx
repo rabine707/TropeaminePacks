@@ -5,25 +5,25 @@ import './casual-guide.css';
 import CollectionFun from '@/components/collection-fun';
 import CasualGuide from '@/components/casual-guide';
 
-const shareImage = 'https://tropeaminepacks.vercel.app/tropeamine-packs-preview-v3.jpg';
+const siteUrl = 'https://tropeaminepacks.vercel.app';
+const shareImage = '/opengraph-image';
 
 export const metadata = {
-  metadataBase: new URL('https://tropeaminepacks.vercel.app'),
+  metadataBase: new URL(siteUrl),
   title: 'Tropeamine Packs — A shelf beyond the story',
   applicationName: 'Tropeamine Packs',
   description: 'Collect the characters you love. Open packs, complete your binder, and shape the next chapter.',
   openGraph: {
     title: 'Tropeamine Packs',
     description: 'Collect the characters you love. Open packs, complete your binder, and shape the next chapter.',
-    url: 'https://tropeaminepacks.vercel.app/',
+    url: '/',
     type: 'website',
     siteName: 'Tropeamine Packs',
     images: [{
       url: shareImage,
-      secureUrl: shareImage,
-      width: 600,
-      height: 315,
-      type: 'image/jpeg',
+      width: 1200,
+      height: 630,
+      type: 'image/png',
       alt: 'Tropeamine Packs — A shelf beyond the story',
     }],
   },
