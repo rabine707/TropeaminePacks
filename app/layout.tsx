@@ -15,13 +15,13 @@ export const metadata = {
     description: 'Collect the characters you love. Open packs, complete your binder, and shape the next chapter.',
     type: 'website',
     siteName: 'Tropeamine Packs',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Tropeamine Packs' }],
+    images: [{ url: '/tropeamine-share.jpg', width: 600, height: 315, alt: 'Tropeamine Packs — A shelf beyond the story' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Tropeamine Packs',
     description: 'Collect the characters you love. Open packs, complete your binder, and shape the next chapter.',
-    images: ['/twitter-image'],
+    images: ['/tropeamine-share.jpg'],
   },
   icons: { icon: '/icon' },
 };
