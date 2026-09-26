@@ -4,7 +4,7 @@ import {useEffect,useMemo,useRef,useState} from 'react';
 import {CheckCircle2,Cloud,Diamond,Droplets,LogOut} from 'lucide-react';
 import type {User} from '@supabase/supabase-js';
 import CollectionApp from '@/components/collection-app';
-import {initialCards,initialRequests} from '@/lib/catalog';
+import {initialCards,initialRequests,type Card} from '@/lib/catalog';
 import {createClient} from '@/lib/supabase/client';
 
 const LOCAL_KEY='tropeamine-packs-v1';
@@ -20,6 +20,70 @@ function starterState(){
 }
 
 function normalizedOwned(ids:string[]){return [...new Set(ids)].sort()}
+function one<T>(value:T|T[]|null|undefined):T|null{return Array.isArray(value)?(value[0]??null):(value??null)}
+function hueFor(value:string){const hues=['olive','wine','violet','blue','copper'];let hash=0;for(const ch of value)hash=(hash*31+ch.charCodeAt(0))>>>0;return hues[hash%hues.length]}
+function rarityLabel(value:string):Card['rarity']{
+ const normalized=value.toLowerCase();
+ if(normalized==='legendary')return 'Legendary';
+ if(normalized==='rare')return 'Rare';
+ if(normalized==='uncommon')return 'Uncommon';
+ return 'Common';
+}
+
+async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Card[]>{
+ const {data,error}=await client.from('cards').select(`
+  id,number,book_range,description,published,
+  characters!inner(id,name,bio,lore,series!inner(id,title,author,published)),
+  card_sets!inner(id,title,code,published),
+  variants!inner(id,label,rarity,rating,premium,foil,available,card_assets(id,side,storage_path))
+ `).eq('published',true).order('created_at',{ascending:true});
+ if(error)throw error;
+ const rows=(data??[]) as any[];
+ const cards=await Promise.all(rows.map(async row=>{
+  const character=one<any>(row.characters);
+  const series=one<any>(character?.series);
+  const set=one<any>(row.card_sets);
+  const variants=(Array.isArray(row.variants)?row.variants:[]).filter((variant:any)=>variant?.rating==='sfw'&&variant?.available);
+  const variant=variants[0];
+  if(!character||!series||!set||!variant)return null;
+
+  const assets=Array.isArray(variant.card_assets)?variant.card_assets:[];
+  const paths:{front?:string;back?:string}={};
+  for(const asset of assets){
+   if(asset?.side==='front'||asset?.side==='back')paths[asset.side]=String(asset.storage_path||'');
+  }
+  const signed:{front?:string;back?:string}={};
+  await Promise.all((['front','back'] as const).map(async side=>{
+   const path=paths[side];if(!path)return;
+   const result=await client.storage.from('card-art').createSignedUrl(path,60*60*6);
+   if(result.data?.signedUrl)signed[side]=result.data.signedUrl;
+  }));
+
+  const lore=(character.lore&&typeof character.lore==='object')?character.lore:{};
+  const label=String(variant.label||'Standard');
+  const variantLabel=label.toLowerCase()==='standard'?'Base edition':label;
+  return {
+   id:String(row.id),
+   name:String(character.name||'Unnamed character'),
+   number:row.number?`${String(set.code||'CARD')}-${String(row.number)}`:String(set.code||'CARD'),
+   rarity:rarityLabel(String(variant.rarity||'common')),
+   variant:variantLabel,
+   hue:hueFor(String(character.name||row.id)),
+   shelf:String(lore.shelf||'Shared Shelf'),
+   genre:String(lore.genre||'Book Collection'),
+   series:String(series.title||set.title||'Series'),
+   author:String(series.author||''),
+   tags:[String(row.book_range||''),String(set.code||'')].filter(Boolean),
+   bio:String(row.description||character.bio||''),
+   appearances:String(row.book_range||''),
+   image:signed.front,
+   back:signed.back,
+   available:Boolean(variant.available),
+   adult:false,
+  } satisfies Card;
+ }));
+ return cards.filter((card):card is Card=>Boolean(card));
+}
 
 export default function AccountCollectionShell(){
  const [hydrated,setHydrated]=useState(false);
@@ -32,10 +96,23 @@ export default function AccountCollectionShell(){
  const client=useMemo(()=>createClient(),[]);
 
  useEffect(()=>{let active=true;(async()=>{
-  const {data:{user:nextUser}}=await client.auth.getUser();
+  const [{data:{user:nextUser}},liveCardsResult]=await Promise.all([
+   client.auth.getUser(),
+   loadLiveCards(client).then(cards=>({cards,error:null as Error|null})).catch(error=>({cards:[] as Card[],error:error instanceof Error?error:new Error('Catalog unavailable')}))
+  ]);
   if(!active)return;
-  if(!nextUser){setHydrated(true);return}
-  setUser(nextUser);
+  if(nextUser)setUser(nextUser);
+
+  let local=starterState();
+  try{const raw=localStorage.getItem(LOCAL_KEY);if(raw){const parsed=JSON.parse(raw);if(parsed?.wallet&&Array.isArray(parsed.cards)&&Array.isArray(parsed.requests))local={...local,...parsed}}}catch{}
+  if(liveCardsResult.cards.length)local={...local,cards:liveCardsResult.cards};
+
+  if(!nextUser){
+   try{localStorage.setItem(LOCAL_KEY,JSON.stringify(local))}catch{}
+   setHydrated(true);
+   return;
+  }
+
   const [profileResult,walletResult,collectionResult]=await Promise.all([
    client.from('profiles').select('display_name,username,avatar_url').eq('id',nextUser.id).maybeSingle(),
    client.from('wallets').select('ink,shards').eq('user_id',nextUser.id).maybeSingle(),
@@ -46,11 +123,9 @@ export default function AccountCollectionShell(){
   const cloudWallet={ink:Number(walletResult.data?.ink??350),shards:Number(walletResult.data?.shards??20)};
   setWallet(cloudWallet);
   const cloudOwned=normalizedOwned((collectionResult.data||[]).map(row=>String(row.card_id)));
-  let local=starterState();
-  try{const raw=localStorage.getItem(LOCAL_KEY);if(raw){const parsed=JSON.parse(raw);if(parsed?.wallet&&Array.isArray(parsed.cards)&&Array.isArray(parsed.requests))local={...local,...parsed}}}catch{}
-  const merged={...local,wallet:{...local.wallet,...cloudWallet,owned:cloudOwned.length?cloudOwned:local.wallet.owned}};
+  const merged={...local,wallet:{...local.wallet,...cloudWallet,owned:cloudOwned}};
   try{localStorage.setItem(LOCAL_KEY,JSON.stringify(merged))}catch{}
-  lastOwnedRef.current=cloudOwned.length?JSON.stringify(cloudOwned):'';
+  lastOwnedRef.current=JSON.stringify(cloudOwned);
   setHydrated(true);
  })();return()=>{active=false}},[client]);
 
