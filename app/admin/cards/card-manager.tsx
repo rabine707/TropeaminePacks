@@ -181,9 +181,10 @@ export default function CardManager({ email }: { email: string }) {
         if (assetResult.error) throw assetResult.error
         for (const asset of assetResult.data ?? []) {
           if (asset.side !== 'front' && asset.side !== 'back') continue
+          const side = asset.side as 'front' | 'back'
           const signed = await supabase.storage.from('card-art').createSignedUrl(asset.storage_path, 3600)
           const item: ExistingAsset = { id: asset.id, storage_path: asset.storage_path, previewUrl: signed.data?.signedUrl }
-          assets[asset.side] = item
+          assets[side] = item
         }
       }
 
@@ -293,9 +294,11 @@ export default function CardManager({ email }: { email: string }) {
       variantId = created.data.id
     }
 
+    const activeVariantId = variantId
+    if (!activeVariantId) throw new Error('This card has no variant to attach art to.')
     const uploads: Promise<void>[] = []
-    if (frontFile) uploads.push(uploadArt(frontFile, 'front', editing.cardId, variantId, editing.assets.front))
-    if (backFile) uploads.push(uploadArt(backFile, 'back', editing.cardId, variantId, editing.assets.back))
+    if (frontFile) uploads.push(uploadArt(frontFile, 'front', editing.cardId, activeVariantId, editing.assets.front))
+    if (backFile) uploads.push(uploadArt(backFile, 'back', editing.cardId, activeVariantId, editing.assets.back))
     await Promise.all(uploads)
   }
 
