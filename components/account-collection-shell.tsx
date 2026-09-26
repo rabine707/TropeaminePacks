@@ -51,8 +51,8 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
   const assets=Array.isArray(variant.card_assets)?variant.card_assets:[];
   const paths:{front?:string;back?:string}={};
   for(const asset of assets){
-   const side=asset?.side;
-   if(side==='front'||side==='back')paths[side]=String(asset.storage_path||'');
+   if(asset?.side==='front')paths.front=String(asset.storage_path||'');
+   else if(asset?.side==='back')paths.back=String(asset.storage_path||'');
   }
   const signed:{front?:string;back?:string}={};
   await Promise.all((['front','back'] as const).map(async side=>{
