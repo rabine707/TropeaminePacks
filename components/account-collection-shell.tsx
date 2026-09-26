@@ -170,7 +170,7 @@ export default function AccountCollectionShell(){
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>Opening your collection…</h1></main>;
  return <div className={user?'cloud-authenticated':''}>
-  <CollectionApp signedIn={Boolean(user)}/>
+  <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onSpendInk={async amount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('spend_ink',{amount});if(error)throw error;const next={ink:Number(data.ink),shards:Number(data.shards)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
    <summary aria-label="Open account menu">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</summary>
    <div className="cloud-account-popover">
