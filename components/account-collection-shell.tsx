@@ -95,6 +95,8 @@ export default function AccountCollectionShell(){
  const [wallet,setWallet]=useState<CloudWallet|null>(null);
  const [syncing,setSyncing]=useState(false);
  const [syncError,setSyncError]=useState('');
+ const [editingAccount,setEditingAccount]=useState(false);
+ const [accountMessage,setAccountMessage]=useState('');
  const lastOwnedRef=useRef('');
  const client=useMemo(()=>createClient(),[]);
 
@@ -154,18 +156,31 @@ export default function AccountCollectionShell(){
  const accountName=(savedName&&savedName!=='Collector'?savedName:metaName)||savedName||user?.email?.split('@')[0]||'Reader';
  const avatar=profile?.avatar_url||String(user?.user_metadata?.avatar_url||user?.user_metadata?.picture||'');
  const initials=accountName.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('').toUpperCase()||'R';
+ async function saveAccount(e:React.FormEvent<HTMLFormElement>){
+  e.preventDefault();if(!user)return;
+  const f=new FormData(e.currentTarget),display_name=String(f.get('display_name')||'').trim(),username=String(f.get('username')||'').trim().toLowerCase();
+  if(!display_name){setAccountMessage('Add a display name.');return}
+  if(!/^[a-z0-9_]{3,30}$/.test(username)){setAccountMessage('Username must be 3–30 letters, numbers, or underscores.');return}
+  setAccountMessage('Saving…');
+  const {data,error}=await client.from('profiles').update({display_name,username,updated_at:new Date().toISOString()}).eq('id',user.id).select('display_name,username,avatar_url').single();
+  if(error){setAccountMessage(error.code==='23505'?'That username is already taken.':'Could not save account settings.');return}
+  setProfile(data as CloudProfile);setAccountMessage('Saved');setEditingAccount(false);
+ }
  async function signOut(){await client.auth.signOut();window.location.href='/'}
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>Opening your collection…</h1></main>;
  return <div className={user?'cloud-authenticated':''}>
-  <CollectionApp/>
+  <CollectionApp signedIn={Boolean(user)}/>
   {user&&<details className="cloud-account-menu">
    <summary aria-label="Open account menu">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</summary>
    <div className="cloud-account-popover">
     <div className="cloud-account-head">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}<div><strong>{accountName}</strong><small>{user.email}</small></div></div>
     <div className="cloud-wallet"><span><Droplets size={15}/><strong>{wallet?.ink.toLocaleString()??'—'}</strong><small>Ink</small></span><span><Diamond size={15}/><strong>{wallet?.shards.toLocaleString()??'—'}</strong><small>Shards</small></span></div>
     <div className={syncError?'cloud-sync error':'cloud-sync'}>{syncError?<Cloud size={14}/>:<CheckCircle2 size={14}/>} {syncError|| (syncing?'Syncing binder…':'Binder synced to cloud')}</div>
-    <small className="cloud-wallet-note">Your cloud wallet is protected. Pack and quest currency changes are still preview-only until the economy moves server-side.</small>
+    {profile?.username&&<small className="cloud-username">@{profile.username}</small>}
+    {editingAccount?<form className="cloud-account-form" onSubmit={saveAccount}><label>Display name<input name="display_name" defaultValue={accountName} maxLength={80} required/></label><label>Username<input name="username" defaultValue={profile?.username||''} placeholder="your_username" minLength={3} maxLength={30} pattern="[a-zA-Z0-9_]+" required/></label><small>Usernames are public-facing. Your Google email stays private.</small><div><button type="submit">Save settings</button><button type="button" onClick={()=>setEditingAccount(false)}>Cancel</button></div></form>:<button onClick={()=>{setEditingAccount(true);setAccountMessage('')}}>Account settings</button>}
+    {accountMessage&&<small className="cloud-account-message">{accountMessage}</small>}
+    <small className="cloud-wallet-note">Your Google email is private. Packs require an account so collection progress can stay tied to you.</small>
     <button onClick={signOut}><LogOut size={15}/>Sign out</button>
    </div>
   </details>}
@@ -178,7 +193,7 @@ export default function AccountCollectionShell(){
    .cloud-account-popover{position:absolute;right:0;top:45px;width:280px;padding:16px;background:#191d17;border:1px solid #3b4333;border-radius:9px;box-shadow:0 20px 55px #000a;color:#eeeede}
    .cloud-account-head{display:flex;align-items:center;gap:10px;padding-bottom:13px;border-bottom:1px solid #30362d}.cloud-account-head>div{min-width:0}.cloud-account-head strong{display:block;font-size:14px}.cloud-account-head small{display:block;color:#9ba294;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
    .cloud-wallet{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px 0}.cloud-wallet>span{display:grid;grid-template-columns:auto 1fr;column-gap:7px;align-items:center;padding:9px;border:1px solid #30382c;border-radius:6px;background:#20251d}.cloud-wallet svg{grid-row:1/3;color:#d4c593}.cloud-wallet strong{font-size:13px}.cloud-wallet small{font-size:10px;color:#8e9785}
-   .cloud-sync{display:flex;align-items:center;gap:6px;font-size:11px;color:#b9c69f;margin:8px 0}.cloud-sync svg{color:#d4c593}.cloud-sync.error{color:#d0a58d}
+   .cloud-sync{display:flex;align-items:center;gap:6px;font-size:11px;color:#b9c69f;margin:8px 0}.cloud-sync svg{color:#d4c593}.cloud-sync.error{color:#d0a58d}.cloud-username{display:block;color:#d4c593;margin:-2px 0 8px}.cloud-account-form{display:grid;gap:9px;margin:10px 0;padding:11px;border:1px solid #30382c;border-radius:7px;background:#20251d}.cloud-account-form label{display:grid;gap:4px;font-size:10px;color:#9ba294}.cloud-account-form input{width:100%;box-sizing:border-box;border:1px solid #3b4333;border-radius:5px;background:#151914;color:#eeeede;padding:8px;font:inherit}.cloud-account-form>small,.cloud-account-message{color:#8e9785;font-size:10px;line-height:1.4}.cloud-account-form>div{display:flex;gap:14px}
    .cloud-wallet-note{display:block;color:#7f8877;line-height:1.45;margin:8px 0 12px}.cloud-account-popover button{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:#c6cdbd;padding:6px 0;font-size:12px}.cloud-account-popover button:hover{color:#d4c593}
    @media(max-width:600px){.cloud-account-menu{right:14px;top:15px}.cloud-account-menu>summary{width:29px;height:29px}.cloud-account-menu>summary img,.cloud-account-menu>summary span{width:29px;height:29px}.cloud-account-popover{right:0;top:39px;width:min(280px,calc(100vw - 28px))}.cloud-authenticated .balances{padding-right:35px}}
   `}</style>
