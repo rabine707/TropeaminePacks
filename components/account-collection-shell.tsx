@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {CheckCircle2,Cloud,Diamond,Droplets,LogOut} from 'lucide-react';
+import {CheckCircle2,Cloud,Diamond,Droplets,LogOut,UserRound,Heart,Sparkles,Library,ShieldCheck} from 'lucide-react';import {usePathname} from 'next/navigation';
 import type {User} from '@supabase/supabase-js';
 import CollectionApp from '@/components/collection-app';
 import {initialCards,initialRequests,type Card} from '@/lib/catalog';
@@ -9,7 +9,7 @@ import {createClient} from '@/lib/supabase/client';
 
 const LOCAL_KEY='tropeamine-packs-v1';
 
-type CloudProfile={display_name:string|null;username:string|null;avatar_url:string|null};
+type CloudProfile={display_name:string|null;username:string|null;avatar_url:string|null;bio?:string|null;pronouns?:string|null;favorite_series?:string|null;profile_public?:boolean};
 type CloudWallet={ink:number;shards:number};type CloudProgress={favorites:string[];showcase:string[];badges:string[];claimed_rewards:string[];binder_theme:string;onboarding_complete:boolean};
 
 function starterState(){
@@ -89,7 +89,7 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
 }
 
 export default function AccountCollectionShell(){
- const [hydrated,setHydrated]=useState(false);
+ const path=usePathname(); const [hydrated,setHydrated]=useState(false);
  const [user,setUser]=useState<User|null>(null);
  const [profile,setProfile]=useState<CloudProfile|null>(null); const [progress,setProgress]=useState<CloudProgress|null>(null);
  const [wallet,setWallet]=useState<CloudWallet|null>(null);
@@ -119,7 +119,7 @@ export default function AccountCollectionShell(){
   }
 
   const [profileResult,walletResult,collectionResult,progressResult]=await Promise.all([
-   client.from('profiles').select('display_name,username,avatar_url').eq('id',nextUser.id).maybeSingle(),
+   client.from('profiles').select('display_name,username,avatar_url,bio,pronouns,favorite_series,profile_public').eq('id',nextUser.id).maybeSingle(),
    client.from('wallets').select('ink,shards').eq('user_id',nextUser.id).maybeSingle(),
    client.from('collection_items').select('card_id,quantity').eq('user_id',nextUser.id),   client.from('collector_progress').select('favorites,showcase,badges,claimed_rewards,binder_theme,onboarding_complete').eq('user_id',nextUser.id).maybeSingle()
   ]);
@@ -158,17 +158,22 @@ export default function AccountCollectionShell(){
  const initials=accountName.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('').toUpperCase()||'R';
  async function saveAccount(e:React.FormEvent<HTMLFormElement>){
   e.preventDefault();if(!user)return;
-  const f=new FormData(e.currentTarget),display_name=String(f.get('display_name')||'').trim(),username=String(f.get('username')||'').trim().toLowerCase();
+  const f=new FormData(e.currentTarget),display_name=String(f.get('display_name')||'').trim(),username=String(f.get('username')||'').trim().toLowerCase(),bio=String(f.get('bio')||'').trim(),pronouns=String(f.get('pronouns')||'').trim(),favorite_series=String(f.get('favorite_series')||'').trim(),avatar_url=String(f.get('avatar_url')||'').trim(),profile_public=f.get('profile_public')==='on';
   if(!display_name){setAccountMessage('Add a display name.');return}
   if(!/^[a-z0-9_]{3,30}$/.test(username)){setAccountMessage('Username must be 3–30 letters, numbers, or underscores.');return}
   setAccountMessage('Saving…');
-  const {data,error}=await client.from('profiles').update({display_name,username,updated_at:new Date().toISOString()}).eq('id',user.id).select('display_name,username,avatar_url').single();
+  const {data,error}=await client.from('profiles').update({display_name,username,bio,pronouns,favorite_series,avatar_url:avatar_url||null,profile_public,updated_at:new Date().toISOString()}).eq('id',user.id).select('display_name,username,avatar_url,bio,pronouns,favorite_series,profile_public').single();
   if(error){setAccountMessage(error.code==='23505'?'That username is already taken.':'Could not save account settings.');return}
   setProfile(data as CloudProfile);setAccountMessage('Saved');setEditingAccount(false);
  }
  async function signOut(){await client.auth.signOut();window.location.href='/'}
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>Opening your collection…</h1></main>;
+ if(path==='/account'){
+  if(!user)return <main className="empty"><UserRound size={34}/><h1>Your collector profile</h1><p>Sign in to customize your identity, showcase and collection preferences.</p><a className="button gold" href="/login?next=/account">Sign in with Google</a></main>;
+  return <main className="account-page"><div className="account-hero"><div className="account-avatar">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</div><div><p className="eyebrow">COLLECTOR PROFILE</p><h1>{accountName}</h1><p>@{profile?.username||'choose-a-username'} {profile?.pronouns&&` · ${profile.pronouns}`}</p></div><div className="account-stats"><span><Library/><b>{JSON.parse(localStorage.getItem(LOCAL_KEY)||'{}')?.wallet?.owned?.length||0}</b><small>Editions</small></span><span><Heart/><b>{progress?.favorites?.length||0}</b><small>Favorites</small></span><span><ShieldCheck/><b>{progress?.badges?.length||0}</b><small>Badges</small></span></div></div><div className="account-columns"><section className="panel"><p className="eyebrow">IDENTITY</p><h2>Profile details</h2><form className="form" onSubmit={saveAccount}><label>Display name<input name="display_name" defaultValue={accountName} maxLength={80} required/></label><label>Username<input name="username" defaultValue={profile?.username||''} minLength={3} maxLength={30} pattern="[a-zA-Z0-9_]+" required/></label><label>Profile picture URL<input name="avatar_url" type="url" defaultValue={profile?.avatar_url||''} placeholder="https://…"/></label><label>Pronouns <span className="muted">(optional)</span><input name="pronouns" defaultValue={profile?.pronouns||''} maxLength={40}/></label><label>Bio<textarea name="bio" defaultValue={profile?.bio||''} maxLength={240} placeholder="A little about your bookshelf…"/></label><label>Favorite series<input name="favorite_series" defaultValue={profile?.favorite_series||''} maxLength={120}/></label><label className="account-toggle"><input type="checkbox" name="profile_public" defaultChecked={profile?.profile_public}/><span><b>Public collector profile</b><small>Allow a shareable showcase later. Your email is never public.</small></span></label><button className="button gold">Save profile</button>{accountMessage&&<small>{accountMessage}</small>}</form></section><section><div className="panel"><p className="eyebrow">SHOWCASE</p><h2>Your display shelf</h2><p>Favorite cards become the foundation of your showcase. Pick the characters you want other collectors to see first.</p><div className="showcase-placeholder">{progress?.showcase?.length?<span><Sparkles/> {progress.showcase.length} showcase cards selected</span>:<span><Sparkles/>Your showcase is ready for its first cards</span>}</div><a className="button outline" href="/binder">Choose from binder</a></div><div className="panel account-personalize"><p className="eyebrow">PERSONALIZATION</p><h2>Make it yours</h2><div><span>Binder theme</span><b>{progress?.binder_theme||'Midnight'}</b></div><div><span>Accent</span><b>Gold</b></div><div><span>Favorite series</span><b>{profile?.favorite_series||'Not chosen'}</b></div></div><div className="panel"><p className="eyebrow">ACCOUNT</p><h2>Collection security</h2><p><Cloud size={16}/> Your binder and collector progression are synced to your account.</p><p className="muted">Signed in as {user.email}</p><button className="button outline" onClick={signOut}><LogOut size={15}/>Sign out</button></div></section></div></main>
+ }
+ return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>Opening your collection…</h1></main>;
  return <div className={user?'cloud-authenticated':''}>
   <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onSpendInk={async amount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('spend_ink',{amount});if(error)throw error;const next={ink:Number(data.ink),shards:Number(data.shards)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
@@ -178,7 +183,7 @@ export default function AccountCollectionShell(){
     <div className="cloud-wallet"><span><Droplets size={15}/><strong>{wallet?.ink.toLocaleString()??'—'}</strong><small>Ink</small></span><span><Diamond size={15}/><strong>{wallet?.shards.toLocaleString()??'—'}</strong><small>Shards</small></span></div>
     <div className={syncError?'cloud-sync error':'cloud-sync'}>{syncError?<Cloud size={14}/>:<CheckCircle2 size={14}/>} {syncError|| (syncing?'Syncing binder…':'Binder synced to cloud')}</div>
     {profile?.username&&<small className="cloud-username">@{profile.username}</small>}
-    {editingAccount?<form className="cloud-account-form" onSubmit={saveAccount}><label>Display name<input name="display_name" defaultValue={accountName} maxLength={80} required/></label><label>Username<input name="username" defaultValue={profile?.username||''} placeholder="your_username" minLength={3} maxLength={30} pattern="[a-zA-Z0-9_]+" required/></label><small>Usernames are public-facing. Your Google email stays private.</small><div><button type="submit">Save settings</button><button type="button" onClick={()=>setEditingAccount(false)}>Cancel</button></div></form>:<button onClick={()=>{setEditingAccount(true);setAccountMessage('')}}>Account settings</button>}
+    {editingAccount?<form className="cloud-account-form" onSubmit={saveAccount}><label>Display name<input name="display_name" defaultValue={accountName} maxLength={80} required/></label><label>Username<input name="username" defaultValue={profile?.username||''} placeholder="your_username" minLength={3} maxLength={30} pattern="[a-zA-Z0-9_]+" required/></label><small>Usernames are public-facing. Your Google email stays private.</small><div><button type="submit">Save settings</button><button type="button" onClick={()=>setEditingAccount(false)}>Cancel</button></div></form>:<a href="/account">Full profile & settings</a>}
     {accountMessage&&<small className="cloud-account-message">{accountMessage}</small>}
     <small className="cloud-wallet-note">Your Google email is private. Packs require an account so collection progress can stay tied to you.</small>
     <button onClick={signOut}><LogOut size={15}/>Sign out</button>
