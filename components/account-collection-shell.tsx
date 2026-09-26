@@ -39,18 +39,20 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
  `).eq('published',true).order('created_at',{ascending:true});
  if(error)throw error;
  const rows=(data??[]) as any[];
- const cards=await Promise.all(rows.map(async row=>{
+ const cards:Card[]=[];
+ for(const row of rows){
   const character=one<any>(row.characters);
   const series=one<any>(character?.series);
   const set=one<any>(row.card_sets);
   const variants=(Array.isArray(row.variants)?row.variants:[]).filter((variant:any)=>variant?.rating==='sfw'&&variant?.available);
   const variant=variants[0];
-  if(!character||!series||!set||!variant)return null;
+  if(!character||!series||!set||!variant)continue;
 
   const assets=Array.isArray(variant.card_assets)?variant.card_assets:[];
   const paths:{front?:string;back?:string}={};
   for(const asset of assets){
-   if(asset?.side==='front'||asset?.side==='back')paths[asset.side]=String(asset.storage_path||'');
+   const side=asset?.side;
+   if(side==='front'||side==='back')paths[side]=String(asset.storage_path||'');
   }
   const signed:{front?:string;back?:string}={};
   await Promise.all((['front','back'] as const).map(async side=>{
@@ -62,7 +64,7 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
   const lore=(character.lore&&typeof character.lore==='object')?character.lore:{};
   const label=String(variant.label||'Standard');
   const variantLabel=label.toLowerCase()==='standard'?'Base edition':label;
-  return {
+  const mapped:Card={
    id:String(row.id),
    name:String(character.name||'Unnamed character'),
    number:row.number?`${String(set.code||'CARD')}-${String(row.number)}`:String(set.code||'CARD'),
@@ -80,9 +82,10 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
    back:signed.back,
    available:Boolean(variant.available),
    adult:false,
-  } satisfies Card;
- }));
- return cards.filter((card):card is Card=>Boolean(card));
+  };
+  cards.push(mapped);
+ }
+ return cards;
 }
 
 export default function AccountCollectionShell(){
