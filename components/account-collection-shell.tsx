@@ -10,7 +10,7 @@ import {createClient} from '@/lib/supabase/client';
 const LOCAL_KEY='tropeamine-packs-v1';
 
 type CloudProfile={display_name:string|null;username:string|null;avatar_url:string|null};
-type CloudWallet={ink:number;shards:number};
+type CloudWallet={ink:number;shards:number};type CloudProgress={favorites:string[];showcase:string[];badges:string[];claimed_rewards:string[];binder_theme:string;onboarding_complete:boolean};
 
 function starterState(){
  return {
@@ -91,13 +91,13 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
 export default function AccountCollectionShell(){
  const [hydrated,setHydrated]=useState(false);
  const [user,setUser]=useState<User|null>(null);
- const [profile,setProfile]=useState<CloudProfile|null>(null);
+ const [profile,setProfile]=useState<CloudProfile|null>(null); const [progress,setProgress]=useState<CloudProgress|null>(null);
  const [wallet,setWallet]=useState<CloudWallet|null>(null);
  const [syncing,setSyncing]=useState(false);
  const [syncError,setSyncError]=useState('');
  const [editingAccount,setEditingAccount]=useState(false);
  const [accountMessage,setAccountMessage]=useState('');
- const lastOwnedRef=useRef('');
+ const lastOwnedRef=useRef(''); const lastProgressRef=useRef('');
  const client=useMemo(()=>createClient(),[]);
 
  useEffect(()=>{let active=true;(async()=>{
@@ -118,19 +118,19 @@ export default function AccountCollectionShell(){
    return;
   }
 
-  const [profileResult,walletResult,collectionResult]=await Promise.all([
+  const [profileResult,walletResult,collectionResult,progressResult]=await Promise.all([
    client.from('profiles').select('display_name,username,avatar_url').eq('id',nextUser.id).maybeSingle(),
    client.from('wallets').select('ink,shards').eq('user_id',nextUser.id).maybeSingle(),
-   client.from('collection_items').select('card_id,quantity').eq('user_id',nextUser.id)
+   client.from('collection_items').select('card_id,quantity').eq('user_id',nextUser.id),   client.from('collector_progress').select('favorites,showcase,badges,claimed_rewards,binder_theme,onboarding_complete').eq('user_id',nextUser.id).maybeSingle()
   ]);
   if(!active)return;
-  if(profileResult.data)setProfile(profileResult.data as CloudProfile);
+  if(profileResult.data)setProfile(profileResult.data as CloudProfile);  const cloudProgress=(progressResult.data||{favorites:[],showcase:[],badges:[],claimed_rewards:[],binder_theme:'Midnight',onboarding_complete:false}) as CloudProgress; setProgress(cloudProgress);
   const cloudWallet={ink:Number(walletResult.data?.ink??350),shards:Number(walletResult.data?.shards??20)};
   setWallet(cloudWallet);
   const cloudOwned=normalizedOwned((collectionResult.data||[]).map(row=>String(row.card_id)));
-  const merged={...local,wallet:{...local.wallet,...cloudWallet,owned:cloudOwned}};
+  const merged={...local,favorites:cloudProgress.favorites||[],claimed:cloudProgress.claimed_rewards||[],theme:cloudProgress.binder_theme||local.theme,wallet:{...local.wallet,...cloudWallet,owned:cloudOwned}};
   try{localStorage.setItem(LOCAL_KEY,JSON.stringify(merged))}catch{}
-  lastOwnedRef.current=JSON.stringify(cloudOwned);
+  lastOwnedRef.current=JSON.stringify(cloudOwned); lastProgressRef.current=JSON.stringify({favorites:merged.favorites,claimed:merged.claimed,theme:merged.theme});
   setHydrated(true);
  })();return()=>{active=false}},[client]);
 
@@ -151,7 +151,7 @@ export default function AccountCollectionShell(){
  }
  const timer=window.setInterval(()=>{void syncCollection()},1200);void syncCollection();return()=>{stopped=true;window.clearInterval(timer)}},[client,hydrated,user]);
 
- const metaName=String(user?.user_metadata?.full_name||user?.user_metadata?.name||'').trim();
+ useEffect(()=>{if(!hydrated||!user)return;let stopped=false;async function syncProgress(){try{const raw=localStorage.getItem(LOCAL_KEY);if(!raw)return;const s=JSON.parse(raw);const payload={favorites:Array.isArray(s.favorites)?s.favorites:[],claimed_rewards:Array.isArray(s.claimed)?s.claimed:[],binder_theme:String(s.theme||'Midnight'),updated_at:new Date().toISOString()};const sig=JSON.stringify({favorites:payload.favorites,claimed:payload.claimed_rewards,theme:payload.binder_theme});if(sig===lastProgressRef.current)return;const {error}=await client.from('collector_progress').upsert({user_id:user.id,...payload},{onConflict:'user_id'});if(error)throw error;if(!stopped)lastProgressRef.current=sig}catch{}}const timer=window.setInterval(()=>void syncProgress(),1500);void syncProgress();return()=>{stopped=true;window.clearInterval(timer)}},[client,hydrated,user]); const metaName=String(user?.user_metadata?.full_name||user?.user_metadata?.name||'').trim();
  const savedName=(profile?.display_name||'').trim();
  const accountName=(savedName&&savedName!=='Collector'?savedName:metaName)||savedName||user?.email?.split('@')[0]||'Reader';
  const avatar=profile?.avatar_url||String(user?.user_metadata?.avatar_url||user?.user_metadata?.picture||'');
