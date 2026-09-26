@@ -245,3 +245,17 @@ footer{margin-top:24px;border-top:1px solid #242b22}
 @media(max-width:600px){.account-showcase-grid{grid-template-columns:repeat(5,minmax(52px,1fr));overflow-x:auto}.account-showcase-grid>div:not(.showcase-placeholder){min-height:96px}}
 
 .account-showcase-grid>div>img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:5px;margin-bottom:7px}.account-personalize label{display:grid;gap:7px;color:#aeb5a6;font-size:12px}.account-personalize select,.avatar-upload input{width:100%;box-sizing:border-box;border:1px solid #3b4333;border-radius:6px;background:#151914;color:#eeeede;padding:9px}.avatar-upload{display:grid;gap:5px}.avatar-upload small{color:#7f8877}
+
+/* iPhone QA fixes */
+@media(max-width:600px){
+ .workspace{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+ .sidebar{height:calc(68px + env(safe-area-inset-bottom));padding:7px 8px env(safe-area-inset-bottom)}
+ .sidebar nav{height:68px;align-items:stretch}
+ .sidebar .nav-link{min-height:54px;padding:7px 2px 5px;font-size:8px;overflow:hidden}
+ .sidebar .nav-link svg{width:18px;height:18px;flex:0 0 auto}
+ .binder-tools{position:relative;z-index:14}.binder-foil-toggle{align-self:stretch;width:100%;min-height:46px;margin:0}
+ .account-showcase-grid{display:grid;grid-template-columns:1fr;overflow:visible;gap:14px}
+ .account-showcase-grid>div:not(.showcase-placeholder){padding:0;border:0;background:transparent;min-height:0}
+ .account-showcase-grid>div>img{width:100%;aspect-ratio:2/3;max-height:none;object-fit:cover;border-radius:10px;margin:0}
+ .account-showcase-grid b,.account-showcase-grid small{display:none}
+}
