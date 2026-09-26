@@ -110,13 +110,31 @@ export default function CardManager({ email }: { email: string }) {
   function update<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft(current => ({ ...current, [key]: value }))
   }
-  function loadPreload(item: Draft) {
-    clearArt()
-    setEditing(null)
-    setDraft(item)
-    setError('')
-    setMessage(item.characterName + ' is preloaded. Add the art, review the text, then save when ready.')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  async function loadPreload(item: Draft) {
+    setBusy(true); setError(''); setMessage('')
+    try {
+      const seriesSlug = slugify(item.seriesTitle)
+      const seriesResult = await supabase.from('series').select('id').eq('slug', seriesSlug).maybeSingle()
+      if (seriesResult.error) throw seriesResult.error
+      if (seriesResult.data?.id) {
+        const characterResult = await supabase.from('characters').select('id').eq('series_id', seriesResult.data.id).eq('name', item.characterName).maybeSingle()
+        if (characterResult.error) throw characterResult.error
+        if (characterResult.data?.id) {
+          const cardResult = await supabase.from('cards').select('id').eq('character_id', characterResult.data.id).limit(1).maybeSingle()
+          if (cardResult.error) throw cardResult.error
+          if (cardResult.data?.id) {
+            await editCard(cardResult.data.id)
+            setMessage(item.characterName + ' already exists, so the existing card was opened instead of creating a duplicate.')
+            return
+          }
+        }
+      }
+      clearArt(); setEditing(null); setDraft(item)
+      setMessage(item.characterName + ' is preloaded. Add the art, review the text, then save when ready.')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Could not load this preload.')
+    } finally { setBusy(false) }
   }
 
 
