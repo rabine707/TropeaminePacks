@@ -26,5 +26,5 @@ export default async function AdminCardsPage() {
     )
   }
 
-  return <CardManager email={user.email ?? 'Admin'} />
+  return <><div style={{position:'fixed',right:24,bottom:24,zIndex:90}}><Link className="button gold" href="/admin/users">Users & currency</Link></div><CardManager email={user.email ?? 'Admin'} /></>
 }
