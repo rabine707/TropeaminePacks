@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 type Draft = {
@@ -45,9 +45,17 @@ const EMPTY: Draft = {
 }
 
 const DRAFT_KEY = 'tropeamine-admin-card-draft-v1'
+const MAX_ART_BYTES = 20 * 1024 * 1024
+const ALLOWED_ART_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 function slugify(value: string) {
   return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+}
+
+function extensionFor(file: File) {
+  if (file.type === 'image/png') return 'png'
+  if (file.type === 'image/webp') return 'webp'
+  return 'jpg'
 }
 
 export default function CardManager({ email }: { email: string }) {
@@ -58,6 +66,10 @@ export default function CardManager({ email }: { email: string }) {
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [frontFile, setFrontFile] = useState<File | null>(null)
+  const [backFile, setBackFile] = useState<File | null>(null)
+  const [frontPreview, setFrontPreview] = useState('')
+  const [backPreview, setBackPreview] = useState('')
 
   useEffect(() => {
     try {
@@ -70,6 +82,11 @@ export default function CardManager({ email }: { email: string }) {
   useEffect(() => {
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)) } catch {}
   }, [draft])
+
+  useEffect(() => () => {
+    if (frontPreview) URL.revokeObjectURL(frontPreview)
+    if (backPreview) URL.revokeObjectURL(backPreview)
+  }, [frontPreview, backPreview])
 
   async function refreshCards() {
     setLoading(true)
@@ -88,9 +105,45 @@ export default function CardManager({ email }: { email: string }) {
     setDraft(current => ({ ...current, [key]: value }))
   }
 
+  function chooseArt(side: 'front' | 'back', event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0] ?? null
+    setError('')
+    if (!file) return
+    if (!ALLOWED_ART_TYPES.includes(file.type)) {
+      setError('Card art must be a JPG, PNG, or WebP image.')
+      event.target.value = ''
+      return
+    }
+    if (file.size > MAX_ART_BYTES) {
+      setError('Each card image must be 20 MB or smaller.')
+      event.target.value = ''
+      return
+    }
+
+    const preview = URL.createObjectURL(file)
+    if (side === 'front') {
+      if (frontPreview) URL.revokeObjectURL(frontPreview)
+      setFrontFile(file)
+      setFrontPreview(preview)
+    } else {
+      if (backPreview) URL.revokeObjectURL(backPreview)
+      setBackFile(file)
+      setBackPreview(preview)
+    }
+  }
+
+  function clearArt() {
+    if (frontPreview) URL.revokeObjectURL(frontPreview)
+    if (backPreview) URL.revokeObjectURL(backPreview)
+    setFrontFile(null)
+    setBackFile(null)
+    setFrontPreview('')
+    setBackPreview('')
+  }
+
   async function findOrCreateSeries() {
     const slug = slugify(draft.seriesTitle)
-    let { data } = await supabase.from('series').select('id').eq('slug', slug).maybeSingle()
+    const { data } = await supabase.from('series').select('id').eq('slug', slug).maybeSingle()
     if (data?.id) return data.id as string
 
     const inserted = await supabase.from('series').insert({
@@ -104,7 +157,7 @@ export default function CardManager({ email }: { email: string }) {
   }
 
   async function findOrCreateCharacter(seriesId: string) {
-    let { data } = await supabase.from('characters').select('id').eq('series_id', seriesId).eq('name', draft.characterName.trim()).maybeSingle()
+    const { data } = await supabase.from('characters').select('id').eq('series_id', seriesId).eq('name', draft.characterName.trim()).maybeSingle()
     if (data?.id) return data.id as string
 
     const inserted = await supabase.from('characters').insert({
@@ -118,7 +171,7 @@ export default function CardManager({ email }: { email: string }) {
 
   async function findOrCreateSet(seriesId: string) {
     const code = draft.setCode.trim().toUpperCase()
-    let { data } = await supabase.from('card_sets').select('id').eq('code', code).maybeSingle()
+    const { data } = await supabase.from('card_sets').select('id').eq('code', code).maybeSingle()
     if (data?.id) return data.id as string
 
     const inserted = await supabase.from('card_sets').insert({
@@ -130,6 +183,23 @@ export default function CardManager({ email }: { email: string }) {
     }).select('id').single()
     if (inserted.error) throw inserted.error
     return inserted.data.id as string
+  }
+
+  async function uploadArt(file: File, side: 'front' | 'back', cardId: string, variantId: string) {
+    const path = `${draft.rating}/${cardId}/${variantId}-${side}.${extensionFor(file)}`
+    const upload = await supabase.storage.from('card-art').upload(path, file, {
+      cacheControl: '3600',
+      contentType: file.type,
+      upsert: false,
+    })
+    if (upload.error) throw upload.error
+
+    const asset = await supabase.from('card_assets').insert({
+      variant_id: variantId,
+      side,
+      storage_path: path,
+    })
+    if (asset.error) throw asset.error
   }
 
   async function saveCard(event: FormEvent) {
@@ -168,12 +238,19 @@ export default function CardManager({ email }: { email: string }) {
         available: draft.published,
         craft_cost: 30,
         duplicate_shards: 10,
-      })
+      }).select('id').single()
       if (variantResult.error) throw variantResult.error
 
+      const uploads: Promise<void>[] = []
+      if (frontFile) uploads.push(uploadArt(frontFile, 'front', cardResult.data.id, variantResult.data.id))
+      if (backFile) uploads.push(uploadArt(backFile, 'back', cardResult.data.id, variantResult.data.id))
+      await Promise.all(uploads)
+
+      const characterName = draft.characterName.trim()
       localStorage.removeItem(DRAFT_KEY)
       setDraft(EMPTY)
-      setMessage(`${draft.characterName.trim()} was added to the live catalog.`)
+      clearArt()
+      setMessage(`${characterName} was added to the live catalog${uploads.length ? ' with card art' : ''}.`)
       await refreshCards()
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Could not save the card.')
@@ -184,6 +261,7 @@ export default function CardManager({ email }: { email: string }) {
 
   const inputStyle = { width: '100%', background: '#151914', border: '1px solid #3a4234', color: '#eeeede', borderRadius: 6, padding: '11px 12px' }
   const labelStyle = { display: 'grid', gap: 6, fontSize: 12, color: '#aeb6a4' }
+  const artBoxStyle = { border: '1px solid #30362d', borderRadius: 8, background: '#151914', padding: 12, display: 'grid', gap: 10 }
 
   return (
     <main style={{ maxWidth: 1180, paddingTop: 36, paddingBottom: 60 }}>
@@ -191,7 +269,7 @@ export default function CardManager({ email }: { email: string }) {
         <div>
           <p className="eyebrow">TROPEAMINE PACKS · ADMIN</p>
           <h1 style={{ marginBottom: 8 }}>Card Manager</h1>
-          <p style={{ marginBottom: 0 }}>Create catalog entries directly in the live Supabase database.</p>
+          <p style={{ marginBottom: 0 }}>Create catalog entries and upload card art directly to the live catalog.</p>
         </div>
         <div style={{ textAlign: 'right', fontSize: 12, color: '#8f9888' }}>
           <div>{email}</div>
@@ -202,7 +280,7 @@ export default function CardManager({ email }: { email: string }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, .75fr)', gap: 24, alignItems: 'start' }}>
         <form onSubmit={saveCard} style={{ border: '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 24 }}>
           <h2 style={{ fontSize: 28 }}>New card</h2>
-          <p style={{ fontSize: 12 }}>Your unfinished form is saved in this browser automatically.</p>
+          <p style={{ fontSize: 12 }}>Your text fields are saved in this browser automatically. Selected image files must be reselected after a page refresh.</p>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <label style={labelStyle}>Series title *<input style={inputStyle} value={draft.seriesTitle} onChange={e => update('seriesTitle', e.target.value)} placeholder="Coven King" /></label>
@@ -219,6 +297,28 @@ export default function CardManager({ email }: { email: string }) {
 
           <label style={{ ...labelStyle, marginTop: 14 }}>Description *<textarea style={{ ...inputStyle, minHeight: 110, resize: 'vertical' }} value={draft.description} onChange={e => update('description', e.target.value)} placeholder="Short card/character description" /></label>
 
+          <div style={{ marginTop: 18 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'end', marginBottom: 10 }}>
+              <div><strong style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 400 }}>Card art</strong><div style={{ color: '#8f9888', fontSize: 11 }}>JPG, PNG, or WebP · max 20 MB each</div></div>
+              {(frontFile || backFile) && <button className="text-link" type="button" onClick={clearArt} disabled={busy}>Clear art</button>}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <label style={artBoxStyle}>
+                <span style={{ fontSize: 12, color: '#c7cdbd' }}>Front card art</span>
+                {frontPreview ? <img src={frontPreview} alt="Front card preview" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ aspectRatio: '2 / 3', border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No front image selected</div>}
+                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => chooseArt('front', e)} disabled={busy} />
+                {frontFile && <small style={{ color: '#889181' }}>{frontFile.name}</small>}
+              </label>
+
+              <label style={artBoxStyle}>
+                <span style={{ fontSize: 12, color: '#c7cdbd' }}>Back / profile art</span>
+                {backPreview ? <img src={backPreview} alt="Back card preview" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ aspectRatio: '2 / 3', border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No back image selected</div>}
+                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => chooseArt('back', e)} disabled={busy} />
+                {backFile && <small style={{ color: '#889181' }}>{backFile.name}</small>}
+              </label>
+            </div>
+          </div>
+
           <label style={{ display: 'flex', gap: 9, alignItems: 'center', marginTop: 16, fontSize: 12, color: '#aeb6a4' }}>
             <input type="checkbox" checked={draft.published} onChange={e => update('published', e.target.checked)} />
             Publish immediately
@@ -228,8 +328,8 @@ export default function CardManager({ email }: { email: string }) {
           {message && <p style={{ color: '#b9d8ae', marginTop: 16, marginBottom: 0 }}>{message}</p>}
 
           <div className="button-row" style={{ marginTop: 20 }}>
-            <button className="button gold" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save to live catalog'}</button>
-            <button className="button outline" type="button" disabled={busy} onClick={() => { localStorage.removeItem(DRAFT_KEY); setDraft(EMPTY); setError(''); setMessage('') }}>Clear draft</button>
+            <button className="button gold" type="submit" disabled={busy}>{busy ? 'Saving & uploading…' : 'Save to live catalog'}</button>
+            <button className="button outline" type="button" disabled={busy} onClick={() => { localStorage.removeItem(DRAFT_KEY); setDraft(EMPTY); clearArt(); setError(''); setMessage('') }}>Clear draft</button>
           </div>
         </form>
 
