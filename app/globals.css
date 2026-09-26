@@ -49,3 +49,6 @@
 .foil-badge{position:absolute;z-index:7;right:7px;top:7px;padding:4px 7px;border:1px solid rgba(255,244,193,.75);border-radius:999px;background:rgba(17,20,15,.82);box-shadow:0 2px 12px #0008;color:#fff3b9;font-size:8px;letter-spacing:1.2px;line-height:1;pointer-events:none}
 @keyframes foilSweep{0%,18%{transform:translateX(-52%) rotate(8deg);opacity:.25}50%{opacity:.72}82%,100%{transform:translateX(52%) rotate(8deg);opacity:.25}}
 @media(prefers-reduced-motion:reduce){.pack-foil-pull:before{animation:none;transform:translateX(0) rotate(8deg);opacity:.38}}
+
+.binder-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.binder-tools .tabs{margin-bottom:0}.binder-foil-toggle{flex:0 0 auto;white-space:nowrap}.binder-foil .pack-foil-pull{border-radius:6px}
+@media(max-width:600px){.binder-tools{align-items:flex-start;flex-direction:column}.binder-foil-toggle{align-self:flex-end;margin-top:-4px}}
