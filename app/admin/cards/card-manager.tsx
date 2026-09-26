@@ -45,6 +45,15 @@ const EMPTY: Draft = {
   bookRange: '', description: '', variantLabel: 'Standard', rarity: 'common', rating: 'sfw', published: false,
 }
 
+const WARLOCK_PRELOADS: Draft[] = [
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Cassandra Blake Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Cassandra Blake Ashe — Warlock character profile. Known affinity and resonant details can be refined alongside the finished card art.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Samantha “Sam” Prescott Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Samantha “Sam” Prescott Ashe — Warlock character profile. Known affinity: Harmony. Resonants include Love, Lust, and Pain.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Rachel Winthrop Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Rachel Winthrop Ashe — Warlock character profile. Passion is represented by the established purple resonant treatment.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Morgan',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Morgan — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Melaina Seraphina Blackwood',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Melaina Seraphina Blackwood — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Noah Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Noah Ashe — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+]
+
 const DRAFT_KEY = 'tropeamine-admin-card-draft-v1'
 const MAX_ART_BYTES = 20 * 1024 * 1024
 const ALLOWED_ART_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -101,6 +110,15 @@ export default function CardManager({ email }: { email: string }) {
   function update<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft(current => ({ ...current, [key]: value }))
   }
+  function loadPreload(item: Draft) {
+    clearArt()
+    setEditing(null)
+    setDraft(item)
+    setError('')
+    setMessage(item.characterName + ' is preloaded. Add the art, review the text, then save when ready.')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
 
   function setPreview(side: 'front' | 'back', url: string) {
     if (side === 'front') setFrontPreview(url)
@@ -358,6 +376,16 @@ export default function CardManager({ email }: { email: string }) {
         </div>
         <div style={{ textAlign: 'right', fontSize: 12, color: '#8f9888' }}><div>{email}</div><Link className="text-link" href="/">Back to site</Link></div>
       </div>
+
+      <section style={{ border: '1px solid #3a4234', background: '#171b16', borderRadius: 10, padding: 18, marginBottom: 22 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'end', flexWrap: 'wrap' }}>
+          <div><p className="eyebrow" style={{ marginBottom: 5 }}>WARLOCK · PRELOADED DRAFTS</p><h2 style={{ fontSize: 23, margin: 0 }}>Ready for card art</h2></div>
+          <small style={{ color: '#8f9888' }}>Felicity is already live, so she is intentionally excluded.</small>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
+          {WARLOCK_PRELOADS.map(item => <button key={item.characterName} type="button" className="button outline" onClick={() => loadPreload(item)} disabled={busy} style={{ minHeight: 34, padding: '7px 10px' }}>{item.characterName}</button>)}
+        </div>
+      </section>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, .75fr)', gap: 24, alignItems: 'start' }}>
         <form onSubmit={saveCard} style={{ border: editing ? '1px solid #81744d' : '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 24 }}>
