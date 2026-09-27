@@ -339,3 +339,8 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .how-it-works{bottom:calc(var(--mobile-nav-visible) + var(--mobile-nav-lift) + env(safe-area-inset-bottom) + 10px)!important}
  .starter-checklist{bottom:calc(var(--mobile-nav-visible) + var(--mobile-nav-lift) + env(safe-area-inset-bottom) + 64px)!important}
 }
+
+/* Settle mobile nav between Safari clearance and excess lift. */
+@media(max-width:600px){
+ :root{--mobile-nav-lift:32px}
+}
