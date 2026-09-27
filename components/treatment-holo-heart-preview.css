@@ -1,0 +1,131 @@
+/* Preview tuning for Holo + Heartthrob only. Loaded after treatment-card.css. */
+
+/* HOLO — mostly clean at rest, stronger localized diffraction when the light passes. */
+[data-treatment=holo] .foil--diffraction{
+  background:
+    linear-gradient(108deg,
+      transparent 7%,
+      rgba(255,84,174,.16) 16%,
+      rgba(101,126,255,.24) 26%,
+      rgba(66,220,255,.30) 36%,
+      rgba(116,255,184,.26) 46%,
+      rgba(255,237,111,.28) 55%,
+      rgba(255,154,91,.20) 65%,
+      rgba(255,84,174,.14) 74%,
+      transparent 85%),
+    repeating-linear-gradient(76deg,
+      transparent 0 9%,
+      rgba(255,255,255,.04) 10%,
+      rgba(255,255,255,.13) 11%,
+      transparent 12% 23%),
+    radial-gradient(ellipse 58% 42% at var(--lx) var(--ly),rgba(255,255,255,.58) 0%,rgba(255,255,255,.13) 20%,transparent 58%);
+  background-size:225% 185%,155% 150%,100% 100%;
+  background-position:var(--foil-x) var(--foil-y),calc(var(--foil-x) * .7) calc(var(--foil-y) * .8),center;
+  background-blend-mode:screen,screen,normal;
+  mix-blend-mode:color-dodge;
+  opacity:calc(.12 + var(--energy)*.30);
+  filter:saturate(calc(1.24 + var(--energy)*.34)) brightness(calc(1 + var(--energy)*.12));
+  animation:holo-pass-v3 11.5s ease-in-out infinite;
+}
+[data-treatment=holo] .foil--texture{
+  background-image:
+    repeating-radial-gradient(circle at 12% 18%,rgba(255,255,255,.10) 0 1px,transparent 1px 12px),
+    url('/treatments/dust.svg');
+  background-size:32px 32px,100% 100%;
+  opacity:calc(.024 + var(--energy)*.045);
+}
+[data-treatment=holo] .foil--specular{
+  background:
+    linear-gradient(111deg,
+      transparent 29%,
+      rgba(255,255,255,.04) 37%,
+      rgba(255,255,255,.26) 43%,
+      rgba(255,255,255,.82) 47%,
+      rgba(255,255,255,1) 50%,
+      rgba(255,255,255,.52) 53%,
+      rgba(255,255,255,.11) 59%,
+      transparent 68%),
+    radial-gradient(ellipse 44% 31% at var(--lx) var(--ly),rgba(255,255,255,.34) 0%,rgba(255,255,255,.08) 22%,transparent 56%);
+  background-size:250% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  opacity:calc(.12 + var(--energy)*.50);
+  filter:blur(.10px);
+  animation:foil-catch-v3 7.4s ease-in-out infinite;
+}
+
+/* HEARTTHROB — the heart pattern behaves like embedded holo symbols. */
+[data-treatment=heartthrob] .foil--pattern,
+[data-treatment=heartthrob] .foil--diffraction{
+  -webkit-mask-image:url('/treatments/heartthrob-pattern.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/heartthrob-pattern.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+}
+[data-treatment=heartthrob] .foil--pattern{
+  background:linear-gradient(118deg,rgba(255,255,255,.16),rgba(255,255,255,.025) 44%,rgba(255,255,255,.12) 74%,rgba(255,255,255,.03));
+  mix-blend-mode:screen;
+  opacity:.11;
+}
+[data-treatment=heartthrob] .foil--diffraction{
+  background:
+    linear-gradient(108deg,
+      transparent 9%,
+      rgba(255,104,188,.16) 20%,
+      rgba(105,228,255,.28) 34%,
+      rgba(255,255,255,.72) 48%,
+      rgba(186,145,255,.36) 60%,
+      rgba(255,225,137,.23) 69%,
+      rgba(255,103,188,.14) 78%,
+      transparent 89%);
+  background-size:240% 185%;
+  background-position:var(--foil-x) var(--foil-y);
+  mix-blend-mode:color-dodge;
+  opacity:calc(.055 + var(--energy)*.40);
+  filter:saturate(calc(1.28 + var(--energy)*.46)) brightness(calc(1 + var(--energy)*.18));
+  animation:heart-reveal-v2 10.5s ease-in-out infinite;
+}
+[data-treatment=heartthrob] .foil--texture{opacity:calc(.015 + var(--energy)*.035)}
+[data-treatment=heartthrob] .foil--specular{
+  background:
+    linear-gradient(111deg,
+      transparent 30%,
+      rgba(255,255,255,.03) 38%,
+      rgba(255,255,255,.22) 44%,
+      rgba(255,255,255,.76) 48%,
+      rgba(255,255,255,.98) 50%,
+      rgba(255,255,255,.38) 54%,
+      rgba(255,255,255,.08) 60%,
+      transparent 69%),
+    radial-gradient(ellipse 44% 31% at var(--lx) var(--ly),rgba(255,255,255,.24) 0%,rgba(255,255,255,.06) 20%,transparent 54%);
+  background-size:250% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  opacity:calc(.10 + var(--energy)*.47);
+  filter:blur(.10px);
+  animation:foil-catch-v3 7.2s ease-in-out infinite;
+}
+
+@keyframes holo-pass-v3{
+  0%,100%{background-position:4% 43%,18% 61%,center}
+  35%{background-position:62% 54%,52% 36%,center}
+  70%{background-position:96% 38%,84% 68%,center}
+}
+@keyframes heart-reveal-v2{
+  0%,100%{background-position:3% 47%}
+  50%{background-position:97% 55%}
+}
+@keyframes foil-catch-v3{
+  0%,100%{background-position:-74% center,center;opacity:.08}
+  20%{opacity:.14}
+  48%{background-position:168% center,center;opacity:.58}
+  66%{opacity:.12}
+  100%{background-position:168% center,center;opacity:.08}
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-treatment=holo] .foil--diffraction,
+  [data-treatment=holo] .foil--specular,
+  [data-treatment=heartthrob] .foil--diffraction,
+  [data-treatment=heartthrob] .foil--specular{animation:none!important}
+}
