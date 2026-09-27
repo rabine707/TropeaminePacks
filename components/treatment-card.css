@@ -259,43 +259,91 @@
 [data-treatment=slowburn]:active .foil--specular,
 [data-treatment=slowburn]:focus-within .foil--specular{animation:none}
 
-/* AFTERCARE — decorative opal laminate. */
-[data-treatment=aftercare] .foil--pattern,
-[data-treatment=aftercare] .foil--diffraction{
-  -webkit-mask-image:url('/treatments/aftercare-ornament.svg');
-  -webkit-mask-size:100% 100%;
-  -webkit-mask-repeat:no-repeat;
-  mask-image:url('/treatments/aftercare-ornament.svg');
-  mask-size:100% 100%;
-  mask-repeat:no-repeat;
-}
+/* AFTERCARE — the prettiest chase: pearl satin, opal interference and diamond dust. */
 [data-treatment=aftercare] .foil--pattern{
-  background:linear-gradient(125deg,rgba(255,255,255,.34),rgba(248,221,233,.18) 35%,rgba(205,238,255,.20) 65%,rgba(255,255,255,.3));
+  background:
+    radial-gradient(ellipse 72% 46% at 18% 24%,rgba(255,229,239,.26),transparent 68%),
+    radial-gradient(ellipse 68% 52% at 82% 34%,rgba(209,237,255,.24),transparent 70%),
+    radial-gradient(ellipse 78% 54% at 44% 82%,rgba(235,219,255,.22),transparent 72%),
+    linear-gradient(128deg,rgba(255,245,220,.18),rgba(255,219,235,.14) 32%,rgba(210,240,255,.17) 59%,rgba(231,217,255,.15) 77%,rgba(255,244,218,.17));
+  background-size:145% 145%,150% 150%,155% 155%,190% 190%;
+  background-position:var(--foil-x) var(--foil-y),calc(100% - var(--foil-x)) var(--foil-y),var(--foil-x) calc(100% - var(--foil-y)),var(--foil-x) var(--foil-y);
   mix-blend-mode:screen;
-  opacity:.36;
+  opacity:calc(.34 + var(--energy)*.18);
+  filter:saturate(calc(1.08 + var(--energy)*.22)) brightness(calc(1.01 + var(--energy)*.10));
+  animation:aftercare-breathe 9.8s ease-in-out infinite;
 }
 [data-treatment=aftercare] .foil--diffraction{
   background:
-    linear-gradient(112deg,transparent 12%,rgba(255,235,203,.68) 25%,rgba(255,204,229,.62) 38%,rgba(187,236,255,.7) 49%,rgba(215,201,255,.66) 60%,rgba(195,255,238,.56) 70%,rgba(255,242,203,.55) 80%,transparent 90%);
-  background-size:230% 180%;
-  background-position:var(--foil-x) var(--foil-y);
+    linear-gradient(108deg,
+      transparent 0 20%,
+      rgba(255,239,210,.10) 27%,
+      rgba(255,220,235,.40) 35%,
+      rgba(224,239,255,.58) 43%,
+      rgba(239,225,255,.50) 50%,
+      rgba(207,247,246,.40) 57%,
+      rgba(255,235,207,.34) 64%,
+      transparent 76% 100%);
+  background-size:250% 100%;
+  background-position:var(--foil-x) center;
   mix-blend-mode:screen;
-  opacity:calc(.27 + var(--energy)*.22);
-  filter:saturate(calc(1.18 + var(--energy)*.2)) brightness(calc(1.02 + var(--energy)*.1));
-  animation:opal-drift 15s ease-in-out infinite;
+  opacity:calc(.22 + var(--energy)*.46);
+  filter:saturate(calc(1.08 + var(--energy)*.30)) brightness(calc(1.02 + var(--energy)*.18)) blur(.18px);
+  animation:aftercare-satin-roll 12.5s ease-in-out infinite;
 }
+/* Dense micro shimmer comes from the authored dust texture, not a repeating CSS dot pattern. */
 [data-treatment=aftercare] .foil--texture{
-  opacity:calc(.13 + var(--energy)*.16);
-  filter:brightness(calc(1.04 + var(--energy)*.28));
+  background-image:url('/treatments/dust.svg');
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+  mix-blend-mode:screen;
+  opacity:calc(.13 + var(--energy)*.27);
+  filter:brightness(calc(1.18 + var(--energy)*.72)) drop-shadow(0 0 1px rgba(255,240,246,.38));
+  animation:aftercare-dust-breathe 7.6s ease-in-out infinite;
 }
+/* One broad satin catch plus a few rare jewel-like glints. */
 [data-treatment=aftercare] .foil--specular{
-  opacity:calc(.14 + var(--energy)*.29);
   background:
-    linear-gradient(112deg,transparent 20%,rgba(255,255,255,.04) 34%,rgba(255,241,229,.45) 44%,rgba(221,245,255,.9) 50%,rgba(255,224,240,.34) 57%,transparent 70%),
-    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.42) 0%,rgba(255,244,236,.11) 18%,transparent 44%);
-  background-size:230% 100%,100% 100%;
-  background-position:var(--foil-x) center,center;
+    radial-gradient(ellipse 3.2% 1.1% at 22% 28%,rgba(255,255,255,.92) 0 16%,rgba(255,231,244,.40) 26%,transparent 58%),
+    radial-gradient(ellipse 1.1% 3.2% at 22% 28%,rgba(255,255,255,.88) 0 15%,rgba(219,243,255,.34) 25%,transparent 58%),
+    radial-gradient(ellipse 2.8% .9% at 77% 67%,rgba(255,255,255,.84) 0 14%,rgba(232,222,255,.32) 25%,transparent 58%),
+    radial-gradient(ellipse .9% 2.8% at 77% 67%,rgba(255,255,255,.80) 0 14%,rgba(255,236,213,.28) 25%,transparent 58%),
+    linear-gradient(110deg,transparent 27%,rgba(255,246,235,.05) 36%,rgba(255,231,241,.26) 42%,rgba(232,246,255,.64) 48%,rgba(255,250,240,.78) 50%,rgba(232,224,255,.42) 54%,rgba(213,247,244,.18) 59%,transparent 68%);
+  background-size:100% 100%,100% 100%,100% 100%,100% 100%,265% 100%;
+  background-position:center,center,center,center,var(--foil-x) center;
+  mix-blend-mode:screen;
+  opacity:calc(.12 + var(--energy)*.54);
+  filter:brightness(calc(1.03 + var(--energy)*.18));
+  animation:aftercare-glint 8.6s ease-in-out infinite;
 }
+@keyframes aftercare-breathe{
+  0%,100%{opacity:.30;filter:saturate(1.06) brightness(1.00)}
+  50%{opacity:.46;filter:saturate(1.18) brightness(1.07)}
+}
+@keyframes aftercare-satin-roll{
+  0%,100%{background-position:-70% center;opacity:.18}
+  45%{opacity:.34}
+  58%{background-position:168% center;opacity:.48}
+  76%{opacity:.22}
+}
+@keyframes aftercare-dust-breathe{
+  0%,100%{opacity:.11;filter:brightness(1.10) drop-shadow(0 0 1px rgba(255,240,246,.24))}
+  48%{opacity:.23;filter:brightness(1.72) drop-shadow(0 0 1.5px rgba(235,244,255,.52))}
+  66%{opacity:.15;filter:brightness(1.30) drop-shadow(0 0 1px rgba(255,231,242,.34))}
+}
+@keyframes aftercare-glint{
+  0%,18%,100%{opacity:.10}
+  24%{opacity:.34}
+  28%{opacity:.13}
+  52%{opacity:.16}
+  57%{opacity:.46}
+  61%{opacity:.14}
+  78%{opacity:.26}
+  83%{opacity:.11}
+}
+[data-treatment=aftercare]:hover .foil--diffraction,
+[data-treatment=aftercare]:active .foil--diffraction,
+[data-treatment=aftercare]:focus-within .foil--diffraction{animation:none}
 
 @keyframes foil-sheen{
   0%,100%{background-position:-70% center,center;opacity:.13}
