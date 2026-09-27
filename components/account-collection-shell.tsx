@@ -31,22 +31,26 @@ function rarityLabel(value:string):Card['rarity']{
 }
 
 async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Card[]>{
- const [{data,error},{data:membershipData,error:membershipError}]=await Promise.all([
+ const [{data,error},{data:membershipData,error:membershipError},{data:packData,error:packError}]=await Promise.all([
   client.from('cards').select(`
    id,number,book_range,description,published,
    characters!inner(id,name,bio,lore,series!inner(id,title,author,published)),
    card_sets!inner(id,title,code,published),
    variants!inner(id,label,rarity,rating,premium,foil,available,card_assets(id,side,storage_path))
   `).eq('published',true).order('created_at',{ascending:true}),
-  client.from('card_pack_memberships').select('card_id,pack_id')
+  client.from('card_pack_memberships').select('card_id,pack_id'),
+  client.from('packs').select('id,slug').eq('active',true)
  ]);
  if(error)throw error;
  if(membershipError)throw membershipError;
+ if(packError)throw packError;
  const rows=(data??[]) as any[];
+ const packSlugs=new Map<string,string>((packData??[]).map(pack=>[String(pack.id),String(pack.slug)]));
  const memberships=new Map<string,string[]>();
  for(const membership of membershipData??[]){
-  const cardId=String(membership.card_id),packId=String(membership.pack_id);
-  memberships.set(cardId,[...(memberships.get(cardId)??[]),packId]);
+  const cardId=String(membership.card_id),packSlug=packSlugs.get(String(membership.pack_id));
+  if(!packSlug)continue;
+  memberships.set(cardId,[...(memberships.get(cardId)??[]),packSlug]);
  }
  const cards:Card[]=[];
  for(const row of rows){
