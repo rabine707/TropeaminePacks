@@ -85,9 +85,10 @@
 [data-treatment=heartthrob] .foil--texture{opacity:calc(.025 + var(--energy)*.05)}
 [data-treatment=heartthrob] .foil--specular{opacity:calc(.13 + var(--energy)*.31)}
 
-/* UNHINGED — solid fracture laminate at rest; the moving white catch reveals rainbow foil. */
+/* UNHINGED — visible fractured foil with one holographic light bar at rest and in motion. */
 [data-treatment=unhinged] .foil--pattern,
-[data-treatment=unhinged] .foil--diffraction{
+[data-treatment=unhinged] .foil--diffraction,
+[data-treatment=unhinged] .foil--specular{
   -webkit-mask-image:url('/treatments/ice.svg');
   -webkit-mask-size:100% 100%;
   -webkit-mask-repeat:no-repeat;
@@ -96,60 +97,88 @@
   mask-repeat:no-repeat;
 }
 
-/* Outside the light: restrained, mostly solid shattered facets. */
+/* Fractures remain visibly colored even when the moving catch is elsewhere. */
 [data-treatment=unhinged] .foil--pattern{
   background:
-    linear-gradient(132deg,
-      rgba(75,69,92,.44),
-      rgba(105,98,124,.34) 34%,
-      rgba(58,76,88,.38) 66%,
-      rgba(92,70,99,.36));
-  mix-blend-mode:soft-light;
-  opacity:.30;
-  filter:contrast(1.10);
+    linear-gradient(128deg,
+      rgba(74,216,238,.42) 0%,
+      rgba(95,111,222,.30) 23%,
+      rgba(181,77,211,.34) 44%,
+      rgba(239,91,165,.30) 61%,
+      rgba(225,187,67,.34) 79%,
+      rgba(64,210,169,.34) 100%);
+  background-size:165% 165%;
+  background-position:42% 48%;
+  mix-blend-mode:screen;
+  opacity:.34;
+  filter:saturate(1.24) contrast(1.06) brightness(1.02);
 }
 
-/* Rainbow lives INSIDE the moving light pool instead of tinting the whole card. */
+/* A narrow rainbow bar lights up only the fracture pattern. Pointer motion positions this same bar. */
 [data-treatment=unhinged] .foil--diffraction{
   background:
-    radial-gradient(ellipse 42% 34% at var(--lx) var(--ly),
-      rgba(255,255,255,.98) 0%,
-      rgba(76,229,255,.94) 14%,
-      rgba(100,107,255,.86) 25%,
-      rgba(210,82,255,.82) 35%,
-      rgba(255,73,177,.78) 43%,
-      rgba(255,218,67,.72) 51%,
-      rgba(85,255,187,.48) 59%,
-      transparent 72%);
-  background-size:100% 100%;
-  background-position:center;
+    linear-gradient(108deg,
+      transparent 0 31%,
+      rgba(45,213,255,.08) 35%,
+      rgba(45,213,255,.70) 40%,
+      rgba(87,107,255,.90) 44%,
+      rgba(205,70,255,.96) 47%,
+      rgba(255,65,174,.94) 50%,
+      rgba(255,210,54,.92) 53%,
+      rgba(74,244,178,.82) 57%,
+      rgba(53,210,255,.56) 61%,
+      transparent 68% 100%);
+  background-size:245% 100%;
+  background-position:var(--foil-x) center;
   mix-blend-mode:color-dodge;
-  opacity:calc(.035 + var(--energy)*.86);
+  opacity:calc(.24 + var(--energy)*.62);
   filter:
-    contrast(calc(1.08 + var(--energy)*.68))
-    saturate(calc(1.15 + var(--energy)*1.18))
-    brightness(calc(.98 + var(--energy)*.26));
-  animation:none;
+    saturate(calc(1.36 + var(--energy)*.72))
+    contrast(calc(1.08 + var(--energy)*.38))
+    brightness(calc(1.02 + var(--energy)*.18));
+  animation:unhinged-bar-rest 7.4s ease-in-out infinite;
 }
 
 [data-treatment=unhinged] .foil--texture{
-  opacity:calc(.02 + var(--energy)*.075);
+  opacity:calc(.035 + var(--energy)*.09);
 }
 
-/* Narrow white/chrome hotspot: this is the light source that makes nearby facets pop. */
+/* Colored edge catch only — no white flashlight hotspot. */
 [data-treatment=unhinged] .foil--specular{
   background:
-    radial-gradient(ellipse 24% 30% at var(--lx) var(--ly),
-      rgba(255,255,255,1) 0%,
-      rgba(255,255,255,.76) 16%,
-      rgba(202,245,255,.34) 32%,
-      rgba(255,255,255,.08) 48%,
-      transparent 66%);
-  background-size:100% 100%;
-  background-position:center;
+    linear-gradient(108deg,
+      transparent 0 39%,
+      rgba(104,236,255,.08) 42%,
+      rgba(125,229,255,.38) 46%,
+      rgba(224,171,255,.46) 49%,
+      rgba(255,157,216,.40) 52%,
+      rgba(255,225,120,.30) 55%,
+      transparent 60% 100%);
+  background-size:260% 100%;
+  background-position:var(--foil-x) center;
   mix-blend-mode:screen;
-  opacity:calc(.04 + var(--energy)*.72);
-  filter:blur(.15px);
+  opacity:calc(.12 + var(--energy)*.44);
+  filter:saturate(calc(1.18 + var(--energy)*.48)) brightness(calc(1.02 + var(--energy)*.12));
+  animation:unhinged-edge-rest 7.4s ease-in-out infinite;
+}
+
+/* Idle: the same bar sweeps the card on its own. */
+@keyframes unhinged-bar-rest{
+  0%,100%{background-position:-78% center}
+  50%{background-position:178% center}
+}
+@keyframes unhinged-edge-rest{
+  0%,100%{background-position:-88% center}
+  50%{background-position:188% center}
+}
+
+/* Interaction hands control of the existing bar to --foil-x. */
+[data-treatment=unhinged]:hover .foil--diffraction,
+[data-treatment=unhinged]:hover .foil--specular,
+[data-treatment=unhinged]:active .foil--diffraction,
+[data-treatment=unhinged]:active .foil--specular,
+[data-treatment=unhinged]:focus-within .foil--diffraction,
+[data-treatment=unhinged]:focus-within .foil--specular{
   animation:none;
 }
 
