@@ -50,6 +50,8 @@ type EditContext = {
 }
 
 type QueueFilter = 'all' | 'needs-art' | 'ready'
+type PackOption = { id: string; slug: string; name: string }
+type MembershipRow = { pack_id: string }
 
 const EMPTY: Draft = {
   seriesTitle: '', author: '', characterName: '', setTitle: '', setCode: '', cardNumber: '',
@@ -112,6 +114,8 @@ export default function CardManager({ email }: { email: string }) {
   const [backPreview, setBackPreview] = useState('')
   const [queueFilter, setQueueFilter] = useState<QueueFilter>('all')
   const [hiddenQueueItems, setHiddenQueueItems] = useState<string[]>([])
+  const [packs, setPacks] = useState<PackOption[]>([])
+  const [selectedPackIds, setSelectedPackIds] = useState<string[]>([])
 
   useEffect(() => {
     try {
@@ -121,6 +125,7 @@ export default function CardManager({ email }: { email: string }) {
       if (hidden) setHiddenQueueItems(JSON.parse(hidden))
     } catch {}
     void refreshCards()
+    void refreshPacks()
   }, [])
 
   useEffect(() => {
@@ -138,6 +143,31 @@ export default function CardManager({ email }: { email: string }) {
     if (error) setError(error.message)
     else setRows((data ?? []) as unknown as CatalogRow[])
     setLoading(false)
+  }
+
+  async function refreshPacks() {
+    const { data, error } = await supabase.from('packs').select('id,slug,name').eq('active', true).order('name')
+    if (error) setError(error.message)
+    else setPacks((data ?? []) as PackOption[])
+  }
+
+  function togglePack(packId: string, checked: boolean) {
+    setSelectedPackIds(current => checked ? Array.from(new Set([...current, packId])) : current.filter(id => id !== packId))
+  }
+
+  async function loadCardPacks(cardId: string) {
+    const { data, error } = await supabase.from('card_pack_memberships').select('pack_id').eq('card_id', cardId)
+    if (error) throw error
+    setSelectedPackIds(((data ?? []) as MembershipRow[]).map(row => row.pack_id))
+  }
+
+  async function saveCardPacks(cardId: string) {
+    const removed = await supabase.from('card_pack_memberships').delete().eq('card_id', cardId)
+    if (removed.error) throw removed.error
+    if (selectedPackIds.length) {
+      const inserted = await supabase.from('card_pack_memberships').insert(selectedPackIds.map(packId => ({ card_id: cardId, pack_id: packId })))
+      if (inserted.error) throw inserted.error
+    }
   }
 
   function update<K extends keyof Draft>(key: K, value: Draft[K]) {
@@ -230,6 +260,7 @@ export default function CardManager({ email }: { email: string }) {
 
   function loadSavedNewDraft() {
     clearArt()
+    setSelectedPackIds([])
     setEditing(null)
     try {
       const saved = localStorage.getItem(DRAFT_KEY)
@@ -281,6 +312,7 @@ export default function CardManager({ email }: { email: string }) {
         assets,
       }
       setEditing(context)
+      await loadCardPacks(card.id)
       setDraft({
         seriesTitle: seriesResult.data.title,
         author: seriesResult.data.author,
@@ -383,6 +415,7 @@ export default function CardManager({ email }: { email: string }) {
     if (frontFile) uploads.push(uploadArt(frontFile, 'front', editing.cardId, activeVariantId, editing.assets.front))
     if (backFile) uploads.push(uploadArt(backFile, 'back', editing.cardId, activeVariantId, editing.assets.back))
     await Promise.all(uploads)
+    await saveCardPacks(editing.cardId)
   }
 
   async function saveCard(event: FormEvent) {
@@ -417,6 +450,7 @@ export default function CardManager({ email }: { email: string }) {
         if (frontFile) uploads.push(uploadArt(frontFile, 'front', cardResult.data.id, variantResult.data.id))
         if (backFile) uploads.push(uploadArt(backFile, 'back', cardResult.data.id, variantResult.data.id))
         await Promise.all(uploads)
+        await saveCardPacks(cardResult.data.id)
         const name = draft.characterName.trim()
         localStorage.removeItem(DRAFT_KEY); setDraft(EMPTY); clearArt()
         setMessage(`${name} was added to the catalog${uploads.length ? ' with card art' : ''}.`)
@@ -539,6 +573,14 @@ export default function CardManager({ email }: { email: string }) {
           </div>
 
           <label style={{ ...labelStyle, marginTop: 14 }}>Description *<textarea style={{ ...inputStyle, minHeight: 110, resize: 'vertical' }} value={draft.description} onChange={e => update('description', e.target.value)} placeholder="Short card/character description" /></label>
+
+          <fieldset style={{ marginTop: 16, border: '1px solid #30362d', borderRadius: 8, padding: 14 }}>
+            <legend style={{ padding: '0 7px', color: '#d0bc78', fontSize: 12 }}>Pack availability</legend>
+            <div style={{ color: '#8f9888', fontSize: 11, marginBottom: 10 }}>Choose every pack this card can appear in. Cards can belong to more than one pack.</div>
+            {packs.length === 0 ? <small style={{ color: '#8f9888' }}>No packs available.</small> : <div style={{ display: 'grid', gap: 8 }}>
+              {packs.map(pack => <label key={pack.id} style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 12, color: '#c7cdbd' }}><input type="checkbox" checked={selectedPackIds.includes(pack.id)} onChange={e => togglePack(pack.id, e.target.checked)} />{pack.name}</label>)}
+            </div>}
+          </fieldset>
 
           <div style={{ marginTop: 18 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'end', marginBottom: 10 }}>
