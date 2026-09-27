@@ -228,3 +228,54 @@
   .physical-card__surface{transform:none}
   .foil{animation:none!important}
 }
+
+/* HOLO V2 — multi-band full-art foil, closer to real trading-card diffraction. */
+[data-treatment=holo] .foil--diffraction{
+  background:
+    linear-gradient(104deg,
+      rgba(255,65,170,.34) 0%,
+      rgba(255,85,105,.40) 12%,
+      rgba(255,208,70,.46) 24%,
+      rgba(125,255,125,.42) 36%,
+      rgba(70,225,255,.50) 49%,
+      rgba(92,120,255,.46) 61%,
+      rgba(186,92,255,.44) 74%,
+      rgba(255,78,175,.38) 87%,
+      rgba(255,185,72,.36) 100%),
+    repeating-linear-gradient(76deg,
+      transparent 0 8%,
+      rgba(255,255,255,.05) 9%,
+      rgba(255,255,255,.16) 10%,
+      transparent 12% 22%),
+    radial-gradient(ellipse 62% 46% at var(--lx) var(--ly),rgba(255,255,255,.72) 0%,rgba(255,255,255,.18) 20%,transparent 58%);
+  background-size:170% 170%,145% 145%,100% 100%;
+  background-position:var(--foil-x) var(--foil-y),calc(var(--foil-x) * .75) calc(var(--foil-y) * .75),center;
+  background-blend-mode:screen,screen,normal;
+  mix-blend-mode:color-dodge;
+  opacity:calc(.24 + var(--energy)*.20);
+  filter:saturate(calc(1.42 + var(--energy)*.32)) contrast(1.02) brightness(calc(1.01 + var(--energy)*.11));
+  animation:holo-spectrum-drift 13s ease-in-out infinite;
+}
+[data-treatment=holo] .foil--texture{
+  background-image:
+    repeating-radial-gradient(circle at 12% 18%,rgba(255,255,255,.16) 0 1px,transparent 1px 10px),
+    url('/treatments/dust.svg');
+  background-size:28px 28px,100% 100%;
+  opacity:calc(.045 + var(--energy)*.055);
+  mix-blend-mode:screen;
+}
+[data-treatment=holo] .foil--specular{
+  background:
+    linear-gradient(110deg,transparent 31%,rgba(255,255,255,.08) 39%,rgba(255,255,255,.42) 45%,rgba(255,255,255,.98) 49%,rgba(255,255,255,.48) 53%,rgba(255,255,255,.08) 59%,transparent 67%),
+    radial-gradient(ellipse 48% 34% at var(--lx) var(--ly),rgba(255,255,255,.38) 0%,rgba(255,255,255,.09) 24%,transparent 58%);
+  background-size:260% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  opacity:calc(.14 + var(--energy)*.38);
+  filter:blur(.12px);
+}
+@keyframes holo-spectrum-drift{
+  0%,100%{background-position:5% 38%,18% 62%,center}
+  25%{background-position:38% 52%,45% 38%,center}
+  50%{background-position:88% 46%,82% 68%,center}
+  75%{background-position:56% 72%,62% 22%,center}
+}
