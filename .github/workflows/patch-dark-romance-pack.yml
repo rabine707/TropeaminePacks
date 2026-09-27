@@ -1,0 +1,41 @@
+name: Patch Dark Romance pack art
+on:
+  push:
+    branches: [add-second-pack-option]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: add-second-pack-option
+      - name: Wire Dark Romance artwork into UI
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app = Path('components/collection-app.tsx')
+          s = app.read_text()
+          old_h = "{id:'haremlit-1',name:'HaremLit 1',kicker:'HAREMLIT · PACK 01',subtitle:'WARLOCK + COVEN KING + DUNGEON DIVING 101',description:'The first Tropeamine release. Pull from Warlock, Coven King, and Dungeon Diving 101 while each card keeps its original series identity.',series:['Warlock','Coven King','Dungeon Diving 101'],image:'/packs/haremlit-1-pack.webp',imageAlt:'HaremLit 1 booster pack artwork'},"
+          new_h = "{id:'haremlit-1',name:'HaremLit 1',kicker:'HAREMLIT · PACK 01',subtitle:'WARLOCK + COVEN KING + DUNGEON DIVING 101',description:'The first Tropeamine release. Pull from Warlock, Coven King, and Dungeon Diving 101 while each card keeps its original series identity.',series:['Warlock','Coven King','Dungeon Diving 101'],displaySeries:['Warlock','Coven King','Dungeon Diving 101'],image:'/packs/haremlit-1-pack.webp',imageAlt:'HaremLit 1 booster pack artwork'},"
+          old_d = "{id:'dark-romance-1',name:'Dark Romance 1',kicker:'DARK ROMANCE · PACK 01',subtitle:'LIGHTS OUT + CAUGHT UP + GAME ON',description:'The second Tropeamine release. Pull from the Lights Out series now, with the Ruinous Love trilogy joining the collection next.',series:['Lights Out','Caught Up','Game On'],image:null,imageAlt:'Dark Romance 1 booster pack artwork'}"
+          new_d = "{id:'dark-romance-1',name:'Dark Romance 1',kicker:'DARK ROMANCE · PACK 01',subtitle:'INTO DARKNESS SERIES + RUINOUS LOVE TRILOGY',description:'A dark romance collection spanning the Into Darkness series and the Ruinous Love trilogy.',series:['Lights Out','Caught Up','Game On'],displaySeries:['Into Darkness Series','Ruinous Love Trilogy'],image:'/packs/download.webp',imageAlt:'Dark Romance 1 booster pack artwork'}"
+          if old_h not in s: raise SystemExit('HaremLit pack definition anchor not found')
+          if old_d not in s: raise SystemExit('Dark Romance pack definition anchor not found')
+          s = s.replace(old_h,new_h).replace(old_d,new_d)
+          old_tags = "{selectedPack.series.map(s=><span key={s}>{s}</span>)}"
+          new_tags = "{selectedPack.displaySeries.map(s=><span key={s}>{s}</span>)}"
+          if old_tags not in s: raise SystemExit('pack tag anchor not found')
+          s = s.replace(old_tags,new_tags)
+          app.write_text(s)
+          PY
+      - name: Remove temporary workflow and commit
+        run: |
+          rm .github/workflows/patch-dark-romance-pack.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add components/collection-app.tsx .github/workflows/patch-dark-romance-pack.yml
+          git commit -m "Use Dark Romance 1 artwork on packs page"
+          git push origin HEAD:add-second-pack-option
