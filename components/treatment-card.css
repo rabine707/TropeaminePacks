@@ -262,14 +262,14 @@
 /* AFTERCARE — the prettiest chase: pearl satin, opal interference and diamond dust. */
 [data-treatment=aftercare] .foil--pattern{
   background:
-    radial-gradient(ellipse 72% 46% at 18% 24%,rgba(255,229,239,.26),transparent 68%),
-    radial-gradient(ellipse 68% 52% at 82% 34%,rgba(209,237,255,.24),transparent 70%),
-    radial-gradient(ellipse 78% 54% at 44% 82%,rgba(235,219,255,.22),transparent 72%),
-    linear-gradient(128deg,rgba(255,245,220,.18),rgba(255,219,235,.14) 32%,rgba(210,240,255,.17) 59%,rgba(231,217,255,.15) 77%,rgba(255,244,218,.17));
+    radial-gradient(ellipse 72% 46% at 18% 24%,rgba(255,204,229,.42),transparent 68%),
+    radial-gradient(ellipse 68% 52% at 82% 34%,rgba(183,226,255,.40),transparent 70%),
+    radial-gradient(ellipse 78% 54% at 44% 82%,rgba(218,190,255,.40),transparent 72%),
+    linear-gradient(128deg,rgba(255,236,201,.22),rgba(255,190,224,.28) 28%,rgba(188,226,255,.30) 55%,rgba(214,184,255,.30) 76%,rgba(255,232,192,.22));
   background-size:145% 145%,150% 150%,155% 155%,190% 190%;
   background-position:var(--foil-x) var(--foil-y),calc(100% - var(--foil-x)) var(--foil-y),var(--foil-x) calc(100% - var(--foil-y)),var(--foil-x) var(--foil-y);
   mix-blend-mode:screen;
-  opacity:calc(.34 + var(--energy)*.18);
+  opacity:calc(.46 + var(--energy)*.24);
   filter:saturate(calc(1.08 + var(--energy)*.22)) brightness(calc(1.01 + var(--energy)*.10));
   animation:aftercare-breathe 9.8s ease-in-out infinite;
 }
@@ -278,16 +278,16 @@
     linear-gradient(108deg,
       transparent 0 20%,
       rgba(255,239,210,.10) 27%,
-      rgba(255,220,235,.40) 35%,
-      rgba(224,239,255,.58) 43%,
-      rgba(239,225,255,.50) 50%,
-      rgba(207,247,246,.40) 57%,
+      rgba(255,180,221,.58) 35%,
+      rgba(190,228,255,.70) 43%,
+      rgba(216,185,255,.66) 50%,
+      rgba(191,239,255,.48) 57%,
       rgba(255,235,207,.34) 64%,
       transparent 76% 100%);
   background-size:250% 100%;
   background-position:var(--foil-x) center;
   mix-blend-mode:screen;
-  opacity:calc(.22 + var(--energy)*.46);
+  opacity:calc(.32 + var(--energy)*.52);
   filter:saturate(calc(1.08 + var(--energy)*.30)) brightness(calc(1.02 + var(--energy)*.18)) blur(.18px);
   animation:aftercare-satin-roll 12.5s ease-in-out infinite;
 }
@@ -297,8 +297,8 @@
   background-size:100% 100%;
   background-repeat:no-repeat;
   mix-blend-mode:screen;
-  opacity:calc(.13 + var(--energy)*.27);
-  filter:brightness(calc(1.18 + var(--energy)*.72)) drop-shadow(0 0 1px rgba(255,240,246,.38));
+  opacity:calc(.28 + var(--energy)*.38);
+  filter:sepia(.32) saturate(1.85) brightness(calc(1.30 + var(--energy)*.88)) drop-shadow(0 0 1.8px rgba(255,199,82,.72));
   animation:aftercare-dust-breathe 7.6s ease-in-out infinite;
 }
 /* One broad satin catch plus a few rare jewel-like glints. */
@@ -327,9 +327,9 @@
   76%{opacity:.22}
 }
 @keyframes aftercare-dust-breathe{
-  0%,100%{opacity:.11;filter:brightness(1.10) drop-shadow(0 0 1px rgba(255,240,246,.24))}
-  48%{opacity:.23;filter:brightness(1.72) drop-shadow(0 0 1.5px rgba(235,244,255,.52))}
-  66%{opacity:.15;filter:brightness(1.30) drop-shadow(0 0 1px rgba(255,231,242,.34))}
+  0%,100%{opacity:.25;filter:sepia(.30) saturate(1.75) brightness(1.24) drop-shadow(0 0 1.4px rgba(255,194,72,.58))}
+  48%{opacity:.48;filter:sepia(.38) saturate(2.05) brightness(2.02) drop-shadow(0 0 2.2px rgba(255,215,105,.88))}
+  66%{opacity:.32;filter:sepia(.34) saturate(1.90) brightness(1.52) drop-shadow(0 0 1.7px rgba(255,186,66,.68))}
 }
 @keyframes aftercare-glint{
   0%,18%,100%{opacity:.10}
