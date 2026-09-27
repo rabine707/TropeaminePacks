@@ -284,3 +284,12 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .account-page{padding-top:22px}.account-home{min-height:44px;margin-bottom:14px}
  .card-step{top:250px;width:42px;height:50px}.card-step.prev{left:-14px}.card-step.next{right:-14px}
 }
+
+/* iPhone bottom-nav final spacing */
+@media(max-width:600px){
+ .sidebar{height:calc(82px + env(safe-area-inset-bottom));padding:0 8px env(safe-area-inset-bottom);align-items:center}
+ .sidebar nav{height:64px;align-items:center}
+ .sidebar .nav-link{height:60px;min-height:60px;padding:7px 2px 6px;justify-content:center;gap:2px}
+ .workspace{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+ .how-it-works{bottom:calc(96px + env(safe-area-inset-bottom))!important}
+}
