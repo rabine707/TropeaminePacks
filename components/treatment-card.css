@@ -182,7 +182,7 @@
   animation:none;
 }
 
-/* SLOW BURN — organic drifting cinders, ash and heat glow. */
+/* SLOW BURN — turbulent rising cinders over a flickering furnace glow. */
 [data-treatment=slowburn] .foil--pattern,
 [data-treatment=slowburn] .foil--diffraction{
   -webkit-mask-image:url('/treatments/slowburn-streaks.svg');
@@ -193,69 +193,67 @@
   mask-repeat:repeat-y;
 }
 [data-treatment=slowburn] .foil--pattern{
-  background:
-    linear-gradient(180deg,
-      rgba(255,232,155,.88) 0%,
-      rgba(255,166,42,.94) 26%,
-      rgba(255,73,18,.86) 58%,
-      rgba(121,12,10,.54) 100%);
+  background:linear-gradient(180deg,#fff3b8 0%,#ffc13c 25%,#ff6718 58%,#c51d0b 100%);
   mix-blend-mode:screen;
-  opacity:.50;
-  filter:saturate(1.28) drop-shadow(0 0 1.2px rgba(255,91,20,.42));
-  animation:slowburn-rise 9.5s linear infinite;
+  opacity:.72;
+  filter:saturate(1.48) brightness(1.12) drop-shadow(0 0 2px rgba(255,108,20,.72));
+  animation:slowburn-drift-a 8.8s linear infinite;
 }
 [data-treatment=slowburn] .foil--diffraction{
-  background:
-    linear-gradient(180deg,
-      rgba(255,248,205,1) 0%,
-      rgba(255,196,63,1) 22%,
-      rgba(255,89,20,.96) 58%,
-      rgba(171,18,10,.72) 100%);
+  background:linear-gradient(180deg,#fffbe1 0%,#ffd45a 20%,#ff8a1c 52%,#ff3510 78%,#8f0908 100%);
   mix-blend-mode:color-dodge;
-  opacity:calc(.18 + var(--energy)*.62);
-  filter:
-    saturate(calc(1.28 + var(--energy)*.58))
-    brightness(calc(1.02 + var(--energy)*.30))
-    drop-shadow(0 0 2px rgba(255,90,16,.58));
-  animation:slowburn-rise-fast 6.8s linear infinite;
+  opacity:calc(.34 + var(--energy)*.58);
+  filter:saturate(calc(1.48 + var(--energy)*.52)) brightness(calc(1.12 + var(--energy)*.28)) drop-shadow(0 0 3px rgba(255,111,18,.78));
+  animation:slowburn-drift-b 6.1s linear infinite;
 }
+/* Low firelight, deliberately asymmetric so it feels like flame below the card rather than a gradient strip. */
 [data-treatment=slowburn] .foil--texture{
   background:
-    radial-gradient(ellipse 38% 28% at 22% 82%,rgba(118,9,7,.18),transparent 70%),
-    radial-gradient(ellipse 42% 34% at 78% 66%,rgba(255,57,12,.12),transparent 72%),
-    radial-gradient(ellipse 48% 30% at 48% 108%,rgba(255,120,22,.16),transparent 74%);
+    radial-gradient(ellipse 54% 25% at 22% 108%,rgba(255,67,9,.70) 0%,rgba(255,94,10,.28) 38%,transparent 72%),
+    radial-gradient(ellipse 62% 30% at 76% 112%,rgba(255,154,24,.62) 0%,rgba(218,40,6,.24) 42%,transparent 75%),
+    radial-gradient(ellipse 84% 35% at 48% 116%,rgba(255,85,8,.42) 0%,rgba(110,8,4,.16) 52%,transparent 78%);
   mix-blend-mode:screen;
-  opacity:calc(.22 + var(--energy)*.14);
-  filter:blur(7px);
-  animation:slowburn-heat 7.5s ease-in-out infinite alternate;
+  opacity:.58;
+  filter:blur(8px) saturate(1.45);
+  transform-origin:50% 100%;
+  animation:slowburn-fire-flicker 2.35s steps(7,end) infinite;
 }
+/* Warm moving catch only; no white/rainbow foil. */
 [data-treatment=slowburn] .foil--specular{
-  background:
-    linear-gradient(108deg,
-      transparent 0 34%,
-      rgba(255,69,14,.03) 39%,
-      rgba(255,126,22,.18) 44%,
-      rgba(255,203,76,.34) 49%,
-      rgba(255,106,20,.18) 54%,
-      transparent 61% 100%);
+  background:linear-gradient(108deg,transparent 0 35%,rgba(255,70,10,.04) 39%,rgba(255,126,20,.18) 44%,rgba(255,205,78,.42) 49%,rgba(255,91,13,.22) 55%,transparent 62% 100%);
   background-size:245% 100%;
   background-position:var(--foil-x) center;
   mix-blend-mode:screen;
-  opacity:calc(.08 + var(--energy)*.34);
-  filter:saturate(1.25);
-  animation:slowburn-warm-sweep 10s ease-in-out infinite;
+  opacity:calc(.10 + var(--energy)*.34);
+  filter:saturate(1.35);
+  animation:slowburn-warm-sweep 9.5s ease-in-out infinite;
 }
-@keyframes slowburn-rise{
-  0%{-webkit-mask-position:center 20%;mask-position:center 20%}
-  100%{-webkit-mask-position:center -118%;mask-position:center -118%}
+/* Mask motion changes horizontal position while rising, producing turbulent wisps instead of a vertical conveyor belt. */
+@keyframes slowburn-drift-a{
+  0%{-webkit-mask-position:48% 35%;mask-position:48% 35%}
+  18%{-webkit-mask-position:53% 8%;mask-position:53% 8%}
+  37%{-webkit-mask-position:46% -20%;mask-position:46% -20%}
+  58%{-webkit-mask-position:55% -52%;mask-position:55% -52%}
+  78%{-webkit-mask-position:44% -84%;mask-position:44% -84%}
+  100%{-webkit-mask-position:51% -118%;mask-position:51% -118%}
 }
-@keyframes slowburn-rise-fast{
-  0%{-webkit-mask-position:center 64%;mask-position:center 64%}
-  100%{-webkit-mask-position:center -118%;mask-position:center -118%}
+@keyframes slowburn-drift-b{
+  0%{-webkit-mask-position:54% 72%;mask-position:54% 72%}
+  21%{-webkit-mask-position:45% 34%;mask-position:45% 34%}
+  43%{-webkit-mask-position:57% -4%;mask-position:57% -4%}
+  64%{-webkit-mask-position:47% -43%;mask-position:47% -43%}
+  82%{-webkit-mask-position:55% -79%;mask-position:55% -79%}
+  100%{-webkit-mask-position:46% -118%;mask-position:46% -118%}
 }
-@keyframes slowburn-heat{
-  0%{transform:translate3d(-1%,2%,0) scale(1.02);opacity:.20}
-  100%{transform:translate3d(2%,-2%,0) scale(1.07);opacity:.36}
+@keyframes slowburn-fire-flicker{
+  0%{opacity:.42;transform:translate3d(-1%,2%,0) scale(1.03,1.00)}
+  14%{opacity:.66;transform:translate3d(1%,0,0) scale(1.08,1.10)}
+  29%{opacity:.50;transform:translate3d(-2%,1%,0) scale(1.04,1.05)}
+  43%{opacity:.74;transform:translate3d(2%,-1%,0) scale(1.10,1.14)}
+  57%{opacity:.54;transform:translate3d(0,1%,0) scale(1.06,1.04)}
+  71%{opacity:.69;transform:translate3d(-1%,-1%,0) scale(1.09,1.12)}
+  86%{opacity:.47;transform:translate3d(1%,2%,0) scale(1.05,1.02)}
+  100%{opacity:.62;transform:translate3d(0,0,0) scale(1.08,1.09)}
 }
 @keyframes slowburn-warm-sweep{
   0%,100%{background-position:-75% center}
@@ -263,9 +261,7 @@
 }
 [data-treatment=slowburn]:hover .foil--specular,
 [data-treatment=slowburn]:active .foil--specular,
-[data-treatment=slowburn]:focus-within .foil--specular{
-  animation:none;
-}
+[data-treatment=slowburn]:focus-within .foil--specular{animation:none}
 
 /* AFTERCARE — decorative opal laminate. */
 [data-treatment=aftercare] .foil--pattern,
