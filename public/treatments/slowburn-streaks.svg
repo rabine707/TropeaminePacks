@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation=".45"/></filter>
+    <path id="cinderA" d="M0-5C3-3 4 1 1 5C-2 7-5 4-4 0C-3-3-2-4 0-5Z"/>
+    <path id="cinderB" d="M-1-7C2-5 5-1 3 3C2 6-2 8-4 4C-6 1-3-3-1-7Z"/>
+    <path id="ash" d="M-5-2C-2-5 3-4 5-1C3 2 0 4-4 3Z"/>
+    <path id="wisp" d="M-8 7C-2 4-5-1 1-4C5-6 7-10 6-14" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+  </defs>
+  <g fill="white">
+    <use href="#cinderA" transform="translate(28 390) scale(.48) rotate(18)"/>
+    <use href="#cinderB" transform="translate(61 348) scale(.30) rotate(-22)"/>
+    <use href="#cinderA" transform="translate(95 402) scale(.22) rotate(41)"/>
+    <use href="#cinderB" transform="translate(126 326) scale(.44) rotate(12)"/>
+    <use href="#cinderA" transform="translate(165 371) scale(.31) rotate(-35)"/>
+    <use href="#cinderB" transform="translate(204 409) scale(.24) rotate(27)"/>
+    <use href="#cinderA" transform="translate(239 337) scale(.52) rotate(-9)"/>
+    <use href="#cinderB" transform="translate(276 382) scale(.28) rotate(33)"/>
+    <use href="#cinderB" transform="translate(42 292) scale(.38) rotate(-14)"/>
+    <use href="#cinderA" transform="translate(79 257) scale(.24) rotate(29)"/>
+    <use href="#cinderB" transform="translate(112 282) scale(.19) rotate(-40)"/>
+    <use href="#cinderA" transform="translate(151 236) scale(.43) rotate(8)"/>
+    <use href="#cinderB" transform="translate(188 304) scale(.26) rotate(38)"/>
+    <use href="#cinderA" transform="translate(224 266) scale(.35) rotate(-18)"/>
+    <use href="#cinderB" transform="translate(266 223) scale(.22) rotate(25)"/>
+    <use href="#cinderA" transform="translate(22 214) scale(.20) rotate(-31)"/>
+    <use href="#cinderB" transform="translate(57 181) scale(.46) rotate(16)"/>
+    <use href="#cinderA" transform="translate(101 204) scale(.27) rotate(-7)"/>
+    <use href="#cinderB" transform="translate(137 164) scale(.34) rotate(44)"/>
+    <use href="#cinderA" transform="translate(177 195) scale(.18) rotate(-26)"/>
+    <use href="#cinderB" transform="translate(216 145) scale(.40) rotate(13)"/>
+    <use href="#cinderA" transform="translate(253 178) scale(.25) rotate(-38)"/>
+    <use href="#cinderB" transform="translate(285 130) scale(.18) rotate(21)"/>
+    <use href="#cinderA" transform="translate(34 116) scale(.31) rotate(32)"/>
+    <use href="#cinderB" transform="translate(74 87) scale(.20) rotate(-17)"/>
+    <use href="#cinderA" transform="translate(113 126) scale(.37) rotate(11)"/>
+    <use href="#cinderB" transform="translate(157 73) scale(.25) rotate(-36)"/>
+    <use href="#cinderA" transform="translate(196 111) scale(.21) rotate(39)"/>
+    <use href="#cinderB" transform="translate(235 58) scale(.32) rotate(-12)"/>
+    <use href="#cinderA" transform="translate(278 92) scale(.18) rotate(26)"/>
+    <use href="#cinderB" transform="translate(49 35) scale(.22) rotate(-29)"/>
+    <use href="#cinderA" transform="translate(132 29) scale(.17) rotate(17)"/>
+    <use href="#cinderB" transform="translate(210 22) scale(.20) rotate(-8)"/>
+  </g>
+  <g fill="white" opacity=".56">
+    <use href="#ash" transform="translate(18 365) scale(.42) rotate(32)"/>
+    <use href="#ash" transform="translate(72 316) scale(.28) rotate(-18)"/>
+    <use href="#ash" transform="translate(144 349) scale(.35) rotate(51)"/>
+    <use href="#ash" transform="translate(218 318) scale(.25) rotate(-42)"/>
+    <use href="#ash" transform="translate(283 352) scale(.31) rotate(13)"/>
+    <use href="#ash" transform="translate(31 248) scale(.24) rotate(-28)"/>
+    <use href="#ash" transform="translate(92 232) scale(.36) rotate(37)"/>
+    <use href="#ash" transform="translate(169 273) scale(.22) rotate(-11)"/>
+    <use href="#ash" transform="translate(246 202) scale(.30) rotate(49)"/>
+    <use href="#ash" transform="translate(14 151) scale(.31) rotate(22)"/>
+    <use href="#ash" transform="translate(84 143) scale(.20) rotate(-36)"/>
+    <use href="#ash" transform="translate(153 116) scale(.27) rotate(16)"/>
+    <use href="#ash" transform="translate(229 123) scale(.35) rotate(-48)"/>
+    <use href="#ash" transform="translate(290 66) scale(.22) rotate(29)"/>
+    <use href="#ash" transform="translate(102 54) scale(.25) rotate(-14)"/>
+  </g>
+  <g opacity=".38" filter="url(#soft)">
+    <use href="#wisp" transform="translate(54 402) scale(.8) rotate(8)"/>
+    <use href="#wisp" transform="translate(146 385) scale(.65) rotate(-12)"/>
+    <use href="#wisp" transform="translate(244 397) scale(.72) rotate(15)"/>
+    <use href="#wisp" transform="translate(98 305) scale(.55) rotate(11)"/>
+    <use href="#wisp" transform="translate(205 286) scale(.62) rotate(-9)"/>
+    <use href="#wisp" transform="translate(42 205) scale(.50) rotate(14)"/>
+    <use href="#wisp" transform="translate(168 184) scale(.58) rotate(-15)"/>
+    <use href="#wisp" transform="translate(268 154) scale(.48) rotate(10)"/>
+    <use href="#wisp" transform="translate(116 94) scale(.46) rotate(-7)"/>
+    <use href="#wisp" transform="translate(224 73) scale(.52) rotate(13)"/>
+  </g>
+  <g fill="white" opacity=".9">
+    <use href="#cinderA" transform="translate(16 404) scale(.12) rotate(31)"/><use href="#cinderB" transform="translate(37 377) scale(.15) rotate(-18)"/>
+    <use href="#cinderA" transform="translate(55 411) scale(.10) rotate(46)"/><use href="#cinderB" transform="translate(83 366) scale(.13) rotate(9)"/>
+    <use href="#cinderA" transform="translate(107 387) scale(.09) rotate(-37)"/><use href="#cinderB" transform="translate(139 414) scale(.14) rotate(25)"/>
+    <use href="#cinderA" transform="translate(174 341) scale(.11) rotate(-13)"/><use href="#cinderB" transform="translate(198 379) scale(.16) rotate(42)"/>
+    <use href="#cinderA" transform="translate(226 399) scale(.09) rotate(-28)"/><use href="#cinderB" transform="translate(258 361) scale(.13) rotate(17)"/>
+    <use href="#cinderA" transform="translate(290 405) scale(.11) rotate(-45)"/>
+    <use href="#cinderB" transform="translate(21 329) scale(.10) rotate(14)"/><use href="#cinderA" transform="translate(51 304) scale(.14) rotate(-32)"/>
+    <use href="#cinderB" transform="translate(88 335) scale(.08) rotate(39)"/><use href="#cinderA" transform="translate(118 297) scale(.12) rotate(-7)"/>
+    <use href="#cinderB" transform="translate(154 320) scale(.10) rotate(28)"/><use href="#cinderA" transform="translate(191 287) scale(.15) rotate(-41)"/>
+    <use href="#cinderB" transform="translate(232 315) scale(.09) rotate(12)"/><use href="#cinderA" transform="translate(271 278) scale(.12) rotate(35)"/>
+    <use href="#cinderB" transform="translate(11 266) scale(.09) rotate(-24)"/><use href="#cinderA" transform="translate(46 237) scale(.13) rotate(44)"/>
+    <use href="#cinderB" transform="translate(72 273) scale(.08) rotate(-11)"/><use href="#cinderA" transform="translate(104 247) scale(.11) rotate(22)"/>
+    <use href="#cinderB" transform="translate(142 258) scale(.14) rotate(-36)"/><use href="#cinderA" transform="translate(181 226) scale(.09) rotate(17)"/>
+    <use href="#cinderB" transform="translate(215 249) scale(.12) rotate(40)"/><use href="#cinderA" transform="translate(253 214) scale(.08) rotate(-16)"/>
+    <use href="#cinderB" transform="translate(286 244) scale(.11) rotate(29)"/>
+    <use href="#cinderA" transform="translate(27 190) scale(.08) rotate(36)"/><use href="#cinderB" transform="translate(63 219) scale(.11) rotate(-27)"/>
+    <use href="#cinderA" transform="translate(91 174) scale(.09) rotate(8)"/><use href="#cinderB" transform="translate(124 205) scale(.13) rotate(31)"/>
+    <use href="#cinderA" transform="translate(159 177) scale(.08) rotate(-42)"/><use href="#cinderB" transform="translate(194 211) scale(.10) rotate(19)"/>
+    <use href="#cinderA" transform="translate(231 169) scale(.12) rotate(-8)"/><use href="#cinderB" transform="translate(270 197) scale(.09) rotate(38)"/>
+    <use href="#cinderA" transform="translate(14 137) scale(.10) rotate(-33)"/><use href="#cinderB" transform="translate(48 154) scale(.08) rotate(16)"/>
+    <use href="#cinderA" transform="translate(81 122) scale(.12) rotate(41)"/><use href="#cinderB" transform="translate(120 146) scale(.09) rotate(-19)"/>
+    <use href="#cinderA" transform="translate(148 103) scale(.08) rotate(27)"/><use href="#cinderB" transform="translate(186 139) scale(.11) rotate(-38)"/>
+    <use href="#cinderA" transform="translate(222 96) scale(.09) rotate(13)"/><use href="#cinderB" transform="translate(259 128) scale(.12) rotate(34)"/>
+    <use href="#cinderA" transform="translate(291 104) scale(.08) rotate(-21)"/>
+    <use href="#cinderB" transform="translate(26 72) scale(.08) rotate(29)"/><use href="#cinderA" transform="translate(66 51) scale(.11) rotate(-14)"/>
+    <use href="#cinderB" transform="translate(99 82) scale(.07) rotate(43)"/><use href="#cinderA" transform="translate(143 48) scale(.10) rotate(-31)"/>
+    <use href="#cinderB" transform="translate(177 65) scale(.08) rotate(18)"/><use href="#cinderA" transform="translate(218 42) scale(.11) rotate(37)"/>
+    <use href="#cinderB" transform="translate(258 71) scale(.08) rotate(-25)"/><use href="#cinderA" transform="translate(286 35) scale(.09) rotate(12)"/>
+  </g>
+</svg>

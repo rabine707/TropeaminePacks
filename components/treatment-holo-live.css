@@ -1,0 +1,73 @@
+/* HOLO — strong oil-slick foil contained inside one broad moving light bar. */
+[data-treatment=holo] .foil--pattern{
+  background:none;
+  opacity:0;
+}
+[data-treatment=holo] .foil--diffraction{
+  background:
+    linear-gradient(108deg,
+      transparent 0 27%,
+      rgba(30,207,202,.08) 31%,
+      rgba(25,220,215,.66) 35%,
+      rgba(45,151,255,.74) 39%,
+      rgba(108,65,244,.80) 43%,
+      rgba(207,55,235,.82) 47%,
+      rgba(247,54,157,.80) 51%,
+      rgba(242,128,48,.72) 55%,
+      rgba(183,211,48,.58) 59%,
+      rgba(31,202,190,.48) 63%,
+      transparent 69% 100%);
+  background-size:265% 100%;
+  background-position:var(--foil-x) center;
+  mix-blend-mode:color-dodge;
+  opacity:calc(.60 + var(--energy)*.18);
+  filter:saturate(calc(1.72 + var(--energy)*.36)) contrast(1.08) brightness(calc(1.04 + var(--energy)*.10));
+  animation:holo-oil-bar-rest 8.8s ease-in-out infinite;
+}
+[data-treatment=holo] .foil--texture{
+  background:
+    linear-gradient(108deg,
+      transparent 0 33%,
+      rgba(89,239,226,.18) 38%,
+      rgba(184,114,246,.20) 46%,
+      rgba(255,103,184,.18) 53%,
+      rgba(237,181,79,.13) 60%,
+      transparent 66% 100%);
+  background-size:265% 100%;
+  background-position:var(--foil-x) center;
+  mix-blend-mode:screen;
+  opacity:calc(.34 + var(--energy)*.16);
+  filter:blur(5px) saturate(1.55);
+  animation:holo-oil-bar-rest 8.8s ease-in-out infinite;
+}
+[data-treatment=holo] .foil--specular{
+  background:
+    linear-gradient(108deg,
+      transparent 0 32%,
+      rgba(115,239,236,.05) 36%,
+      rgba(216,192,255,.20) 43%,
+      rgba(255,224,241,.30) 49%,
+      rgba(225,244,247,.22) 54%,
+      rgba(239,190,108,.10) 60%,
+      transparent 66% 100%);
+  background-size:265% 100%;
+  background-position:var(--foil-x) center;
+  mix-blend-mode:screen;
+  opacity:calc(.30 + var(--energy)*.14);
+  filter:blur(1.5px);
+  animation:holo-oil-bar-rest 8.8s ease-in-out infinite;
+}
+@keyframes holo-oil-bar-rest{
+  0%,100%{background-position:-78% center}
+  50%{background-position:178% center}
+}
+/* Idle sweeps automatically; interaction takes control of the exact same bar. */
+.physical-card:hover[data-treatment=holo] .foil--diffraction,
+.physical-card:active[data-treatment=holo] .foil--diffraction,
+.physical-card:focus-within[data-treatment=holo] .foil--diffraction,
+.physical-card:hover[data-treatment=holo] .foil--texture,
+.physical-card:active[data-treatment=holo] .foil--texture,
+.physical-card:focus-within[data-treatment=holo] .foil--texture,
+.physical-card:hover[data-treatment=holo] .foil--specular,
+.physical-card:active[data-treatment=holo] .foil--specular,
+.physical-card:focus-within[data-treatment=holo] .foil--specular{animation:none}

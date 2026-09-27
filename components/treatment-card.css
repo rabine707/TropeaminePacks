@@ -1,0 +1,439 @@
+.physical-card{
+  --rx:0deg;--ry:0deg;--lx:50%;--ly:50%;--foil-x:50%;--foil-y:50%;--energy:0;
+  perspective:1000px;position:relative;touch-action:pan-y pinch-zoom;user-select:none;cursor:grab;border-radius:11px;
+}
+.physical-card:active{cursor:grabbing}
+.physical-card:focus-visible{outline:2px solid var(--gold);outline-offset:7px}
+.physical-card__surface{
+  position:relative;isolation:isolate;border-radius:inherit;
+  transform:rotateX(var(--rx)) rotateY(var(--ry));
+  box-shadow:0 14px 32px #0005;
+}
+.physical-card .card-art{margin:0;isolation:isolate}
+.physical-card img{-webkit-user-drag:none;pointer-events:none}
+
+.physical-card__finish{
+  position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;isolation:isolate;
+}
+[data-treatment=base] .physical-card__finish{display:none}
+
+.foil{position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+.foil--pattern{z-index:1}
+.foil--diffraction{z-index:2}
+.foil--texture{z-index:3}
+.foil--specular{z-index:4}
+
+/* shared optical layers */
+.foil--texture{
+  background-image:url('/treatments/dust.svg');
+  background-size:100% 100%;
+  mix-blend-mode:screen;
+  opacity:calc(.04 + var(--energy)*.08);
+}
+.foil--specular{
+  background:
+    linear-gradient(112deg,transparent 18%,rgba(255,255,255,.03) 32%,rgba(255,255,255,.38) 43%,rgba(255,255,255,.95) 49%,rgba(255,255,255,.28) 56%,transparent 69%),
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.48) 0%,rgba(255,255,255,.12) 18%,transparent 44%);
+  background-size:230% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  mix-blend-mode:screen;
+  opacity:calc(.16 + var(--energy)*.34);
+  filter:blur(.2px);
+  animation:foil-sheen 8.5s ease-in-out infinite;
+}
+
+/* HOLO — smooth full-card diffraction film. */
+[data-treatment=holo] .foil--pattern{display:none}
+[data-treatment=holo] .foil--diffraction{
+  background:
+    radial-gradient(ellipse 72% 58% at var(--lx) var(--ly),rgba(255,255,255,.9) 0%,rgba(255,241,84,.66) 12%,rgba(76,255,170,.56) 24%,rgba(66,214,255,.54) 37%,rgba(151,103,255,.48) 50%,rgba(255,77,176,.5) 63%,rgba(255,105,69,.42) 74%,transparent 84%),
+    linear-gradient(118deg,#ff56af,#8a70ff 18%,#48dcff 35%,#72ffb3 50%,#fff078 64%,#ff9557 80%,#ff56af);
+  background-size:135% 135%,190% 190%;
+  background-position:var(--lx) var(--ly),var(--foil-x) var(--foil-y);
+  mix-blend-mode:color-dodge;
+  opacity:calc(.31 + var(--energy)*.24);
+  filter:saturate(calc(1.25 + var(--energy)*.28)) brightness(calc(1.03 + var(--energy)*.12));
+  animation:holo-drift 12s ease-in-out infinite;
+}
+[data-treatment=holo] .foil--texture{opacity:calc(.035 + var(--energy)*.06)}
+
+/* HEARTTHROB — etched heart laminate. Pattern is a mask, not painted stickers. */
+[data-treatment=heartthrob] .foil--pattern,
+[data-treatment=heartthrob] .foil--diffraction{
+  -webkit-mask-image:url('/treatments/heartthrob-pattern.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/heartthrob-pattern.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+}
+[data-treatment=heartthrob] .foil--pattern{
+  background:linear-gradient(118deg,rgba(255,255,255,.28),rgba(255,255,255,.06) 45%,rgba(255,255,255,.22));
+  mix-blend-mode:screen;
+  opacity:.34;
+}
+[data-treatment=heartthrob] .foil--diffraction{
+  background:
+    linear-gradient(108deg,transparent 14%,rgba(255,93,176,.72) 28%,rgba(110,226,255,.86) 40%,rgba(255,255,255,.92) 49%,rgba(177,134,255,.78) 58%,rgba(255,226,126,.68) 67%,rgba(255,97,180,.56) 77%,transparent 88%);
+  background-size:230% 180%;
+  background-position:var(--foil-x) var(--foil-y);
+  mix-blend-mode:color-dodge;
+  opacity:calc(.31 + var(--energy)*.29);
+  filter:saturate(calc(1.28 + var(--energy)*.38)) brightness(calc(1.03 + var(--energy)*.18));
+  animation:heart-light 11s ease-in-out infinite;
+}
+[data-treatment=heartthrob] .foil--texture{opacity:calc(.025 + var(--energy)*.05)}
+[data-treatment=heartthrob] .foil--specular{opacity:calc(.13 + var(--energy)*.31)}
+
+/* UNHINGED — visible fractured foil with one holographic light bar at rest and in motion. */
+[data-treatment=unhinged] .foil--pattern,
+[data-treatment=unhinged] .foil--diffraction,
+[data-treatment=unhinged] .foil--specular{
+  -webkit-mask-image:url('/treatments/ice.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/ice.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+}
+
+/* Fractures remain visibly colored even when the moving catch is elsewhere. */
+[data-treatment=unhinged] .foil--pattern{
+  background:
+    linear-gradient(128deg,
+      rgba(74,216,238,.42) 0%,
+      rgba(95,111,222,.30) 23%,
+      rgba(181,77,211,.34) 44%,
+      rgba(239,91,165,.30) 61%,
+      rgba(225,187,67,.34) 79%,
+      rgba(64,210,169,.34) 100%);
+  background-size:165% 165%;
+  background-position:42% 48%;
+  mix-blend-mode:screen;
+  opacity:.34;
+  filter:saturate(1.24) contrast(1.06) brightness(1.02);
+}
+
+/* A narrow rainbow bar lights up only the fracture pattern. Pointer motion positions this same bar. */
+[data-treatment=unhinged] .foil--diffraction{
+  background:
+    linear-gradient(108deg,
+      transparent 0 31%,
+      rgba(45,213,255,.08) 35%,
+      rgba(45,213,255,.70) 40%,
+      rgba(87,107,255,.90) 44%,
+      rgba(205,70,255,.96) 47%,
+      rgba(255,65,174,.94) 50%,
+      rgba(255,210,54,.92) 53%,
+      rgba(74,244,178,.82) 57%,
+      rgba(53,210,255,.56) 61%,
+      transparent 68% 100%);
+  background-size:245% 100%;
+  background-position:var(--foil-x) center;
+  mix-blend-mode:color-dodge;
+  opacity:calc(.24 + var(--energy)*.62);
+  filter:
+    saturate(calc(1.36 + var(--energy)*.72))
+    contrast(calc(1.08 + var(--energy)*.38))
+    brightness(calc(1.02 + var(--energy)*.18));
+  animation:unhinged-bar-rest 7.4s ease-in-out infinite;
+}
+
+[data-treatment=unhinged] .foil--texture{
+  opacity:calc(.035 + var(--energy)*.09);
+}
+
+/* Colored edge catch only — no white flashlight hotspot. */
+[data-treatment=unhinged] .foil--specular{
+  background:
+    linear-gradient(108deg,
+      transparent 0 39%,
+      rgba(104,236,255,.08) 42%,
+      rgba(125,229,255,.38) 46%,
+      rgba(224,171,255,.46) 49%,
+      rgba(255,157,216,.40) 52%,
+      rgba(255,225,120,.30) 55%,
+      transparent 60% 100%);
+  background-size:260% 100%;
+  background-position:var(--foil-x) center;
+  mix-blend-mode:screen;
+  opacity:calc(.12 + var(--energy)*.44);
+  filter:saturate(calc(1.18 + var(--energy)*.48)) brightness(calc(1.02 + var(--energy)*.12));
+  animation:unhinged-edge-rest 7.4s ease-in-out infinite;
+}
+
+/* Idle: the same bar sweeps the card on its own. */
+@keyframes unhinged-bar-rest{
+  0%,100%{background-position:-78% center}
+  50%{background-position:178% center}
+}
+@keyframes unhinged-edge-rest{
+  0%,100%{background-position:-88% center}
+  50%{background-position:188% center}
+}
+
+/* Interaction hands control of the existing bar to --foil-x. */
+[data-treatment=unhinged]:hover .foil--diffraction,
+[data-treatment=unhinged]:hover .foil--specular,
+[data-treatment=unhinged]:active .foil--diffraction,
+[data-treatment=unhinged]:active .foil--specular,
+[data-treatment=unhinged]:focus-within .foil--diffraction,
+[data-treatment=unhinged]:focus-within .foil--specular{
+  animation:none;
+}
+
+/* SLOW BURN — turbulent rising cinders over a flickering furnace glow. */
+[data-treatment=slowburn] .foil--pattern,
+[data-treatment=slowburn] .foil--diffraction{
+  -webkit-mask-image:url('/treatments/slowburn-streaks.svg');
+  -webkit-mask-size:100% 118%;
+  -webkit-mask-repeat:repeat-y;
+  mask-image:url('/treatments/slowburn-streaks.svg');
+  mask-size:100% 118%;
+  mask-repeat:repeat-y;
+}
+[data-treatment=slowburn] .foil--pattern{
+  background:linear-gradient(180deg,#fff3b8 0%,#ffc13c 25%,#ff6718 58%,#c51d0b 100%);
+  mix-blend-mode:screen;
+  opacity:.72;
+  filter:saturate(1.48) brightness(1.12) drop-shadow(0 0 2px rgba(255,108,20,.72));
+  animation:slowburn-drift-a 8.8s linear infinite;
+}
+[data-treatment=slowburn] .foil--diffraction{
+  background:linear-gradient(180deg,#fffbe1 0%,#ffd45a 20%,#ff8a1c 52%,#ff3510 78%,#8f0908 100%);
+  mix-blend-mode:color-dodge;
+  opacity:calc(.34 + var(--energy)*.58);
+  filter:saturate(calc(1.48 + var(--energy)*.52)) brightness(calc(1.12 + var(--energy)*.28)) drop-shadow(0 0 3px rgba(255,111,18,.78));
+  animation:slowburn-drift-b 6.1s linear infinite;
+}
+/* Low firelight, deliberately asymmetric so it feels like flame below the card rather than a gradient strip. */
+[data-treatment=slowburn] .foil--texture{
+  background:
+    radial-gradient(ellipse 78% 42% at 18% 105%,rgba(255,184,48,.96) 0%,rgba(255,91,8,.68) 30%,rgba(205,30,4,.30) 54%,transparent 78%),
+    radial-gradient(ellipse 86% 46% at 80% 108%,rgba(255,209,70,.90) 0%,rgba(255,119,13,.66) 31%,rgba(217,40,5,.28) 56%,transparent 80%),
+    radial-gradient(ellipse 118% 55% at 50% 113%,rgba(255,118,10,.76) 0%,rgba(255,58,5,.42) 38%,rgba(123,10,3,.20) 62%,transparent 84%);
+  mix-blend-mode:screen;
+  opacity:.82;
+  filter:blur(10px) saturate(1.62) brightness(1.18);
+  transform-origin:50% 100%;
+  animation:slowburn-fire-breathe 6.8s ease-in-out infinite;
+}
+/* Warm moving catch only; no white/rainbow foil. */
+[data-treatment=slowburn] .foil--specular{
+  background:linear-gradient(108deg,transparent 0 35%,rgba(255,70,10,.04) 39%,rgba(255,126,20,.18) 44%,rgba(255,205,78,.42) 49%,rgba(255,91,13,.22) 55%,transparent 62% 100%);
+  background-size:245% 100%;
+  background-position:var(--foil-x) center;
+  mix-blend-mode:screen;
+  opacity:calc(.10 + var(--energy)*.34);
+  filter:saturate(1.35);
+  animation:slowburn-warm-sweep 9.5s ease-in-out infinite;
+}
+/* Mask motion changes horizontal position while rising, producing turbulent wisps instead of a vertical conveyor belt. */
+@keyframes slowburn-drift-a{
+  0%{-webkit-mask-position:48% 35%;mask-position:48% 35%}
+  18%{-webkit-mask-position:53% 8%;mask-position:53% 8%}
+  37%{-webkit-mask-position:46% -20%;mask-position:46% -20%}
+  58%{-webkit-mask-position:55% -52%;mask-position:55% -52%}
+  78%{-webkit-mask-position:44% -84%;mask-position:44% -84%}
+  100%{-webkit-mask-position:51% -118%;mask-position:51% -118%}
+}
+@keyframes slowburn-drift-b{
+  0%{-webkit-mask-position:54% 72%;mask-position:54% 72%}
+  21%{-webkit-mask-position:45% 34%;mask-position:45% 34%}
+  43%{-webkit-mask-position:57% -4%;mask-position:57% -4%}
+  64%{-webkit-mask-position:47% -43%;mask-position:47% -43%}
+  82%{-webkit-mask-position:55% -79%;mask-position:55% -79%}
+  100%{-webkit-mask-position:46% -118%;mask-position:46% -118%}
+}
+@keyframes slowburn-fire-breathe{
+  0%,100%{opacity:.58;transform:translate3d(-1%,1%,0) scale(1.05,1.04)}
+  28%{opacity:.76;transform:translate3d(1%,-1%,0) scale(1.09,1.11)}
+  52%{opacity:.88;transform:translate3d(0,-2%,0) scale(1.12,1.16)}
+  76%{opacity:.70;transform:translate3d(-1%,0,0) scale(1.08,1.09)}
+}
+@keyframes slowburn-warm-sweep{
+  0%,100%{background-position:-75% center}
+  50%{background-position:175% center}
+}
+[data-treatment=slowburn]:hover .foil--specular,
+[data-treatment=slowburn]:active .foil--specular,
+[data-treatment=slowburn]:focus-within .foil--specular{animation:none}
+
+/* AFTERCARE — the prettiest chase: pearl satin, opal interference and diamond dust. */
+[data-treatment=aftercare] .foil--pattern{
+  background:
+    radial-gradient(ellipse 72% 46% at 18% 24%,rgba(255,204,229,.42),transparent 68%),
+    radial-gradient(ellipse 68% 52% at 82% 34%,rgba(183,226,255,.40),transparent 70%),
+    radial-gradient(ellipse 78% 54% at 44% 82%,rgba(218,190,255,.40),transparent 72%),
+    linear-gradient(128deg,rgba(255,236,201,.22),rgba(255,190,224,.28) 28%,rgba(188,226,255,.30) 55%,rgba(214,184,255,.30) 76%,rgba(255,232,192,.22));
+  background-size:145% 145%,150% 150%,155% 155%,190% 190%;
+  background-position:var(--foil-x) var(--foil-y),calc(100% - var(--foil-x)) var(--foil-y),var(--foil-x) calc(100% - var(--foil-y)),var(--foil-x) var(--foil-y);
+  mix-blend-mode:screen;
+  opacity:calc(.10 + var(--energy)*.10);
+  filter:saturate(calc(1.08 + var(--energy)*.22)) brightness(calc(1.01 + var(--energy)*.10));
+  animation:aftercare-breathe 9.8s ease-in-out infinite;
+}
+[data-treatment=aftercare] .foil--diffraction{
+  background:
+    linear-gradient(108deg,
+      transparent 0 20%,
+      rgba(255,239,210,.10) 27%,
+      rgba(255,151,211,.78) 35%,
+      rgba(155,215,255,.82) 43%,
+      rgba(194,150,255,.82) 50%,
+      rgba(171,232,255,.66) 57%,
+      rgba(255,235,207,.34) 64%,
+      transparent 76% 100%);
+  background-size:250% 100%;
+  background-position:var(--foil-x) center;
+  mix-blend-mode:screen;
+  opacity:calc(.38 + var(--energy)*.58);
+  filter:saturate(calc(1.08 + var(--energy)*.30)) brightness(calc(1.02 + var(--energy)*.18)) blur(.18px);
+  animation:aftercare-satin-roll 12.5s ease-in-out infinite;
+}
+/* Dense micro shimmer comes from the authored dust texture, not a repeating CSS dot pattern. */
+[data-treatment=aftercare] .foil--texture{
+  background-image:url('/treatments/dust.svg');
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+  mix-blend-mode:screen;
+  opacity:calc(.36 + var(--energy)*.40);
+  filter:sepia(.58) saturate(3.1) hue-rotate(348deg) brightness(calc(1.38 + var(--energy)*.92)) contrast(1.12) drop-shadow(0 0 1.5px rgba(255,185,45,.82));
+  animation:aftercare-gold-float 11.8s ease-in-out infinite;
+}
+/* One broad satin catch plus a few rare jewel-like glints. */
+[data-treatment=aftercare] .foil--specular{
+  background:
+    radial-gradient(ellipse 3.2% 1.1% at 22% 28%,rgba(255,255,255,.92) 0 16%,rgba(255,231,244,.40) 26%,transparent 58%),
+    radial-gradient(ellipse 1.1% 3.2% at 22% 28%,rgba(255,255,255,.88) 0 15%,rgba(219,243,255,.34) 25%,transparent 58%),
+    radial-gradient(ellipse 2.8% .9% at 77% 67%,rgba(255,255,255,.84) 0 14%,rgba(232,222,255,.32) 25%,transparent 58%),
+    radial-gradient(ellipse .9% 2.8% at 77% 67%,rgba(255,255,255,.80) 0 14%,rgba(255,236,213,.28) 25%,transparent 58%),
+    linear-gradient(110deg,transparent 27%,rgba(255,246,235,.05) 36%,rgba(255,231,241,.26) 42%,rgba(232,246,255,.64) 48%,rgba(255,250,240,.78) 50%,rgba(232,224,255,.42) 54%,rgba(213,247,244,.18) 59%,transparent 68%);
+  background-size:100% 100%,100% 100%,100% 100%,100% 100%,265% 100%;
+  background-position:center,center,center,center,var(--foil-x) center;
+  mix-blend-mode:screen;
+  opacity:calc(.12 + var(--energy)*.54);
+  filter:brightness(calc(1.03 + var(--energy)*.18));
+  animation:aftercare-glint 8.6s ease-in-out infinite;
+}
+@keyframes aftercare-breathe{
+  0%,100%{opacity:.08;filter:saturate(1.02) brightness(1.00)}
+  50%{opacity:.16;filter:saturate(1.12) brightness(1.03)}
+}
+@keyframes aftercare-satin-roll{
+  0%,100%{background-position:-70% center;opacity:.18}
+  45%{opacity:.34}
+  58%{background-position:168% center;opacity:.48}
+  76%{opacity:.22}
+}
+@keyframes aftercare-gold-float{
+  0%,100%{transform:translate3d(-.7%,1.2%,0) scale(1.01);opacity:.34;filter:sepia(.58) saturate(3.0) hue-rotate(348deg) brightness(1.36) contrast(1.10) drop-shadow(0 0 1.4px rgba(255,177,35,.74))}
+  24%{transform:translate3d(.9%,-.5%,0) scale(1.025);opacity:.46;filter:sepia(.62) saturate(3.3) hue-rotate(350deg) brightness(1.68) contrast(1.15) drop-shadow(0 0 1.8px rgba(255,207,72,.88))}
+  52%{transform:translate3d(-.3%,-1.6%,0) scale(1.04);opacity:.60;filter:sepia(.66) saturate(3.5) hue-rotate(346deg) brightness(2.08) contrast(1.18) drop-shadow(0 0 2.2px rgba(255,221,100,.96))}
+  76%{transform:translate3d(1.1%,-.8%,0) scale(1.025);opacity:.43;filter:sepia(.60) saturate(3.2) hue-rotate(349deg) brightness(1.58) contrast(1.14) drop-shadow(0 0 1.7px rgba(255,193,51,.84))}
+}
+@keyframes aftercare-glint{
+  0%,18%,100%{opacity:.10}
+  24%{opacity:.34}
+  28%{opacity:.13}
+  52%{opacity:.16}
+  57%{opacity:.46}
+  61%{opacity:.14}
+  78%{opacity:.26}
+  83%{opacity:.11}
+}
+[data-treatment=aftercare]:hover .foil--diffraction,
+[data-treatment=aftercare]:active .foil--diffraction,
+[data-treatment=aftercare]:focus-within .foil--diffraction{animation:none}
+
+@keyframes foil-sheen{
+  0%,100%{background-position:-70% center,center;opacity:.13}
+  18%{opacity:.2}
+  48%{background-position:165% center,center;opacity:.48}
+  64%{opacity:.18}
+  100%{background-position:165% center,center;opacity:.13}
+}
+@keyframes holo-drift{
+  0%,100%{background-position:28% 48%,18% 42%}
+  33%{background-position:63% 44%,76% 58%}
+  66%{background-position:72% 60%,45% 74%}
+}
+@keyframes heart-light{
+  0%,100%{background-position:5% 45%}
+  50%{background-position:95% 58%}
+}
+@keyframes unhinged-drift{
+  0%,100%{background-position:center,18% 34%}
+  45%{background-position:center,82% 62%}
+  70%{background-position:center,52% 76%}
+}
+@keyframes ember-drift{
+  0%{background-position:18% 112%}
+  100%{background-position:78% -12%}
+}
+@keyframes opal-drift{
+  0%,100%{background-position:8% 44%}
+  35%{background-position:58% 55%}
+  70%{background-position:94% 36%}
+}
+
+.physical-card:hover .foil--diffraction,
+.physical-card:hover .foil--specular,
+.physical-card:active .foil--diffraction,
+.physical-card:active .foil--specular{animation-play-state:paused}
+
+@media(prefers-reduced-motion:reduce){
+  .physical-card__surface{transform:none}
+  .foil{animation:none!important}
+}
+
+/* HOLO V2 — multi-band full-art foil, closer to real trading-card diffraction. */
+[data-treatment=holo] .foil--diffraction{
+  background:
+    linear-gradient(104deg,
+      rgba(255,65,170,.34) 0%,
+      rgba(255,85,105,.40) 12%,
+      rgba(255,208,70,.46) 24%,
+      rgba(125,255,125,.42) 36%,
+      rgba(70,225,255,.50) 49%,
+      rgba(92,120,255,.46) 61%,
+      rgba(186,92,255,.44) 74%,
+      rgba(255,78,175,.38) 87%,
+      rgba(255,185,72,.36) 100%),
+    repeating-linear-gradient(76deg,
+      transparent 0 8%,
+      rgba(255,255,255,.05) 9%,
+      rgba(255,255,255,.16) 10%,
+      transparent 12% 22%),
+    radial-gradient(ellipse 62% 46% at var(--lx) var(--ly),rgba(255,255,255,.72) 0%,rgba(255,255,255,.18) 20%,transparent 58%);
+  background-size:170% 170%,145% 145%,100% 100%;
+  background-position:var(--foil-x) var(--foil-y),calc(var(--foil-x) * .75) calc(var(--foil-y) * .75),center;
+  background-blend-mode:screen,screen,normal;
+  mix-blend-mode:color-dodge;
+  opacity:calc(.24 + var(--energy)*.20);
+  filter:saturate(calc(1.42 + var(--energy)*.32)) contrast(1.02) brightness(calc(1.01 + var(--energy)*.11));
+  animation:holo-spectrum-drift 13s ease-in-out infinite;
+}
+[data-treatment=holo] .foil--texture{
+  background-image:
+    repeating-radial-gradient(circle at 12% 18%,rgba(255,255,255,.16) 0 1px,transparent 1px 10px),
+    url('/treatments/dust.svg');
+  background-size:28px 28px,100% 100%;
+  opacity:calc(.045 + var(--energy)*.055);
+  mix-blend-mode:screen;
+}
+[data-treatment=holo] .foil--specular{
+  background:
+    linear-gradient(110deg,transparent 31%,rgba(255,255,255,.08) 39%,rgba(255,255,255,.42) 45%,rgba(255,255,255,.98) 49%,rgba(255,255,255,.48) 53%,rgba(255,255,255,.08) 59%,transparent 67%),
+    radial-gradient(ellipse 48% 34% at var(--lx) var(--ly),rgba(255,255,255,.38) 0%,rgba(255,255,255,.09) 24%,transparent 58%);
+  background-size:260% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  opacity:calc(.14 + var(--energy)*.38);
+  filter:blur(.12px);
+}
+@keyframes holo-spectrum-drift{
+  0%,100%{background-position:5% 38%,18% 62%,center}
+  25%{background-position:38% 52%,45% 38%,center}
+  50%{background-position:88% 46%,82% 68%,center}
+  75%{background-position:56% 72%,62% 22%,center}
+}

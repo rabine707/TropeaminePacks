@@ -113,6 +113,13 @@ export default function AccountCollectionShell(){
   if(liveCardsResult.cards.length)local={...local,cards:liveCardsResult.cards};
 
   if(!nextUser){
+   // Logged-out visitors still get a public Felicity sandbox so treatment work never
+   // depends on an account or stale local ownership. This is preview-only: it does
+   // not write to collection_items and therefore never grants real ownership.
+   const felicity=local.cards.find(card=>card.name==='Felicity');
+   if(felicity&&!local.wallet.owned.includes(felicity.id)){
+    local={...local,wallet:{...local.wallet,owned:[...local.wallet.owned,felicity.id]}};
+   }
    try{localStorage.setItem(LOCAL_KEY,JSON.stringify(local))}catch{}
    setHydrated(true);
    return;

@@ -1,0 +1,100 @@
+/* Preview-only material refinements for the three weakest finishes. */
+
+/* HEARTTHROB — fine sleeve-print hearts, mostly outline foil, never sticker blobs. */
+[data-treatment=heartthrob] .physical-card__material{
+  opacity:calc(.25 + var(--energy)*.22);
+  -webkit-mask-image:url('/treatments/hearts-a.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/hearts-a.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+  background-image:
+    radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#ffd4ea 18%,#8be8ff 34%,#9c86ff 50%,#ff7dbb 67%,#1b1720 82%),
+    linear-gradient(118deg,#ff74bd,#fff 17%,#7ce8ff 34%,#c7a7ff 52%,#fff4b8 68%,#ff8fca 84%,#7be7ff);
+  background-size:100% 100%,190% 190%;
+  background-position:center,var(--foil-x) var(--foil-y);
+  background-blend-mode:multiply;
+  mix-blend-mode:color-dodge;
+  filter:brightness(calc(1.05 + var(--energy)*.22)) saturate(calc(1.25 + var(--energy)*.35));
+}
+[data-treatment=heartthrob] .physical-card__material--second{
+  opacity:calc(.18 + var(--energy)*.18);
+  -webkit-mask-image:url('/treatments/hearts-b.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/hearts-b.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+  background-image:linear-gradient(95deg,#fff,#8de9ff 23%,#ff97cb 45%,#fff5b7 63%,#bda4ff 80%,#fff);
+  background-size:210% 210%;
+  background-position:var(--foil-y) var(--foil-x);
+  mix-blend-mode:screen;
+  filter:brightness(calc(1.02 + var(--energy)*.16)) saturate(1.18);
+}
+[data-treatment=heartthrob] .physical-card__glare{opacity:calc(.10 + var(--energy)*.30)}
+
+/* SLOW BURN — fine irregular ember foil rather than vertical scan bars. */
+[data-treatment=slowburn] .physical-card__material{
+  opacity:calc(.31 + var(--energy)*.28);
+  background-image:
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,249,209,.92) 0 3%,rgba(255,167,38,.32) 13%,transparent 29%),
+    repeating-linear-gradient(82deg,transparent 0 5px,rgba(93,5,19,.55) 5px 6px,rgba(255,72,18,.84) 6px 7px,transparent 7px 12px),
+    repeating-linear-gradient(101deg,transparent 0 8px,rgba(255,169,35,.72) 8px 9px,transparent 9px 15px),
+    repeating-linear-gradient(94deg,transparent 0 16px,rgba(255,241,166,.70) 16px 16.7px,transparent 16.7px 27px);
+  background-size:100% 100%,135% 240%,155% 220%,175% 260%;
+  background-position:center,35% 110%,70% 90%,20% 130%;
+  mix-blend-mode:color-dodge;
+  filter:saturate(calc(1.55 + var(--energy)*.45)) contrast(1.08) brightness(calc(1.03 + var(--energy)*.16));
+  animation:preview-ember-rain 8.5s linear infinite;
+}
+[data-treatment=slowburn] .physical-card__glare{opacity:calc(.11 + var(--energy)*.34)}
+
+/* AFTERCARE — translucent ornamental laminate that reveals itself in the sheen. */
+[data-treatment=aftercare] .physical-card__material{
+  opacity:calc(.24 + var(--energy)*.18);
+  -webkit-mask-image:url('/treatments/aftercare-ornament.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/aftercare-ornament.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+  background-image:
+    radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#ffe1ec 18%,#c9f7f0 34%,#cbd9ff 50%,#e3ceff 64%,#fff1c9 78%,#fff 92%),
+    linear-gradient(120deg,#b7d8ff,#fff0d3 22%,#ffd6e7 42%,#c8fff2 61%,#d9caff 79%,#fff3d6);
+  background-size:100% 100%,190% 190%;
+  background-position:center,var(--foil-x) var(--foil-y);
+  background-blend-mode:screen;
+  mix-blend-mode:screen;
+  filter:saturate(calc(1.18 + var(--energy)*.18)) brightness(calc(1.04 + var(--energy)*.12));
+  animation:preview-aftercare-lustre 15s ease-in-out infinite;
+}
+[data-treatment=aftercare] .physical-card__grain{
+  opacity:calc(.16 + var(--energy)*.24);
+  filter:brightness(calc(1.02 + var(--energy)*.35));
+}
+[data-treatment=aftercare] .physical-card__glare{
+  opacity:calc(.10 + var(--energy)*.28);
+  background:
+    linear-gradient(112deg,transparent 24%,rgba(255,255,255,.10) 36%,rgba(255,245,235,.62) 47%,rgba(215,243,255,.68) 51%,rgba(255,226,242,.40) 57%,transparent 69%),
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.55) 0%,rgba(255,255,255,.13) 17%,transparent 46%);
+  background-size:210% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  mix-blend-mode:screen;
+}
+
+@keyframes preview-ember-rain{
+  0%{background-position:center,35% 120%,70% 105%,20% 135%}
+  100%{background-position:center,48% -120%,58% -105%,34% -135%}
+}
+@keyframes preview-aftercare-lustre{
+  0%,100%{background-position:center,12% 42%;opacity:.20}
+  32%{background-position:center,58% 55%;opacity:.28}
+  67%{background-position:center,90% 34%;opacity:.23}
+  84%{background-position:center,68% 76%;opacity:.30}
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-treatment=slowburn] .physical-card__material,
+  [data-treatment=aftercare] .physical-card__material{animation:none}
+}

@@ -1,0 +1,106 @@
+/* HEARTTHROB LIVE — nested-heart foil with obvious sleeve presence and a strong rainbow catch. */
+[data-treatment=heartthrob] .foil--pattern,
+[data-treatment=heartthrob] .foil--diffraction,
+[data-treatment=heartthrob] .foil--specular{
+  -webkit-mask-image:url('/treatments/heartthrob-pattern.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/heartthrob-pattern.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+}
+
+/* Visible holographic heart outlines even before the strongest sheen arrives. */
+[data-treatment=heartthrob] .foil--pattern{
+  background:
+    linear-gradient(120deg,
+      rgba(255,84,184,.78) 0%,
+      rgba(186,110,255,.72) 20%,
+      rgba(75,224,255,.78) 40%,
+      rgba(255,255,255,.72) 51%,
+      rgba(255,224,105,.70) 63%,
+      rgba(255,100,194,.76) 80%,
+      rgba(103,184,255,.74) 100%);
+  background-size:190% 190%;
+  background-position:38% 50%;
+  mix-blend-mode:screen;
+  opacity:.46;
+  filter:saturate(1.52) brightness(1.18) contrast(1.08) drop-shadow(0 0 1.4px rgba(255,255,255,.34));
+}
+
+/* Saturated moving diffraction through the same nested-heart mask. */
+[data-treatment=heartthrob] .foil--diffraction{
+  background:
+    linear-gradient(108deg,
+      transparent 0 20%,
+      rgba(255,45,170,.70) 28%,
+      rgba(182,74,255,.86) 36%,
+      rgba(44,226,255,.98) 44%,
+      rgba(255,255,255,1) 49%,
+      rgba(255,235,73,.98) 54%,
+      rgba(255,70,190,.92) 61%,
+      rgba(71,169,255,.78) 68%,
+      transparent 78% 100%),
+    radial-gradient(ellipse 42% 32% at var(--lx) var(--ly),
+      rgba(255,255,255,1) 0%,
+      rgba(255,123,209,.82) 18%,
+      rgba(73,227,255,.68) 35%,
+      rgba(181,99,255,.48) 50%,
+      transparent 70%);
+  background-size:235% 180%,100% 100%;
+  background-position:var(--foil-x) var(--foil-y),center;
+  background-blend-mode:screen;
+  mix-blend-mode:color-dodge;
+  opacity:calc(.28 + var(--energy)*.68);
+  filter:saturate(calc(1.70 + var(--energy)*.65)) brightness(calc(1.10 + var(--energy)*.34)) contrast(1.07);
+  animation:heartthrob-catch 6.2s ease-in-out infinite;
+}
+
+/* Bright chrome/white flash through the heart pattern, like real double-foil sleeves. */
+[data-treatment=heartthrob] .foil--specular{
+  background:
+    linear-gradient(111deg,
+      transparent 0 33%,
+      rgba(255,255,255,.12) 39%,
+      rgba(255,255,255,.72) 45%,
+      rgba(255,255,255,1) 49.5%,
+      rgba(207,248,255,1) 52%,
+      rgba(255,195,236,.70) 57%,
+      transparent 65% 100%),
+    radial-gradient(ellipse 32% 25% at var(--lx) var(--ly),
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,.42) 34%,
+      transparent 72%);
+  background-size:250% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  mix-blend-mode:screen;
+  opacity:calc(.30 + var(--energy)*.76);
+  filter:blur(.04px) drop-shadow(0 0 2px rgba(255,255,255,.54));
+  animation:heartthrob-sheen 5.4s ease-in-out infinite;
+}
+
+[data-treatment=heartthrob] .foil--texture{
+  opacity:calc(.075 + var(--energy)*.12);
+  mix-blend-mode:screen;
+}
+
+@keyframes heartthrob-catch{
+  0%,100%{background-position:-20% 46%,center;opacity:.20}
+  18%{opacity:.30}
+  48%{background-position:120% 54%,center;opacity:.72}
+  62%{opacity:.34}
+  100%{background-position:120% 54%,center;opacity:.20}
+}
+
+@keyframes heartthrob-sheen{
+  0%,100%{background-position:-85% center,center;opacity:.20}
+  22%{opacity:.30}
+  48%{background-position:175% center,center;opacity:.88}
+  58%{opacity:.38}
+  100%{background-position:175% center,center;opacity:.20}
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-treatment=heartthrob] .foil--diffraction,
+  [data-treatment=heartthrob] .foil--specular{animation:none}
+}
