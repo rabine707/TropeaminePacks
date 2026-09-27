@@ -19,6 +19,15 @@ type Draft = {
   published: boolean
 }
 
+type CardAssetSummary = { id?: string | null; side?: string | null; storage_path?: string | null }
+type VariantSummary = {
+  id?: string | null
+  label?: string | null
+  rarity?: string | null
+  rating?: string | null
+  card_assets?: CardAssetSummary[] | null
+}
+
 type CatalogRow = {
   id: string
   number: string | null
@@ -26,7 +35,7 @@ type CatalogRow = {
   published: boolean
   characters?: { name?: string | null; series?: { title?: string | null } | null } | null
   card_sets?: { title?: string | null; code?: string | null } | null
-  variants?: Array<{ label?: string | null; rarity?: string | null; rating?: string | null }> | null
+  variants?: VariantSummary[] | null
 }
 
 type ExistingAsset = { id: string; storage_path: string; previewUrl?: string }
@@ -40,21 +49,24 @@ type EditContext = {
   assets: { front?: ExistingAsset; back?: ExistingAsset }
 }
 
+type QueueFilter = 'all' | 'needs-art' | 'ready'
+
 const EMPTY: Draft = {
   seriesTitle: '', author: '', characterName: '', setTitle: '', setCode: '', cardNumber: '',
   bookRange: '', description: '', variantLabel: 'Standard', rarity: 'common', rating: 'sfw', published: false,
 }
 
 const WARLOCK_PRELOADS: Draft[] = [
-  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Cassandra Blake Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Cassandra Blake Ashe — Warlock character profile. Known affinity and resonant details can be refined alongside the finished card art.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
-  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Samantha “Sam” Prescott Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Samantha “Sam” Prescott Ashe — Warlock character profile. Known affinity: Harmony. Resonants include Love, Lust, and Pain.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
-  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Rachel Winthrop Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Rachel Winthrop Ashe — Warlock character profile. Passion is represented by the established purple resonant treatment.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
-  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Morgan',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Morgan — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
-  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Melaina Seraphina Blackwood',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Melaina Seraphina Blackwood — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
-  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Noah Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'',bookRange:'Books 1–4',description:'Noah Ashe — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Cassandra Blake Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'005',bookRange:'Books 1–4',description:'Cassandra Blake Ashe — Warlock character profile. Known affinity and resonant details can be refined alongside the finished card art.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Samantha “Sam” Prescott Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'004',bookRange:'Books 1–4',description:'Samantha “Sam” Prescott Ashe — Warlock character profile. Known affinity: Harmony. Resonants include Love, Lust, and Pain.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Rachel Winthrop Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'006',bookRange:'Books 1–4',description:'Rachel Winthrop Ashe — Warlock character profile. Passion is represented by the established purple resonant treatment.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Morgan Harper',setTitle:'Warlock',setCode:'WAR01',cardNumber:'002',bookRange:'Books 1–4',description:'Morgan Harper — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Melaina Seraphina Blackwood',setTitle:'Warlock',setCode:'WAR01',cardNumber:'003',bookRange:'Books 1–4',description:'Melaina Seraphina Blackwood — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
+  {seriesTitle:'Warlock',author:'Daniel Kensington',characterName:'Noah Ashe',setTitle:'Warlock',setCode:'WAR01',cardNumber:'001',bookRange:'Books 1–4',description:'Noah Ashe — Warlock character profile, preloaded for final card text and artwork.',variantLabel:'Standard',rarity:'rare',rating:'sfw',published:false},
 ]
 
 const DRAFT_KEY = 'tropeamine-admin-card-draft-v1'
+const HIDDEN_QUEUE_KEY = 'tropeamine-admin-hidden-draft-queue-v1'
 const MAX_ART_BYTES = 20 * 1024 * 1024
 const ALLOWED_ART_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
@@ -66,6 +78,23 @@ function extensionFor(file: File) {
   if (file.type === 'image/png') return 'png'
   if (file.type === 'image/webp') return 'webp'
   return 'jpg'
+}
+
+function normalizeName(value: string | null | undefined) {
+  return (value ?? '').trim().toLowerCase().replace(/[“”]/g, '"')
+}
+
+function artSides(row: CatalogRow) {
+  const sides = new Set((row.variants ?? []).flatMap(variant => (variant.card_assets ?? []).map(asset => asset.side)))
+  return { front: sides.has('front'), back: sides.has('back') }
+}
+
+function queueStatus(row: CatalogRow) {
+  const art = artSides(row)
+  if (art.front && art.back) return { key: 'ready' as const, label: 'Ready to publish' }
+  if (!art.front && !art.back) return { key: 'needs-art' as const, label: 'Needs front + back art' }
+  if (!art.front) return { key: 'needs-art' as const, label: 'Needs front art' }
+  return { key: 'needs-art' as const, label: 'Needs back art' }
 }
 
 export default function CardManager({ email }: { email: string }) {
@@ -81,11 +110,15 @@ export default function CardManager({ email }: { email: string }) {
   const [backFile, setBackFile] = useState<File | null>(null)
   const [frontPreview, setFrontPreview] = useState('')
   const [backPreview, setBackPreview] = useState('')
+  const [queueFilter, setQueueFilter] = useState<QueueFilter>('all')
+  const [hiddenQueueItems, setHiddenQueueItems] = useState<string[]>([])
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(DRAFT_KEY)
       if (saved) setDraft({ ...EMPTY, ...JSON.parse(saved) })
+      const hidden = localStorage.getItem(HIDDEN_QUEUE_KEY)
+      if (hidden) setHiddenQueueItems(JSON.parse(hidden))
     } catch {}
     void refreshCards()
   }, [])
@@ -99,9 +132,9 @@ export default function CardManager({ email }: { email: string }) {
     setLoading(true)
     const { data, error } = await supabase
       .from('cards')
-      .select('id,number,book_range,published,characters(name,series(title)),card_sets(title,code),variants(label,rarity,rating)')
+      .select('id,number,book_range,published,characters(name,series(title)),card_sets(title,code),variants(id,label,rarity,rating,card_assets(id,side,storage_path))')
       .order('created_at', { ascending: false })
-      .limit(50)
+      .limit(100)
     if (error) setError(error.message)
     else setRows((data ?? []) as unknown as CatalogRow[])
     setLoading(false)
@@ -110,6 +143,21 @@ export default function CardManager({ email }: { email: string }) {
   function update<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft(current => ({ ...current, [key]: value }))
   }
+
+  function hideQueueItem(key: string) {
+    if (!window.confirm('Remove this card from the Draft Queue? This only hides it from the queue; it does not delete a saved catalog card.')) return
+    setHiddenQueueItems(current => {
+      const next = Array.from(new Set([...current, key]))
+      try { localStorage.setItem(HIDDEN_QUEUE_KEY, JSON.stringify(next)) } catch {}
+      return next
+    })
+  }
+
+  function restoreHiddenQueue() {
+    setHiddenQueueItems([])
+    try { localStorage.removeItem(HIDDEN_QUEUE_KEY) } catch {}
+  }
+
   async function loadPreload(item: Draft) {
     setBusy(true); setError(''); setMessage('')
     try {
@@ -136,7 +184,6 @@ export default function CardManager({ email }: { email: string }) {
       setError(caught instanceof Error ? caught.message : 'Could not load this preload.')
     } finally { setBusy(false) }
   }
-
 
   function setPreview(side: 'front' | 'back', url: string) {
     if (side === 'front') setFrontPreview(url)
@@ -372,7 +419,7 @@ export default function CardManager({ email }: { email: string }) {
         await Promise.all(uploads)
         const name = draft.characterName.trim()
         localStorage.removeItem(DRAFT_KEY); setDraft(EMPTY); clearArt()
-        setMessage(`${name} was added to the live catalog${uploads.length ? ' with card art' : ''}.`)
+        setMessage(`${name} was added to the catalog${uploads.length ? ' with card art' : ''}.`)
       }
       await refreshCards()
     } catch (caught) {
@@ -380,9 +427,20 @@ export default function CardManager({ email }: { email: string }) {
     } finally { setBusy(false) }
   }
 
+  const existingCharacterNames = useMemo(() => new Set(rows.map(row => normalizeName(row.characters?.name))), [rows])
+  const preloadedQueue = WARLOCK_PRELOADS.filter(item => !existingCharacterNames.has(normalizeName(item.characterName)))
+    .filter(item => !hiddenQueueItems.includes(`preload:${normalizeName(item.characterName)}`))
+  const savedDraftQueue = rows.filter(row => !row.published)
+    .filter(row => !hiddenQueueItems.includes(`card:${row.id}`))
+
+  const filteredPreloads = queueFilter === 'ready' ? [] : preloadedQueue
+  const filteredSavedDrafts = savedDraftQueue.filter(row => queueFilter === 'all' || queueStatus(row).key === queueFilter)
+  const totalQueue = preloadedQueue.length + savedDraftQueue.length
+
   const inputStyle = { width: '100%', background: '#151914', border: '1px solid #3a4234', color: '#eeeede', borderRadius: 6, padding: '11px 12px' }
   const labelStyle = { display: 'grid', gap: 6, fontSize: 12, color: '#aeb6a4' }
   const artBoxStyle = { border: '1px solid #30362d', borderRadius: 8, background: '#151914', padding: 12, display: 'grid', gap: 10 }
+  const queueButtonStyle = { minHeight: 32, padding: '6px 10px', fontSize: 11 }
 
   return (
     <main style={{ maxWidth: 1180, paddingTop: 36, paddingBottom: 60 }}>
@@ -396,25 +454,76 @@ export default function CardManager({ email }: { email: string }) {
       </div>
 
       <section style={{ border: '1px solid #3a4234', background: '#171b16', borderRadius: 10, padding: 18, marginBottom: 22 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'end', flexWrap: 'wrap' }}>
-          <div><p className="eyebrow" style={{ marginBottom: 5 }}>WARLOCK · PRELOADED DRAFTS</p><h2 style={{ fontSize: 23, margin: 0 }}>Ready for card art</h2></div>
-          <small style={{ color: '#8f9888' }}>Felicity is already live, so she is intentionally excluded.</small>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'end', flexWrap: 'wrap' }}>
+          <div>
+            <p className="eyebrow" style={{ marginBottom: 5 }}>DRAFT QUEUE</p>
+            <h2 style={{ fontSize: 23, margin: 0 }}>Cards waiting on art</h2>
+            <small style={{ color: '#8f9888' }}>{totalQueue} unfinished {totalQueue === 1 ? 'card' : 'cards'} · published cards disappear automatically</small>
+          </div>
+          <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+            {(['all', 'needs-art', 'ready'] as QueueFilter[]).map(filter => (
+              <button key={filter} className={queueFilter === filter ? 'button gold' : 'button outline'} type="button" onClick={() => setQueueFilter(filter)} style={queueButtonStyle}>
+                {filter === 'all' ? 'All' : filter === 'needs-art' ? 'Needs art' : 'Ready'}
+              </button>
+            ))}
+            {hiddenQueueItems.length > 0 && <button className="button outline" type="button" onClick={restoreHiddenQueue} style={queueButtonStyle}>Restore hidden</button>}
+          </div>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
-          {WARLOCK_PRELOADS.map(item => <button key={item.characterName} type="button" className="button outline" onClick={() => loadPreload(item)} disabled={busy} style={{ minHeight: 34, padding: '7px 10px' }}>{item.characterName}</button>)}
-        </div>
+
+        {loading ? <p style={{ marginTop: 14 }}>Loading drafts…</p> : filteredPreloads.length === 0 && filteredSavedDrafts.length === 0 ? (
+          <div style={{ marginTop: 14, padding: 16, border: '1px dashed #3a4234', borderRadius: 8, color: '#8f9888', fontSize: 12 }}>
+            {queueFilter === 'ready' ? 'No drafts currently have both images ready.' : 'Nothing in this draft view right now.'}
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gap: 9, marginTop: 14 }}>
+            {filteredSavedDrafts.map(row => {
+              const status = queueStatus(row)
+              const statusColor = status.key === 'ready' ? '#a8c99f' : '#d0bc78'
+              return (
+                <div key={`saved-${row.id}`} style={{ border: '1px solid #30362d', borderRadius: 8, padding: '12px 13px', background: '#151914' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ minWidth: 220 }}>
+                      <strong style={{ display: 'block', fontFamily: 'Georgia, serif', fontSize: 17 }}>{row.characters?.name || 'Unnamed character'}</strong>
+                      <span style={{ display: 'block', color: '#919b89', fontSize: 11 }}>{row.characters?.series?.title || 'Series'} · {row.card_sets?.code || row.card_sets?.title || 'Set'} {row.number ? `· #${row.number}` : ''}</span>
+                      <span style={{ display: 'block', color: statusColor, fontSize: 10, marginTop: 4 }}>{status.label}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+                      <button className="button outline" type="button" disabled={busy} onClick={() => void editCard(row.id)} style={queueButtonStyle}>{editing?.cardId === row.id ? 'Editing' : status.key === 'ready' ? 'Review & publish' : 'Add art'}</button>
+                      <button className="button outline" type="button" disabled={busy} onClick={() => hideQueueItem(`card:${row.id}`)} style={{ ...queueButtonStyle, opacity: .75 }}>Remove</button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+            {filteredPreloads.map(item => (
+              <div key={`preload-${item.characterName}`} style={{ border: '1px solid #30362d', borderRadius: 8, padding: '12px 13px', background: '#151914' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div style={{ minWidth: 220 }}>
+                    <strong style={{ display: 'block', fontFamily: 'Georgia, serif', fontSize: 17 }}>{item.characterName}</strong>
+                    <span style={{ display: 'block', color: '#919b89', fontSize: 11 }}>{item.seriesTitle} · {item.setCode} {item.cardNumber ? `· #${item.cardNumber}` : ''}</span>
+                    <span style={{ display: 'block', color: '#d0bc78', fontSize: 10, marginTop: 4 }}>Needs front + back art · preloaded</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+                    <button className="button outline" type="button" disabled={busy} onClick={() => void loadPreload(item)} style={queueButtonStyle}>Open draft</button>
+                    <button className="button outline" type="button" disabled={busy} onClick={() => hideQueueItem(`preload:${normalizeName(item.characterName)}`)} style={{ ...queueButtonStyle, opacity: .75 }}>Remove</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, .75fr)', gap: 24, alignItems: 'start' }}>
         <form onSubmit={saveCard} style={{ border: editing ? '1px solid #81744d' : '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 12 }}>
             <div>
-              <p className="eyebrow" style={{ marginBottom: 7 }}>{editing ? 'EDITING LIVE CARD' : 'NEW CATALOG ENTRY'}</p>
+              <p className="eyebrow" style={{ marginBottom: 7 }}>{editing ? (draft.published ? 'EDITING LIVE CARD' : 'EDITING DRAFT CARD') : 'NEW CATALOG ENTRY'}</p>
               <h2 style={{ fontSize: 28 }}>{editing ? `Edit ${editing.characterName}` : 'New card'}</h2>
             </div>
             {editing && <button className="button outline" type="button" onClick={loadSavedNewDraft} disabled={busy} style={{ minHeight: 34, padding: '7px 10px' }}>Cancel edit</button>}
           </div>
-          <p style={{ fontSize: 12 }}>{editing ? 'Changes update this exact live card. Existing art stays unless you choose a replacement.' : 'Your text fields are saved in this browser automatically. Selected image files must be reselected after a page refresh.'}</p>
+          <p style={{ fontSize: 12 }}>{editing ? 'Changes update this exact card. Existing art stays unless you choose a replacement.' : 'Your text fields are saved in this browser automatically. Selected image files must be reselected after a page refresh.'}</p>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <label style={labelStyle}>Series title *<input style={inputStyle} value={draft.seriesTitle} onChange={e => update('seriesTitle', e.target.value)} placeholder="Coven King" /></label>
@@ -455,22 +564,23 @@ export default function CardManager({ email }: { email: string }) {
           <label style={{ display: 'flex', gap: 9, alignItems: 'center', marginTop: 16, fontSize: 12, color: '#aeb6a4' }}>
             <input type="checkbox" checked={draft.published} onChange={e => update('published', e.target.checked)} /> Publish immediately
           </label>
+          {!draft.published && editing && <small style={{ display: 'block', color: '#8f9888', marginTop: 6 }}>Leave this off while art is unfinished. Turn it on when the card is complete; after saving, it will disappear from the Draft Queue.</small>}
 
           {error && <p style={{ color: '#e6a6a6', marginTop: 16, marginBottom: 0 }}>{error}</p>}
           {message && <p style={{ color: '#b9d8ae', marginTop: 16, marginBottom: 0 }}>{message}</p>}
 
           <div className="button-row" style={{ marginTop: 20 }}>
-            <button className="button gold" type="submit" disabled={busy}>{busy ? 'Saving…' : editing ? 'Update live card' : 'Save to live catalog'}</button>
+            <button className="button gold" type="submit" disabled={busy}>{busy ? 'Saving…' : editing ? 'Update card' : 'Save to catalog'}</button>
             {!editing && <button className="button outline" type="button" disabled={busy} onClick={() => { localStorage.removeItem(DRAFT_KEY); setDraft(EMPTY); clearArt(); setError(''); setMessage('') }}>Clear draft</button>}
           </div>
         </form>
 
         <section style={{ border: '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <div><p className="eyebrow" style={{ marginBottom: 6 }}>LIVE CATALOG</p><h2 style={{ fontSize: 24, margin: 0 }}>Recent cards</h2></div>
+            <div><p className="eyebrow" style={{ marginBottom: 6 }}>CATALOG</p><h2 style={{ fontSize: 24, margin: 0 }}>Recent cards</h2></div>
             <button className="button outline" type="button" onClick={() => void refreshCards()} disabled={loading || busy} style={{ minHeight: 34, padding: '7px 10px' }}>Refresh</button>
           </div>
-          {loading ? <p>Loading catalog…</p> : rows.length === 0 ? <p>No live cards yet.</p> : (
+          {loading ? <p>Loading catalog…</p> : rows.length === 0 ? <p>No cards yet.</p> : (
             <div style={{ display: 'grid', gap: 9 }}>
               {rows.map(row => (
                 <div key={row.id} style={{ border: editing?.cardId === row.id ? '1px solid #81744d' : '1px solid #2d342a', borderRadius: 7, padding: '11px 12px', background: '#151914' }}>
@@ -478,7 +588,7 @@ export default function CardManager({ email }: { email: string }) {
                     <div>
                       <strong style={{ display: 'block', fontFamily: 'Georgia, serif', fontSize: 17 }}>{row.characters?.name || 'Unnamed character'}</strong>
                       <span style={{ display: 'block', color: '#919b89', fontSize: 11 }}>{row.characters?.series?.title || 'Series'} · {row.card_sets?.code || row.card_sets?.title || 'Set'} {row.number ? `· #${row.number}` : ''}</span>
-                      <span style={{ display: 'block', color: row.published ? '#a8c99f' : '#c9bc91', fontSize: 10, marginTop: 4 }}>{row.published ? 'Published' : 'Draft'}{row.variants?.[0]?.rarity ? ` · ${row.variants[0].rarity}` : ''}</span>
+                      <span style={{ display: 'block', color: row.published ? '#a8c99f' : '#c9bc91', fontSize: 10, marginTop: 4 }}>{row.published ? 'Published' : queueStatus(row).label}{row.variants?.[0]?.rarity ? ` · ${row.variants[0].rarity}` : ''}</span>
                     </div>
                     <button className="button outline" type="button" disabled={busy} onClick={() => void editCard(row.id)} style={{ minHeight: 32, padding: '6px 10px', fontSize: 11 }}>{editing?.cardId === row.id ? 'Editing' : 'Edit'}</button>
                   </div>
