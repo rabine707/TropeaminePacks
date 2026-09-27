@@ -209,12 +209,12 @@
 /* Low firelight, deliberately asymmetric so it feels like flame below the card rather than a gradient strip. */
 [data-treatment=slowburn] .foil--texture{
   background:
-    radial-gradient(ellipse 54% 25% at 22% 108%,rgba(255,67,9,.70) 0%,rgba(255,94,10,.28) 38%,transparent 72%),
-    radial-gradient(ellipse 62% 30% at 76% 112%,rgba(255,154,24,.62) 0%,rgba(218,40,6,.24) 42%,transparent 75%),
-    radial-gradient(ellipse 84% 35% at 48% 116%,rgba(255,85,8,.42) 0%,rgba(110,8,4,.16) 52%,transparent 78%);
+    radial-gradient(ellipse 78% 42% at 18% 105%,rgba(255,184,48,.96) 0%,rgba(255,91,8,.68) 30%,rgba(205,30,4,.30) 54%,transparent 78%),
+    radial-gradient(ellipse 86% 46% at 80% 108%,rgba(255,209,70,.90) 0%,rgba(255,119,13,.66) 31%,rgba(217,40,5,.28) 56%,transparent 80%),
+    radial-gradient(ellipse 118% 55% at 50% 113%,rgba(255,118,10,.76) 0%,rgba(255,58,5,.42) 38%,rgba(123,10,3,.20) 62%,transparent 84%);
   mix-blend-mode:screen;
-  opacity:.58;
-  filter:blur(8px) saturate(1.45);
+  opacity:.82;
+  filter:blur(10px) saturate(1.62) brightness(1.18);
   transform-origin:50% 100%;
   animation:slowburn-fire-flicker 2.35s steps(7,end) infinite;
 }
