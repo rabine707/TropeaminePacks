@@ -1,77 +1,83 @@
-/* HOLO LIVE-CATCH OVERRIDE — dramatic real-foil behavior inspired by the screen recording. */
+/* HOLO — liquid oil-slick interference. Clean art between catches; color pools move like a thin iridescent film. */
+[data-treatment=holo] .foil--pattern{
+  background:
+    radial-gradient(ellipse 68% 42% at 18% 22%,rgba(20,225,231,.22),transparent 64%),
+    radial-gradient(ellipse 72% 48% at 78% 28%,rgba(117,65,255,.25),transparent 66%),
+    radial-gradient(ellipse 64% 44% at 34% 76%,rgba(255,46,166,.22),transparent 67%),
+    radial-gradient(ellipse 70% 46% at 82% 78%,rgba(237,176,33,.18),transparent 68%);
+  background-size:145% 145%,155% 155%,150% 150%,160% 160%;
+  background-position:var(--foil-x) var(--foil-y),calc(100% - var(--foil-x)) var(--foil-y),var(--foil-x) calc(100% - var(--foil-y)),calc(100% - var(--foil-x)) calc(100% - var(--foil-y));
+  mix-blend-mode:screen;
+  opacity:calc(.04 + var(--energy)*.12);
+  filter:saturate(1.45);
+}
 [data-treatment=holo] .foil--diffraction{
   background:
-    radial-gradient(ellipse 52% 42% at var(--lx) var(--ly),
-      rgba(255,255,255,.96) 0%,
-      rgba(255,238,92,.92) 8%,
-      rgba(115,255,172,.82) 18%,
-      rgba(70,226,255,.86) 29%,
-      rgba(90,125,255,.78) 41%,
-      rgba(191,90,255,.74) 53%,
-      rgba(255,73,175,.78) 64%,
-      rgba(255,118,71,.68) 73%,
-      transparent 86%),
-    linear-gradient(103deg,
-      transparent 0%,
-      rgba(255,72,173,.26) 13%,
-      rgba(255,187,74,.30) 24%,
-      rgba(99,255,158,.28) 36%,
-      rgba(65,218,255,.34) 49%,
-      rgba(110,113,255,.30) 62%,
-      rgba(203,91,255,.28) 75%,
-      rgba(255,73,173,.24) 88%,
-      transparent 100%);
-  background-size:115% 115%,220% 180%;
-  background-position:center,var(--foil-x) var(--foil-y);
+    radial-gradient(ellipse 42% 28% at var(--lx) var(--ly),
+      rgba(72,255,231,.72) 0%,
+      rgba(43,177,255,.66) 16%,
+      rgba(104,65,255,.72) 31%,
+      rgba(218,49,255,.70) 46%,
+      rgba(255,50,154,.66) 59%,
+      rgba(255,145,45,.56) 72%,
+      rgba(190,235,45,.42) 82%,
+      transparent 100%),
+    conic-gradient(from 218deg at var(--lx) var(--ly),
+      transparent 0deg,
+      rgba(39,232,222,.26) 38deg,
+      rgba(61,139,255,.34) 82deg,
+      rgba(141,61,255,.40) 126deg,
+      rgba(255,48,172,.38) 174deg,
+      rgba(255,151,37,.32) 222deg,
+      rgba(142,226,54,.25) 268deg,
+      rgba(39,220,213,.24) 310deg,
+      transparent 360deg);
+  background-size:138% 138%,165% 165%;
+  background-position:center,center;
   background-blend-mode:screen;
   mix-blend-mode:color-dodge;
-  opacity:calc(.07 + var(--energy)*.58);
-  filter:saturate(calc(1.45 + var(--energy)*.65)) contrast(calc(1.02 + var(--energy)*.10)) brightness(calc(1 + var(--energy)*.20));
-  -webkit-mask-image:radial-gradient(ellipse 74% 62% at var(--lx) var(--ly),#000 0%,#000 44%,rgba(0,0,0,.72) 58%,rgba(0,0,0,.22) 74%,transparent 90%);
-  mask-image:radial-gradient(ellipse 74% 62% at var(--lx) var(--ly),#000 0%,#000 44%,rgba(0,0,0,.72) 58%,rgba(0,0,0,.22) 74%,transparent 90%);
-  animation:holo-live-rest 10s ease-in-out infinite;
+  opacity:calc(.10 + var(--energy)*.62);
+  filter:saturate(calc(1.55 + var(--energy)*.75)) contrast(calc(1.04 + var(--energy)*.16)) brightness(calc(1.00 + var(--energy)*.14));
+  -webkit-mask-image:radial-gradient(ellipse 64% 50% at var(--lx) var(--ly),#000 0%,#000 34%,rgba(0,0,0,.76) 52%,rgba(0,0,0,.26) 72%,transparent 92%);
+  mask-image:radial-gradient(ellipse 64% 50% at var(--lx) var(--ly),#000 0%,#000 34%,rgba(0,0,0,.76) 52%,rgba(0,0,0,.26) 72%,transparent 92%);
+  animation:holo-oil-rest 11.5s ease-in-out infinite;
+}
+[data-treatment=holo] .foil--texture{
+  background:
+    radial-gradient(ellipse 28% 15% at 22% 31%,rgba(255,255,255,.12),transparent 70%),
+    radial-gradient(ellipse 32% 17% at 73% 68%,rgba(255,255,255,.10),transparent 72%);
+  background-size:170% 170%,180% 180%;
+  background-position:var(--foil-x) var(--foil-y),calc(100% - var(--foil-x)) calc(100% - var(--foil-y));
+  mix-blend-mode:soft-light;
+  opacity:calc(.03 + var(--energy)*.13);
+  filter:blur(4px);
 }
 [data-treatment=holo] .foil--specular{
   background:
-    linear-gradient(109deg,
-      transparent 35%,
-      rgba(255,255,255,.08) 39%,
-      rgba(255,255,255,.32) 43%,
-      rgba(255,255,255,.88) 47%,
-      rgba(255,255,255,1) 49.5%,
-      rgba(255,255,255,.72) 52%,
-      rgba(255,255,255,.20) 56%,
-      transparent 61%),
-    radial-gradient(ellipse 38% 28% at var(--lx) var(--ly),rgba(255,255,255,.72) 0%,rgba(255,255,255,.18) 28%,transparent 68%);
-  background-size:280% 100%,100% 100%;
-  background-position:var(--foil-x) center,center;
+    radial-gradient(ellipse 34% 18% at var(--lx) var(--ly),rgba(255,255,255,.54) 0%,rgba(191,246,255,.20) 26%,transparent 70%),
+    linear-gradient(112deg,transparent 34%,rgba(89,236,255,.06) 40%,rgba(223,196,255,.25) 47%,rgba(255,235,245,.42) 50%,rgba(255,190,226,.18) 54%,transparent 62%);
+  background-size:100% 100%,280% 100%;
+  background-position:center,var(--foil-x) center;
   mix-blend-mode:screen;
-  opacity:calc(.05 + var(--energy)*.82);
-  filter:blur(.08px);
-  animation:holo-spec-rest 10s ease-in-out infinite;
+  opacity:calc(.04 + var(--energy)*.48);
+  filter:blur(.35px);
+  animation:holo-oil-spec-rest 11.5s ease-in-out infinite;
 }
-[data-treatment=holo] .foil--texture{
-  background-image:
-    repeating-linear-gradient(78deg,transparent 0 10px,rgba(255,255,255,.10) 11px,transparent 12px 23px),
-    url('/treatments/dust.svg');
-  background-size:150% 150%,100% 100%;
-  background-position:var(--foil-x) var(--foil-y),center;
-  mix-blend-mode:screen;
-  opacity:calc(.012 + var(--energy)*.12);
+@keyframes holo-oil-rest{
+  0%,100%{background-position:18% 32%,center;opacity:.07;filter:saturate(1.55) contrast(1.04) brightness(1)}
+  32%{background-position:42% 58%,center;opacity:.13;filter:saturate(1.75) contrast(1.08) brightness(1.03)}
+  58%{background-position:76% 42%,center;opacity:.19;filter:saturate(1.95) contrast(1.10) brightness(1.05)}
+  78%{background-position:58% 72%,center;opacity:.10;filter:saturate(1.68) contrast(1.06) brightness(1.02)}
 }
-@keyframes holo-live-rest{
-  0%,100%{background-position:center,8% 45%;opacity:.045}
-  35%{background-position:center,42% 52%;opacity:.095}
-  55%{background-position:center,78% 47%;opacity:.14}
-  72%{background-position:center,92% 58%;opacity:.07}
-}
-@keyframes holo-spec-rest{
-  0%,100%{background-position:-95% center,center;opacity:.03}
-  42%{background-position:-20% center,center;opacity:.08}
-  52%{background-position:135% center,center;opacity:.36}
-  61%{background-position:170% center,center;opacity:.06}
+@keyframes holo-oil-spec-rest{
+  0%,100%{background-position:center,-90% center;opacity:.025}
+  48%{background-position:center,22% center;opacity:.07}
+  58%{background-position:center,142% center;opacity:.20}
+  70%{background-position:center,185% center;opacity:.04}
 }
 .physical-card:hover[data-treatment=holo] .foil--diffraction,
 .physical-card:active[data-treatment=holo] .foil--diffraction,
+.physical-card:focus-within[data-treatment=holo] .foil--diffraction,
 .physical-card:hover[data-treatment=holo] .foil--specular,
-.physical-card:active[data-treatment=holo] .foil--specular{animation-play-state:paused}
+.physical-card:active[data-treatment=holo] .foil--specular,
+.physical-card:focus-within[data-treatment=holo] .foil--specular{animation:none}
