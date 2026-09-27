@@ -259,3 +259,15 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .account-showcase-grid>div>img{width:100%;aspect-ratio:2/3;max-height:none;object-fit:cover;border-radius:10px;margin:0}
  .account-showcase-grid b,.account-showcase-grid small{display:none}
 }
+
+/* iPhone QA round 2 */
+@media(max-width:600px){
+ .sidebar{height:calc(82px + env(safe-area-inset-bottom));padding:5px 8px env(safe-area-inset-bottom);align-items:flex-start}
+ .sidebar nav{height:70px;align-items:start}
+ .sidebar .nav-link{height:64px;min-height:64px;padding:5px 2px 10px;justify-content:flex-start;gap:3px;font-size:8px}
+ .workspace{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+ .how-it-works{bottom:calc(96px + env(safe-area-inset-bottom))!important}
+ .account-showcase-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;overflow:visible}
+ .account-showcase-grid>div:not(.showcase-placeholder){display:block}
+ .account-showcase-grid>div>img{aspect-ratio:2/3;border-radius:7px}
+}
