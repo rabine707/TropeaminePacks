@@ -274,3 +274,21 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .how-it-works{bottom:calc(var(--mobile-dock-content) + env(safe-area-inset-bottom) + 10px)!important}
  .starter-checklist{bottom:calc(var(--mobile-dock-content) + env(safe-area-inset-bottom) + 64px)!important}
 }
+
+/* Keep mobile nav controls at the top edge of the dock; reserve lower space for iOS chrome. */
+@media(max-width:600px){
+ .sidebar{
+  justify-content:flex-start!important;
+  align-items:flex-start!important;
+  padding-top:0!important;
+ }
+ .sidebar nav{
+  align-self:flex-start!important;
+  transform:translateY(-6px);
+ }
+ .sidebar .nav-link{
+  justify-content:flex-start!important;
+  padding-top:7px!important;
+  padding-bottom:3px!important;
+ }
+}
