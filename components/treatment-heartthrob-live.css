@@ -10,74 +10,74 @@
   mask-repeat:no-repeat;
 }
 
-/* Barely-there etched laminate at rest. */
+/* Keep the placement, but let the etched hearts read more clearly at rest. */
 [data-treatment=heartthrob] .foil--pattern{
-  background:linear-gradient(118deg,rgba(255,255,255,.16),rgba(255,255,255,.025) 42%,rgba(255,255,255,.10) 68%,rgba(255,255,255,.035));
+  background:linear-gradient(118deg,rgba(255,255,255,.28),rgba(255,255,255,.05) 42%,rgba(255,255,255,.18) 68%,rgba(255,255,255,.06));
   mix-blend-mode:screen;
-  opacity:.10;
+  opacity:.18;
 }
 
-/* The pattern catches color only where the moving optical band crosses it. */
+/* Stronger rainbow catch through the same nested-heart mask. */
 [data-treatment=heartthrob] .foil--diffraction{
   background:
     linear-gradient(108deg,
-      transparent 0 27%,
-      rgba(255,74,170,.22) 33%,
-      rgba(158,92,255,.48) 39%,
-      rgba(67,225,255,.72) 45%,
-      rgba(255,255,255,.96) 49%,
-      rgba(255,225,109,.70) 53%,
-      rgba(255,100,186,.56) 59%,
-      rgba(103,178,255,.30) 65%,
-      transparent 72% 100%),
-    radial-gradient(ellipse 36% 28% at var(--lx) var(--ly),rgba(255,255,255,.92) 0%,rgba(255,148,210,.45) 20%,rgba(89,220,255,.28) 36%,transparent 66%);
-  background-size:250% 180%,100% 100%;
+      transparent 0 24%,
+      rgba(255,55,168,.42) 31%,
+      rgba(186,92,255,.68) 38%,
+      rgba(57,226,255,.88) 45%,
+      rgba(255,255,255,1) 49%,
+      rgba(255,230,92,.86) 53%,
+      rgba(255,86,188,.76) 59%,
+      rgba(89,176,255,.52) 66%,
+      transparent 74% 100%),
+    radial-gradient(ellipse 38% 30% at var(--lx) var(--ly),rgba(255,255,255,1) 0%,rgba(255,130,208,.62) 19%,rgba(78,226,255,.44) 37%,rgba(180,112,255,.26) 50%,transparent 68%);
+  background-size:245% 180%,100% 100%;
   background-position:var(--foil-x) var(--foil-y),center;
   background-blend-mode:screen;
   mix-blend-mode:color-dodge;
-  opacity:calc(.055 + var(--energy)*.48);
-  filter:saturate(calc(1.32 + var(--energy)*.48)) brightness(calc(1.02 + var(--energy)*.24));
+  opacity:calc(.11 + var(--energy)*.58);
+  filter:saturate(calc(1.52 + var(--energy)*.62)) brightness(calc(1.06 + var(--energy)*.30)) contrast(1.04);
   animation:heartthrob-catch 10.5s ease-in-out infinite;
 }
 
-/* A tight white/chrome core makes the nested hearts flash like stamped foil. */
+/* Brighter white/chrome peak so the hearts flash hard in the moving sheen. */
 [data-treatment=heartthrob] .foil--specular{
   background:
     linear-gradient(111deg,
-      transparent 0 37%,
-      rgba(255,255,255,.05) 41%,
-      rgba(255,255,255,.42) 46%,
+      transparent 0 35%,
+      rgba(255,255,255,.08) 40%,
+      rgba(255,255,255,.58) 45%,
       rgba(255,255,255,1) 49.5%,
-      rgba(220,246,255,.80) 52%,
-      rgba(255,213,239,.34) 56%,
-      transparent 62% 100%),
-    radial-gradient(ellipse 28% 22% at var(--lx) var(--ly),rgba(255,255,255,.96) 0%,rgba(255,255,255,.18) 38%,transparent 70%);
-  background-size:270% 100%,100% 100%;
+      rgba(214,248,255,.96) 52%,
+      rgba(255,205,238,.52) 56%,
+      transparent 63% 100%),
+    radial-gradient(ellipse 30% 23% at var(--lx) var(--ly),rgba(255,255,255,1) 0%,rgba(255,255,255,.30) 36%,transparent 70%);
+  background-size:260% 100%,100% 100%;
   background-position:var(--foil-x) center,center;
   mix-blend-mode:screen;
-  opacity:calc(.08 + var(--energy)*.58);
-  filter:blur(.08px) drop-shadow(0 0 1px rgba(255,255,255,.28));
+  opacity:calc(.16 + var(--energy)*.68);
+  filter:blur(.06px) drop-shadow(0 0 1.6px rgba(255,255,255,.42));
   animation:heartthrob-sheen 8.2s ease-in-out infinite;
 }
 
 [data-treatment=heartthrob] .foil--texture{
-  opacity:calc(.018 + var(--energy)*.045);
+  opacity:calc(.028 + var(--energy)*.06);
 }
 
 @keyframes heartthrob-catch{
-  0%,100%{background-position:-18% 46%,center;opacity:.045}
-  20%{opacity:.08}
-  48%{background-position:118% 54%,center;opacity:.28}
-  60%{opacity:.12}
-  100%{background-position:118% 54%,center;opacity:.045}
+  0%,100%{background-position:-18% 46%,center;opacity:.10}
+  20%{opacity:.16}
+  48%{background-position:118% 54%,center;opacity:.48}
+  60%{opacity:.20}
+  100%{background-position:118% 54%,center;opacity:.10}
 }
 
 @keyframes heartthrob-sheen{
-  0%,100%{background-position:-85% center,center;opacity:.06}
-  22%{opacity:.10}
-  48%{background-position:175% center,center;opacity:.56}
-  58%{opacity:.18}
-  100%{background-position:175% center,center;opacity:.06}
+  0%,100%{background-position:-85% center,center;opacity:.12}
+  22%{opacity:.18}
+  48%{background-position:175% center,center;opacity:.72}
+  58%{opacity:.24}
+  100%{background-position:175% center,center;opacity:.12}
 }
 
 @media(prefers-reduced-motion:reduce){
