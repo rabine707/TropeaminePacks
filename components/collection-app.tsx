@@ -3,7 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import Image from 'next/image';
-import {BookOpen,Compass,Library,Layers,Sparkles,ArrowUpRight,ArrowRight,Heart,Search,Diamond,Droplets,Plus,Check,Lock,X,SlidersHorizontal,Shuffle,ChevronRight,Maximize,RotateCw,Flag,Upload,Settings,Menu,Feather,Moon,CheckCircle2} from 'lucide-react';
+import {BookOpen,Compass,Library,Layers,Sparkles,ArrowUpRight,ArrowRight,Heart,Search,Diamond,Droplets,Plus,Check,Lock,X,SlidersHorizontal,Shuffle,ChevronLeft,ChevronRight,Maximize,RotateCw,Flag,Upload,Settings,Menu,Feather,Moon,CheckCircle2} from 'lucide-react';
 import {Card,initialCards,initialRequests,RequestBook,normalize} from '@/lib/catalog';
 import {openPack,craft,Wallet} from '@/lib/economy';
 import {mergeRequests} from '@/lib/requests';
