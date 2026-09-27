@@ -324,3 +324,66 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  background-size:71px 83px,97px 89px,79px 103px,107px 91px,245% 100%,auto!important}
 .treatment-aftercare .treatment-overlay:after{content:'✦  ✧      ✦    ✧   ✦       ✧  ✦     ✦   ✧       ✦    ✧  ✦      ✧   ✦';position:absolute!important;inset:-4%!important;color:rgba(255,255,255,.96)!important;font-size:24px!important;line-height:3.55!important;letter-spacing:15px!important;text-shadow:0 0 4px #fff,0 0 11px rgba(220,235,255,.95),0 0 25px rgba(255,225,245,.62)!important;animation:premiumSparkle 1.9s ease-in-out infinite alternate!important}
 @keyframes premiumSparkle{0%{opacity:.22;transform:scale(.98)}45%{opacity:.92}100%{opacity:.48;transform:scale(1.02)}}
+
+
+/* Treatment prototype v4 — physical-card inspired chase finishes */
+
+/* Heartthrob: irregular heart refractor with staggered double-beat throbs */
+.treatment-heartthrob .treatment-overlay{inset:0!important;overflow:hidden!important;border-radius:inherit;opacity:.82!important;
+ background:
+ radial-gradient(circle at 16% 18%,rgba(255,80,190,.10),transparent 24%),
+ radial-gradient(circle at 83% 71%,rgba(105,205,255,.10),transparent 27%),
+ linear-gradient(112deg,transparent 8%,rgba(255,255,255,.08) 32%,rgba(255,100,205,.14) 45%,rgba(115,220,255,.12) 55%,transparent 78%)!important;
+ background-size:auto,auto,240% 100%!important;animation:heartRefract 4.8s linear infinite!important}
+.treatment-heartthrob .treatment-overlay:before,
+.treatment-heartthrob .treatment-overlay:after{position:absolute!important;inset:0!important;pointer-events:none!important;color:rgba(255,225,246,.48)!important;
+ text-shadow:0 0 4px rgba(255,80,190,.55),0 0 9px rgba(110,205,255,.25)!important;transform-origin:center!important}
+.treatment-heartthrob .treatment-overlay:before{content:'♡       ♡   ♡        ♡      ♡  ♡       ♡      ♡       ♡   ♡      ♡       ♡      ♡   ♡       ♡     ♡       ♡      ♡   ♡      ♡';font-size:24px!important;line-height:3.35!important;letter-spacing:8px!important;animation:heartBeatA 2.25s ease-in-out infinite!important}
+.treatment-heartthrob .treatment-overlay:after{content:'   ♡   ♡        ♡    ♡       ♡      ♡   ♡        ♡      ♡     ♡       ♡    ♡       ♡      ♡       ♡    ♡       ♡';font-size:15px!important;line-height:4.5!important;letter-spacing:13px!important;color:rgba(255,255,255,.42)!important;animation:heartBeatB 2.25s .42s ease-in-out infinite!important}
+@keyframes heartBeatA{0%,18%,44%,100%{transform:scale(1);opacity:.38}8%{transform:scale(1.075);opacity:.9}14%{transform:scale(1.015);opacity:.54}26%{transform:scale(1.105);opacity:1}34%{transform:scale(1.02);opacity:.5}}
+@keyframes heartBeatB{0%,18%,44%,100%{transform:scale(1);opacity:.28}8%{transform:scale(1.055);opacity:.74}14%{transform:scale(1.01);opacity:.4}26%{transform:scale(1.085);opacity:.88}34%{transform:scale(1.01);opacity:.38}}
+@keyframes heartRefract{0%{background-position:0 0,0 0,140% 0}100%{background-position:0 0,0 0,-140% 0}}
+
+/* Unhinged: edge-to-edge cracked-ice refractor, fine transparent facets */
+.treatment-unhinged .treatment-overlay{inset:0!important;opacity:.48!important;mix-blend-mode:screen!important;
+ background:
+ repeating-conic-gradient(from 17deg at 22% 19%,transparent 0 12deg,rgba(255,255,255,.16) 13deg 14deg,transparent 15deg 29deg,rgba(100,205,255,.13) 30deg 38deg,transparent 39deg 55deg),
+ repeating-conic-gradient(from 151deg at 71% 64%,transparent 0 15deg,rgba(255,100,210,.13) 16deg 24deg,transparent 25deg 43deg,rgba(255,224,100,.12) 44deg 51deg,transparent 52deg 68deg),
+ repeating-linear-gradient(37deg,transparent 0 42px,rgba(255,255,255,.13) 43px 44px,transparent 45px 79px)!important;
+ background-size:145px 137px,173px 161px,97px 101px!important;animation:iceShift 5.2s ease-in-out infinite alternate!important}
+.treatment-unhinged .treatment-overlay:after{content:''!important;position:absolute!important;inset:-15%!important;
+ background:linear-gradient(112deg,transparent 35%,rgba(120,220,255,.08) 42%,rgba(255,255,255,.5) 49%,rgba(255,120,220,.13) 55%,transparent 64%)!important;
+ transform:translateX(-60%);animation:iceSweep 3.8s ease-in-out infinite!important}
+@keyframes iceShift{0%{background-position:0 0,0 0,0 0;opacity:.34}100%{background-position:9px -7px,-8px 10px,5px -4px;opacity:.54}}
+@keyframes iceSweep{0%,18%{transform:translateX(-65%);opacity:0}48%{opacity:.78}82%,100%{transform:translateX(65%);opacity:0}}
+
+/* Slow Burn: heated-metal/oil-slick foil, no literal flame particles */
+.treatment-slowburn .treatment-overlay{inset:0!important;opacity:.62!important;mix-blend-mode:screen!important;
+ background:
+ linear-gradient(104deg,transparent 0 12%,rgba(95,20,12,.12) 21%,rgba(185,42,12,.24) 31%,rgba(255,91,16,.34) 40%,rgba(255,172,38,.34) 48%,rgba(255,221,106,.24) 55%,rgba(196,58,18,.23) 64%,rgba(75,18,28,.11) 73%,transparent 84%),
+ radial-gradient(ellipse at 50% 110%,rgba(255,112,20,.26),transparent 58%)!important;
+ background-size:250% 100%,100% 100%!important;animation:heatFoil 5.4s ease-in-out infinite!important}
+.treatment-slowburn .treatment-overlay:after{content:''!important;position:absolute!important;inset:0!important;opacity:.46!important;
+ background:
+ radial-gradient(circle at 14% 84%,rgba(255,235,150,.85) 0 1px,transparent 2px),
+ radial-gradient(circle at 37% 69%,rgba(255,133,32,.72) 0 1px,transparent 2px),
+ radial-gradient(circle at 68% 88%,rgba(255,213,96,.8) 0 1px,transparent 2px),
+ radial-gradient(circle at 86% 61%,rgba(255,105,22,.7) 0 1px,transparent 2px)!important;
+ animation:emberFlicker 2.7s steps(2,end) infinite!important}
+@keyframes heatFoil{0%{background-position:120% 0,0 0;filter:saturate(1.05)}50%{filter:saturate(1.45)}100%{background-position:-120% 0,0 0;filter:saturate(1.08)}}
+@keyframes emberFlicker{0%,100%{opacity:.18;transform:translateY(1px)}45%{opacity:.72}70%{opacity:.34;transform:translateY(-2px)}}
+
+/* Aftercare: champagne pearl + microscopic diamond dust + rare starburst */
+.treatment-aftercare .treatment-overlay{inset:0!important;opacity:.7!important;mix-blend-mode:screen!important;
+ background:
+ radial-gradient(circle,rgba(255,255,255,.78) 0 .7px,transparent 1.5px) 0 0/17px 19px,
+ radial-gradient(circle,rgba(255,239,215,.65) 0 .7px,transparent 1.5px) 8px 11px/23px 27px,
+ radial-gradient(circle,rgba(218,230,255,.6) 0 .7px,transparent 1.4px) 3px 6px/31px 29px,
+ linear-gradient(112deg,transparent 7%,rgba(255,248,235,.1) 24%,rgba(255,255,255,.52) 39%,rgba(222,233,255,.21) 47%,rgba(255,226,241,.18) 54%,rgba(255,242,205,.16) 62%,transparent 79%)!important;
+ background-size:17px 19px,23px 27px,31px 29px,260% 100%!important;animation:pearlSweep 6.2s ease-in-out infinite!important}
+.treatment-aftercare .treatment-overlay:before{content:''!important;position:absolute!important;inset:0!important;
+ background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.16),transparent 62%)!important;animation:diamondDust 1.8s steps(3,end) infinite!important}
+.treatment-aftercare .treatment-overlay:after{content:'✦'!important;position:absolute!important;left:66%!important;top:25%!important;width:auto!important;height:auto!important;color:#fff!important;font-size:39px!important;line-height:1!important;letter-spacing:0!important;text-shadow:0 0 5px #fff,0 0 14px rgba(225,235,255,.95),0 0 28px rgba(255,225,240,.55)!important;animation:rareStarburst 4.8s ease-in-out infinite!important}
+@keyframes pearlSweep{0%{background-position:0 0,8px 11px,3px 6px,125% 0}100%{background-position:3px -2px,6px 14px,5px 4px,-125% 0}}
+@keyframes diamondDust{0%{opacity:.18;filter:brightness(1)}50%{opacity:.58;filter:brightness(1.55)}100%{opacity:.28;filter:brightness(1.1)}}
+@keyframes rareStarburst{0%,58%,100%{opacity:0;transform:scale(.2) rotate(0deg)}68%{opacity:1;transform:scale(1.18) rotate(14deg)}76%{opacity:.28;transform:scale(.62) rotate(22deg)}}
