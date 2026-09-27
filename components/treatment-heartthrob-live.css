@@ -24,8 +24,8 @@
   background-size:190% 190%;
   background-position:38% 50%;
   mix-blend-mode:screen;
-  opacity:.36;
-  filter:saturate(1.35) brightness(1.08) drop-shadow(0 0 1px rgba(255,255,255,.20));
+  opacity:.46;
+  filter:saturate(1.52) brightness(1.18) contrast(1.08) drop-shadow(0 0 1.4px rgba(255,255,255,.34));
 }
 
 /* Saturated moving diffraction through the same nested-heart mask. */
@@ -51,9 +51,9 @@
   background-position:var(--foil-x) var(--foil-y),center;
   background-blend-mode:screen;
   mix-blend-mode:color-dodge;
-  opacity:calc(.22 + var(--energy)*.62);
+  opacity:calc(.28 + var(--energy)*.68);
   filter:saturate(calc(1.70 + var(--energy)*.65)) brightness(calc(1.10 + var(--energy)*.34)) contrast(1.07);
-  animation:heartthrob-catch 9s ease-in-out infinite;
+  animation:heartthrob-catch 6.2s ease-in-out infinite;
 }
 
 /* Bright chrome/white flash through the heart pattern, like real double-foil sleeves. */
@@ -74,13 +74,13 @@
   background-size:250% 100%,100% 100%;
   background-position:var(--foil-x) center,center;
   mix-blend-mode:screen;
-  opacity:calc(.26 + var(--energy)*.72);
+  opacity:calc(.30 + var(--energy)*.76);
   filter:blur(.04px) drop-shadow(0 0 2px rgba(255,255,255,.54));
-  animation:heartthrob-sheen 7.7s ease-in-out infinite;
+  animation:heartthrob-sheen 5.4s ease-in-out infinite;
 }
 
 [data-treatment=heartthrob] .foil--texture{
-  opacity:calc(.045 + var(--energy)*.075);
+  opacity:calc(.075 + var(--energy)*.12);
   mix-blend-mode:screen;
 }
 
