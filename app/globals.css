@@ -217,14 +217,60 @@ footer{margin-top:24px;border-top:1px solid #242b22}
 }
 
 
-/* Card treatment prototype */
-.treatment-card{isolation:isolate}.treatment-overlay{position:absolute;inset:0;z-index:8;pointer-events:none;border-radius:inherit;mix-blend-mode:screen}
+/* Card treatment prototype v2 */
+.treatment-card{isolation:isolate;overflow:hidden}.treatment-overlay{position:absolute;inset:0;z-index:8;pointer-events:none;border-radius:inherit;mix-blend-mode:screen;overflow:hidden}
 .treatment-holo .treatment-overlay{background:linear-gradient(115deg,transparent 15%,rgba(255,105,210,.28),rgba(105,205,255,.34),rgba(135,255,205,.28),rgba(255,230,120,.34),transparent 78%);background-size:220% 100%;animation:treatmentSweep 3.2s ease-in-out infinite}
-.treatment-heartthrob .treatment-overlay{opacity:.72;background-image:radial-gradient(circle at 30% 35%,rgba(255,130,220,.28),transparent 16%),radial-gradient(circle at 72% 66%,rgba(130,220,255,.3),transparent 18%);filter:saturate(1.3)}.treatment-heartthrob .treatment-overlay:after{content:'♡  ♡   ♡  ♡   ♡  ♡  ♡   ♡  ♡   ♡';position:absolute;inset:0;color:rgba(255,255,255,.55);font-size:31px;line-height:2.1;letter-spacing:11px;overflow:hidden;text-shadow:0 0 7px #ff8fd0,0 0 12px #7ad9ff}
-.treatment-unhinged .treatment-overlay{opacity:.72;background:conic-gradient(from 25deg at 25% 25%,transparent,#ff75cf55 9%,transparent 16%),conic-gradient(from 170deg at 72% 42%,#77dfff55,transparent 13%,#fff07a55 21%,transparent 31%),conic-gradient(from 300deg at 43% 76%,transparent,#a979ff55 12%,#7affce44 22%,transparent 31%);filter:contrast(1.25)}
-.treatment-slowburn .treatment-overlay{background:radial-gradient(ellipse at 50% 110%,rgba(255,90,20,.55),transparent 48%),linear-gradient(0deg,rgba(255,185,70,.2),transparent 52%);animation:slowBurn 3.8s ease-in-out infinite}
-.treatment-aftercare .treatment-overlay{opacity:.62;background:linear-gradient(112deg,transparent 15%,rgba(255,235,215,.3) 32%,rgba(255,255,255,.68) 44%,rgba(210,225,255,.35) 55%,rgba(255,220,240,.28) 64%,transparent 82%);background-size:220% 100%;animation:treatmentSweep 4.5s ease-in-out infinite;filter:blur(.2px)}
-@keyframes treatmentSweep{0%,100%{background-position:180% 0}50%{background-position:-80% 0}}@keyframes slowBurn{0%,100%{opacity:.38;transform:translateY(6%)}50%{opacity:.85;transform:translateY(-4%)}}
+
+/* Heartthrob: dense full-card kinetic heart refractor */
+.treatment-heartthrob .treatment-overlay{inset:-8%;opacity:.88;background:
+ radial-gradient(circle at 18% 20%,rgba(255,70,190,.24),transparent 20%),
+ radial-gradient(circle at 82% 70%,rgba(90,210,255,.25),transparent 22%),
+ linear-gradient(125deg,transparent 20%,rgba(255,255,255,.3) 42%,rgba(255,90,205,.2) 50%,rgba(100,220,255,.22) 58%,transparent 76%);
+ background-size:auto,auto,230% 100%;animation:heartSheen 2.7s ease-in-out infinite}
+.treatment-heartthrob .treatment-overlay:after{content:'♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡  ♡';position:absolute;inset:-18%;width:136%;height:136%;color:rgba(255,255,255,.62);font-size:26px;line-height:1.55;letter-spacing:7px;word-spacing:10px;overflow:hidden;text-shadow:0 0 6px rgba(255,75,190,.9),0 0 12px rgba(90,205,255,.72);transform:rotate(-8deg) translate3d(-2%,0,0);animation:heartDrift 4.2s ease-in-out infinite alternate}
+
+/* Unhinged: animated multi-facet shattered prism */
+.treatment-unhinged .treatment-overlay{opacity:.9;background:
+ linear-gradient(25deg,transparent 0 27%,rgba(255,70,205,.38) 28% 31%,transparent 32% 100%),
+ linear-gradient(118deg,transparent 0 42%,rgba(90,220,255,.4) 43% 47%,transparent 48% 100%),
+ linear-gradient(202deg,transparent 0 57%,rgba(255,235,80,.34) 58% 62%,transparent 63% 100%),
+ conic-gradient(from 15deg at 18% 22%,transparent 0 8%,rgba(255,70,190,.55) 9% 17%,transparent 18% 31%,rgba(95,215,255,.48) 32% 42%,transparent 43%),
+ conic-gradient(from 140deg at 75% 38%,rgba(120,255,205,.48),transparent 13%,rgba(255,220,90,.48) 21%,transparent 31%,rgba(170,90,255,.5) 42%,transparent 52%),
+ conic-gradient(from 285deg at 45% 78%,transparent 0 11%,rgba(255,90,80,.45) 12% 23%,transparent 24% 37%,rgba(80,190,255,.52) 38% 49%,transparent 50%);
+ background-size:100% 100%,100% 100%,100% 100%,145% 145%,155% 155%,150% 150%;filter:saturate(1.5) contrast(1.12);animation:shatterShift 2.4s ease-in-out infinite alternate}
+.treatment-unhinged .treatment-overlay:after{content:'';position:absolute;inset:0;background:repeating-conic-gradient(from 8deg at 50% 48%,rgba(255,255,255,.0) 0 8deg,rgba(255,255,255,.28) 9deg 10deg,transparent 11deg 27deg);mix-blend-mode:screen;opacity:.48;animation:facetFlash 1.7s steps(5,end) infinite}
+
+/* Slow Burn: embers + moving heat bloom instead of orange wash */
+.treatment-slowburn .treatment-overlay{opacity:.78;background:
+ radial-gradient(circle at 12% 92%,rgba(255,235,170,.95) 0 1px,transparent 2px),
+ radial-gradient(circle at 30% 82%,rgba(255,110,35,.9) 0 1.5px,transparent 2.5px),
+ radial-gradient(circle at 48% 96%,rgba(255,205,90,.9) 0 1px,transparent 2px),
+ radial-gradient(circle at 68% 87%,rgba(255,90,25,.9) 0 1.5px,transparent 2.5px),
+ radial-gradient(circle at 87% 94%,rgba(255,220,130,.9) 0 1px,transparent 2px),
+ linear-gradient(0deg,rgba(255,65,10,.16),rgba(255,170,45,.07) 34%,transparent 66%);
+ background-size:43px 67px,59px 83px,47px 71px,61px 91px,53px 79px,100% 100%;animation:embersRise 3.3s linear infinite}
+.treatment-slowburn .treatment-overlay:after{content:'';position:absolute;left:-25%;right:-25%;height:38%;bottom:-8%;background:radial-gradient(ellipse,rgba(255,235,175,.52),rgba(255,95,20,.24) 38%,transparent 70%);filter:blur(10px);animation:heatBloom 3.6s ease-in-out infinite}
+
+/* Aftercare: highest-tier pearlescent luxury + diamond starbursts */
+.treatment-aftercare .treatment-overlay{opacity:.88;background:
+ radial-gradient(circle at 18% 16%,rgba(255,255,255,.98) 0 1px,transparent 2px),
+ radial-gradient(circle at 79% 28%,rgba(255,250,230,.95) 0 1.2px,transparent 2.4px),
+ radial-gradient(circle at 34% 72%,rgba(220,235,255,.95) 0 1px,transparent 2px),
+ radial-gradient(circle at 82% 82%,rgba(255,225,245,.95) 0 1px,transparent 2px),
+ linear-gradient(108deg,transparent 8%,rgba(255,245,225,.12) 22%,rgba(255,255,255,.86) 38%,rgba(215,230,255,.46) 48%,rgba(255,220,245,.38) 58%,rgba(255,250,215,.28) 68%,transparent 86%);
+ background-size:71px 83px,97px 89px,79px 103px,107px 91px,240% 100%;filter:saturate(.8) brightness(1.06);animation:aftercareSilk 4.4s ease-in-out infinite}
+.treatment-aftercare .treatment-overlay:after{content:'✦     ✧   ✦      ✧    ✦   ✧      ✦     ✧   ✦      ✧';position:absolute;inset:-8%;color:rgba(255,255,255,.92);font-size:22px;line-height:4.2;letter-spacing:13px;text-shadow:0 0 5px #fff,0 0 13px rgba(225,235,255,.95),0 0 24px rgba(255,225,245,.7);animation:diamondTwinkle 2.1s ease-in-out infinite alternate}
+
+@keyframes treatmentSweep{0%,100%{background-position:180% 0}50%{background-position:-80% 0}}
+@keyframes heartSheen{0%,100%{background-position:0 0,0 0,180% 0}50%{background-position:0 0,0 0,-80% 0}}
+@keyframes heartDrift{0%{transform:rotate(-8deg) translate3d(-4%,-3%,0) scale(.98)}100%{transform:rotate(-4deg) translate3d(4%,3%,0) scale(1.05)}}
+@keyframes shatterShift{0%{background-position:0 0,0 0,0 0,-12% -8%,8% 2%,-5% 8%}100%{background-position:0 0,0 0,0 0,8% 10%,-7% 8%,9% -6%}}
+@keyframes facetFlash{0%,100%{opacity:.28}50%{opacity:.72}}
+@keyframes embersRise{from{background-position:0 70px,0 85px,0 75px,0 95px,0 82px,0 0}to{background-position:8px -75px,-7px -92px,5px -78px,-9px -99px,7px -85px,0 0}}
+@keyframes heatBloom{0%,100%{transform:translateY(30%) scale(.9);opacity:.28}50%{transform:translateY(-115%) scale(1.2);opacity:.82}}
+@keyframes aftercareSilk{0%,100%{background-position:0 0,0 0,0 0,0 0,190% 0}50%{background-position:9px 7px,-8px 11px,7px -9px,-10px -6px,-90% 0}}
+@keyframes diamondTwinkle{0%{opacity:.32;transform:translate3d(-1%,1%,0) scale(.96)}55%{opacity:.95}100%{opacity:.5;transform:translate3d(2%,-1%,0) scale(1.04)}}
+
 .treatment-panel{margin:18px 0;padding:16px;border:1px solid #3b4435;border-radius:12px;background:#151a14}.treatment-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}.treatment-heading h3{margin:2px 0}.treatment-heading strong{font-family:var(--serif);font-weight:400;color:var(--gold)}.treatment-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.treatment-option{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:3px 7px;text-align:left;padding:9px 10px;border:1px solid #394234;border-radius:8px;background:#1a2018;color:#e8e7dd}.treatment-option small{grid-column:2;color:#8f998a;font-size:9px}.treatment-option.active{border-color:#d9c991;box-shadow:inset 0 0 0 1px #d9c99155;background:#252a20}.treatment-option.locked{opacity:.55}.creator-unlock,.treatment-note{display:flex;align-items:center;gap:6px;margin:11px 0 0;color:#aeb6a4;font-size:11px;line-height:1.45}.creator-unlock{color:#d9c991}
 @media(max-width:600px){.treatment-panel{padding:13px}.treatment-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.treatment-option{min-height:48px}}
-@media(prefers-reduced-motion:reduce){.treatment-overlay{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.treatment-overlay,.treatment-overlay:after{animation:none!important}}
