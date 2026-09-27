@@ -85,7 +85,7 @@
 [data-treatment=heartthrob] .foil--texture{opacity:calc(.025 + var(--energy)*.05)}
 [data-treatment=heartthrob] .foil--specular{opacity:calc(.13 + var(--energy)*.31)}
 
-/* UNHINGED — shattered prism laminate. */
+/* UNHINGED — quiet shattered prism at rest; movement wakes the fracture foil up. */
 [data-treatment=unhinged] .foil--pattern,
 [data-treatment=unhinged] .foil--diffraction{
   -webkit-mask-image:url('/treatments/ice.svg');
@@ -96,22 +96,59 @@
   mask-repeat:no-repeat;
 }
 [data-treatment=unhinged] .foil--pattern{
-  background:rgba(182,166,255,.22);
+  background:linear-gradient(128deg,rgba(190,170,255,.28),rgba(86,220,255,.12) 48%,rgba(255,96,184,.18));
   mix-blend-mode:screen;
-  opacity:.34;
+  opacity:.18;
 }
 [data-treatment=unhinged] .foil--diffraction{
   background:
-    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.88) 0%,rgba(113,231,255,.45) 18%,transparent 42%),
-    linear-gradient(125deg,#ff48b0,#695cff 17%,#34dfff 33%,#4bffb5 48%,#fff169 62%,#ff774f 76%,#ff48b0);
+    radial-gradient(ellipse 42% 34% at var(--lx) var(--ly),
+      rgba(255,255,255,1) 0%,
+      rgba(111,232,255,.78) 14%,
+      rgba(180,95,255,.52) 27%,
+      transparent 52%),
+    linear-gradient(125deg,
+      #ff48b0,
+      #695cff 17%,
+      #34dfff 33%,
+      #4bffb5 48%,
+      #fff169 62%,
+      #ff774f 76%,
+      #ff48b0);
   background-size:100% 100%,165% 175%;
   background-position:center,var(--foil-x) var(--foil-y);
   mix-blend-mode:color-dodge;
-  opacity:calc(.39 + var(--energy)*.28);
-  filter:contrast(calc(1.22 + var(--energy)*.34)) saturate(calc(1.48 + var(--energy)*.38));
-  animation:unhinged-drift 9s ease-in-out infinite;
+  opacity:calc(.16 + var(--energy)*.62);
+  filter:
+    contrast(calc(1.10 + var(--energy)*.72))
+    saturate(calc(1.20 + var(--energy)*.92))
+    brightness(calc(.98 + var(--energy)*.30));
+  animation:none;
 }
-[data-treatment=unhinged] .foil--texture{opacity:calc(.05 + var(--energy)*.1)}
+[data-treatment=unhinged] .foil--texture{
+  opacity:calc(.025 + var(--energy)*.12);
+}
+[data-treatment=unhinged] .foil--specular{
+  background:
+    linear-gradient(112deg,
+      transparent 0 34%,
+      rgba(255,255,255,.05) 39%,
+      rgba(124,236,255,.34) 44%,
+      rgba(255,255,255,.98) 49%,
+      rgba(211,118,255,.56) 54%,
+      rgba(255,80,181,.22) 59%,
+      transparent 66% 100%),
+    radial-gradient(ellipse 30% 24% at var(--lx) var(--ly),
+      rgba(255,255,255,.92) 0%,
+      rgba(91,225,255,.30) 30%,
+      transparent 68%);
+  background-size:250% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  mix-blend-mode:screen;
+  opacity:calc(.035 + var(--energy)*.74);
+  filter:contrast(calc(1.02 + var(--energy)*.34)) saturate(calc(1.08 + var(--energy)*.44));
+  animation:none;
+}
 
 /* SLOW BURN — irregular ember streak foil. */
 [data-treatment=slowburn] .foil--pattern,
