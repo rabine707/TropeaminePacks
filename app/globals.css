@@ -219,3 +219,25 @@ footer{margin-top:24px;border-top:1px solid #242b22}
 
 .treatment-panel{margin:18px 0;padding:16px;border:1px solid #3b4435;border-radius:12px;background:#151a14}.treatment-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}.treatment-heading h3{margin:2px 0}.treatment-heading strong{font-family:var(--serif);font-weight:400;color:var(--gold)}.treatment-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.treatment-option{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:3px 7px;text-align:left;padding:9px 10px;border:1px solid #394234;border-radius:8px;background:#1a2018;color:#e8e7dd}.treatment-option small{grid-column:2;color:#8f998a;font-size:9px}.treatment-option.active{border-color:#d9c991;box-shadow:inset 0 0 0 1px #d9c99155;background:#252a20}.treatment-option.locked{opacity:.55}.creator-unlock,.treatment-note{display:flex;align-items:center;gap:6px;margin:11px 0 0;color:#aeb6a4;font-size:11px;line-height:1.45}.creator-unlock{color:#d9c991}
 @media(max-width:600px){.treatment-panel{padding:13px}.treatment-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.treatment-option{min-height:48px}}
+
+/* Mobile navigation correction: compact, safe-area-aware dock. */
+@media(max-width:600px){
+ html,body{max-width:100%;overflow-x:hidden}
+ .workspace{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+ .sidebar{
+  height:calc(58px + env(safe-area-inset-bottom));
+  padding:4px 8px env(safe-area-inset-bottom);
+  overflow:hidden;
+ }
+ .sidebar nav{height:54px;align-items:stretch;gap:0}
+ .sidebar .nav-link{
+  min-width:0;min-height:54px;height:54px;padding:5px 1px 4px;
+  gap:1px;font-size:8px;line-height:1;overflow:hidden;
+ }
+ .sidebar .nav-link svg{width:18px;height:18px;flex:0 0 auto}
+ .sidebar .nav-link.active{background:#242a20;border-color:#3d4637;box-shadow:inset 0 2px var(--gold)}
+ .how-it-works{bottom:calc(70px + env(safe-area-inset-bottom))!important}
+ .starter-checklist{bottom:calc(124px + env(safe-area-inset-bottom))!important}
+ dialog.modal{overscroll-behavior:contain}
+ .detail-layout{touch-action:pan-y;overscroll-behavior:contain}
+}
