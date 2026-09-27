@@ -293,3 +293,5 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .workspace{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  .how-it-works{bottom:calc(96px + env(safe-area-inset-bottom))!important}
 }
+
+.detail-locked-art{position:relative;overflow:hidden;border-radius:12px;background:#0b0d0a}.detail-locked-art .card-art{filter:grayscale(1) brightness(.18);opacity:.72}.detail-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:#d9d5c6;background:rgba(5,7,5,.28);pointer-events:none}.detail-lock strong{font-size:15px;letter-spacing:.16em}.detail-lock small{max-width:210px;color:#aaaF9f;line-height:1.4}
