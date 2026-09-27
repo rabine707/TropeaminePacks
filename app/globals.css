@@ -292,3 +292,37 @@ footer{margin-top:24px;border-top:1px solid #242b22}
   padding-bottom:3px!important;
  }
 }
+
+/* Final iOS nav geometry: icon + label live in a fixed visible strip above Safari chrome. */
+@media(max-width:600px){
+ :root{--mobile-nav-visible:58px;--mobile-nav-lift:18px}
+ .sidebar{
+  height:calc(var(--mobile-nav-visible) + env(safe-area-inset-bottom) + var(--mobile-nav-lift))!important;
+  min-height:calc(var(--mobile-nav-visible) + env(safe-area-inset-bottom) + var(--mobile-nav-lift))!important;
+  padding:0 8px env(safe-area-inset-bottom)!important;
+  overflow:visible!important;
+ }
+ .sidebar nav{
+  position:absolute!important;
+  left:8px!important;right:8px!important;top:0!important;
+  height:var(--mobile-nav-visible)!important;
+  min-height:var(--mobile-nav-visible)!important;
+  transform:translateY(calc(-1 * var(--mobile-nav-lift)))!important;
+  overflow:visible!important;
+ }
+ .sidebar .nav-link{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:var(--mobile-nav-visible)!important;
+  min-height:var(--mobile-nav-visible)!important;
+  padding:5px 1px 4px!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  font-size:9px!important;
+  line-height:11px!important;
+ }
+ .sidebar .nav-link svg{display:block!important;width:20px!important;height:20px!important;margin:0 0 3px!important;flex:none!important}
+ .workspace{padding-bottom:calc(var(--mobile-nav-visible) + env(safe-area-inset-bottom) + 8px)!important}
+}
