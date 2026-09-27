@@ -4,19 +4,39 @@
 .physical-card__surface{position:relative;isolation:isolate;border-radius:inherit;transform:rotateX(var(--rx)) rotateY(var(--ry));box-shadow:0 14px 32px #0005}
 .physical-card .card-art{margin:0;isolation:isolate}
 .physical-card img{-webkit-user-drag:none;pointer-events:none}
-.physical-card__finish{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;mix-blend-mode:color-dodge;/* Keep baked-in titles and footer text quiet. */mask-image:linear-gradient(#0003,#0005 12%,#000 24%,#000 65%,#0004 81%,#0002)}
-.physical-card__material,.physical-card__grain,.physical-card__glare{position:absolute;inset:0;border-radius:inherit}
-.physical-card__material{background:repeating-linear-gradient(118deg,#ec87cf 0%,#8d9eeb 12%,#87dce5 24%,#bde8a1 36%,#efd799 48%,#ef9cba 60%);background-size:280% 260%;background-position:var(--foil-x) var(--foil-y);mix-blend-mode:color-dodge;opacity:calc(.09 + var(--energy)*.28);mask-image:radial-gradient(ellipse at var(--lx) var(--ly),#000 4%,#0009 36%,#0001 74%)}
-.physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),#fff8 0%,#fff2 15%,#fff0 48%);mix-blend-mode:screen;opacity:calc(.08 + var(--energy)*.33)}
-.physical-card__grain{background-image:url('/treatments/dust.svg');background-size:100% 100%;mix-blend-mode:screen;opacity:calc(.035 + var(--energy)*.13);mask-image:radial-gradient(ellipse at var(--lx) var(--ly),#000,transparent 62%)}
-[data-treatment=heartthrob] .physical-card__material{mask-image:url('/treatments/hearts-a.svg');mask-size:100% 100%;opacity:calc(.12 + var(--energy)*.4);animation:foil-heartbeat 2.8s ease-in-out infinite}
-[data-treatment=heartthrob] .physical-card__material--second{mask-image:url('/treatments/hearts-b.svg');animation-delay:-.42s;background-position:var(--foil-y) var(--foil-x)}
-[data-treatment=heartthrob] .physical-card__finish{background:transparent}
-[data-treatment=unhinged] .physical-card__material{mask-image:url('/treatments/ice.svg');mask-size:100% 100%;opacity:calc(.13 + var(--energy)*.43);background-size:190% 190%}
-[data-treatment=slowburn] .physical-card__material{background-image:repeating-radial-gradient(ellipse at 28% 71%,#501c39 0%,#9a432a 7%,#f08539 13%,#ffd986 19%,#c36b38 23%,#74536b 27%,#ad502e 32%);background-size:240% 250%;opacity:calc(.13 + var(--energy)*.36);mix-blend-mode:color-dodge}
-[data-treatment=aftercare] .physical-card__material{background-image:linear-gradient(120deg,#aebedc,#f7edcf 25%,#fff 38%,#efcddb 47%,#b9cedc 56%,#f7edcf 68%,#fff 80%);opacity:calc(.09 + var(--energy)*.22);background-size:240% 240%;mix-blend-mode:screen}
-[data-treatment=aftercare] .physical-card__grain{opacity:calc(.16 + var(--energy)*.5)}
-@keyframes foil-heartbeat{0%,34%,100%{scale:1;filter:brightness(1)}10%{scale:1.012;filter:brightness(1.12)}17%{scale:1;filter:brightness(1)}24%{scale:1.02;filter:brightness(1.2)}}
-@media(prefers-reduced-motion:reduce){.physical-card__surface{transform:none}.physical-card__material{animation:none}}
+.physical-card__finish{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;mix-blend-mode:color-dodge;mask-image:linear-gradient(#0003,#0005 12%,#000 24%,#000 65%,#0004 81%,#0002)}
+.physical-card__material,.physical-card__grain,.physical-card__glare{position:absolute;inset:0;border-radius:inherit;transition:transform 120ms linear,filter 120ms linear,opacity 120ms linear}
 
-[data-treatment=heartthrob] .physical-card__material,[data-treatment=unhinged] .physical-card__material{background-image:radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#999 35%,#171717 75%),repeating-linear-gradient(118deg,#ec87cf 0%,#8d9eeb 12%,#87dce5 24%,#bde8a1 36%,#efd799 48%,#ef9cba 60%);background-size:100% 100%,280% 260%;background-position:center,var(--foil-x) var(--foil-y);background-blend-mode:multiply}
+/* Shared physical foil base: always visible, movement increases the light response. */
+.physical-card__material{background:repeating-linear-gradient(118deg,#ec87cf 0%,#8d9eeb 12%,#87dce5 24%,#bde8a1 36%,#efd799 48%,#ef9cba 60%);background-size:280% 260%;background-position:var(--foil-x) var(--foil-y);mix-blend-mode:color-dodge;opacity:calc(.12 + var(--energy)*.24);mask-image:radial-gradient(ellipse at var(--lx) var(--ly),#000 6%,#0009 36%,#0001 74%);filter:saturate(calc(1.05 + var(--energy)*.18)) brightness(calc(1 + var(--energy)*.08))}
+.physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),#fff9 0%,#fff3 16%,#fff0 48%);mix-blend-mode:screen;opacity:calc(.06 + var(--energy)*.32)}
+.physical-card__grain{background-image:url('/treatments/dust.svg');background-size:100% 100%;mix-blend-mode:screen;opacity:calc(.025 + var(--energy)*.10);mask-image:radial-gradient(ellipse at var(--lx) var(--ly),#000,transparent 62%)}
+
+/* Holo: clean directional rainbow diffraction. */
+[data-treatment=holo] .physical-card__material{opacity:calc(.16 + var(--energy)*.22);background-size:260% 230%;filter:saturate(calc(1.1 + var(--energy)*.22)) brightness(calc(1.02 + var(--energy)*.10))}
+[data-treatment=holo] .physical-card__glare{opacity:calc(.08 + var(--energy)*.34)}
+
+/* Heartthrob: clearly readable hearts at rest, stronger chrome/pink-blue pulse in motion. */
+[data-treatment=heartthrob] .physical-card__finish{background:transparent}
+[data-treatment=heartthrob] .physical-card__material{mask-image:url('/treatments/hearts-a.svg');mask-size:100% 100%;opacity:calc(.22 + var(--energy)*.32);background-image:radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#ffd7ec 24%,#ccecff 44%,#171717 74%),repeating-linear-gradient(118deg,#ec87cf 0%,#8d9eeb 12%,#87dce5 24%,#bde8a1 36%,#efd799 48%,#ef9cba 60%);background-size:100% 100%,280% 260%;background-position:center,var(--foil-x) var(--foil-y);background-blend-mode:multiply;transform:scale(calc(1 + var(--energy)*.04));filter:brightness(calc(1.05 + var(--energy)*.45)) saturate(calc(1.08 + var(--energy)*.35));animation:foil-heartbeat 2.35s ease-in-out infinite}
+[data-treatment=heartthrob] .physical-card__material--second{mask-image:url('/treatments/hearts-b.svg');mask-size:100% 100%;opacity:calc(.14 + var(--energy)*.26);background-position:center,var(--foil-y) var(--foil-x);transform:scale(calc(1 + var(--energy)*.025));filter:brightness(calc(1.03 + var(--energy)*.28)) saturate(calc(1.04 + var(--energy)*.22));animation-delay:-.38s}
+[data-treatment=heartthrob] .physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.82) 0%,rgba(255,190,225,.26) 18%,rgba(175,225,255,.14) 34%,rgba(255,255,255,0) 56%);opacity:calc(.10 + var(--energy)*.26)}
+[data-treatment=heartthrob] .physical-card__grain{opacity:calc(.035 + var(--energy)*.11)}
+@keyframes foil-heartbeat{0%,40%,100%{scale:1;filter:brightness(1)}8%{scale:1.025;filter:brightness(1.18)}14%{scale:1.006;filter:brightness(1.05)}24%{scale:1.045;filter:brightness(1.32)}32%{scale:1.01;filter:brightness(1.08)}}
+
+/* Unhinged: visible fractured facets at rest; motion sharpens and destabilizes the refraction. */
+[data-treatment=unhinged] .physical-card__material{mask-image:url('/treatments/ice.svg');mask-size:100% 100%;opacity:calc(.18 + var(--energy)*.30);background-image:radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#999 35%,#171717 75%),repeating-linear-gradient(118deg,#ec87cf 0%,#8d9eeb 12%,#87dce5 24%,#bde8a1 36%,#efd799 48%,#ef9cba 60%);background-size:100% 100%,210% 210%;background-position:center,var(--foil-x) var(--foil-y);background-blend-mode:multiply;filter:contrast(calc(1.08 + var(--energy)*.28)) saturate(calc(1.14 + var(--energy)*.34));transform:translate(calc((var(--foil-x) - 50%)*.018),calc((var(--foil-y) - 50%)*.018))}
+[data-treatment=unhinged] .physical-card__glare{background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.08) 33%,rgba(255,255,255,.34) 48%,rgba(140,220,255,.16) 55%,rgba(255,155,225,.10) 61%,transparent 74%),radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.45) 0%,rgba(255,255,255,.12) 16%,rgba(255,255,255,0) 44%);opacity:calc(.09 + var(--energy)*.36);filter:contrast(calc(1 + var(--energy)*.35))}
+[data-treatment=unhinged] .physical-card__grain{opacity:calc(.05 + var(--energy)*.18)}
+
+/* Slow Burn: warm ember/oil interference at rest; movement visibly stokes the heat. */
+[data-treatment=slowburn] .physical-card__material{background-image:repeating-radial-gradient(ellipse at 28% 71%,#501c39 0%,#9a432a 7%,#f08539 13%,#ffd986 19%,#c36b38 23%,#74536b 27%,#ad502e 32%);background-size:220% 230%;background-position:var(--foil-x) var(--foil-y);opacity:calc(.18 + var(--energy)*.28);mix-blend-mode:color-dodge;filter:saturate(calc(1.14 + var(--energy)*.42)) brightness(calc(1.02 + var(--energy)*.14))}
+[data-treatment=slowburn] .physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,248,205,.58) 0%,rgba(255,176,72,.24) 18%,rgba(255,91,28,.12) 34%,rgba(255,255,255,0) 56%),linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(255,115,35,.08) 84%,rgba(255,160,70,.14) 100%);opacity:calc(.08 + var(--energy)*.42)}
+[data-treatment=slowburn] .physical-card__grain{opacity:calc(.06 + var(--energy)*.16);filter:blur(.35px) brightness(calc(1 + var(--energy)*.45))}
+
+/* Aftercare: persistent pearl/satin finish; movement adds a smooth premium bloom and diamond dust. */
+[data-treatment=aftercare] .physical-card__material{background-image:linear-gradient(120deg,#aebedc,#f7edcf 25%,#fff 38%,#efcddb 47%,#b9cedc 56%,#f7edcf 68%,#fff 80%);background-size:230% 230%;background-position:var(--foil-x) var(--foil-y);opacity:calc(.15 + var(--energy)*.18);mix-blend-mode:screen;filter:saturate(calc(1.02 + var(--energy)*.12)) brightness(calc(1.02 + var(--energy)*.08))}
+[data-treatment=aftercare] .physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.78) 0%,rgba(255,244,233,.22) 18%,rgba(235,240,255,.12) 34%,rgba(255,255,255,0) 56%);opacity:calc(.09 + var(--energy)*.24);filter:blur(calc(1px + var(--energy)*1.5px))}
+[data-treatment=aftercare] .physical-card__grain{opacity:calc(.18 + var(--energy)*.36);filter:brightness(calc(1.05 + var(--energy)*.5))}
+
+@media(prefers-reduced-motion:reduce){.physical-card__surface{transform:none}.physical-card__material{animation:none}}
