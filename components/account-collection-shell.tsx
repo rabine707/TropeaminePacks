@@ -31,22 +31,26 @@ function rarityLabel(value:string):Card['rarity']{
 }
 
 async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Card[]>{
- const [{data,error},{data:membershipData,error:membershipError}]=await Promise.all([
+ const [{data,error},{data:membershipData,error:membershipError},{data:packData,error:packError}]=await Promise.all([
   client.from('cards').select(`
    id,number,book_range,description,published,
    characters!inner(id,name,bio,lore,series!inner(id,title,author,published)),
    card_sets!inner(id,title,code,published),
    variants!inner(id,label,rarity,rating,premium,foil,available,card_assets(id,side,storage_path))
   `).eq('published',true).order('created_at',{ascending:true}),
-  client.from('card_pack_memberships').select('card_id,pack_id')
+  client.from('card_pack_memberships').select('card_id,pack_id'),
+  client.from('packs').select('id,slug').eq('active',true)
  ]);
  if(error)throw error;
  if(membershipError)throw membershipError;
+ if(packError)throw packError;
  const rows=(data??[]) as any[];
+ const packSlugs=new Map<string,string>((packData??[]).map(pack=>[String(pack.id),String(pack.slug)]));
  const memberships=new Map<string,string[]>();
  for(const membership of membershipData??[]){
-  const cardId=String(membership.card_id),packId=String(membership.pack_id);
-  memberships.set(cardId,[...(memberships.get(cardId)??[]),packId]);
+  const cardId=String(membership.card_id),packSlug=packSlugs.get(String(membership.pack_id));
+  if(!packSlug)continue;
+  memberships.set(cardId,[...(memberships.get(cardId)??[]),packSlug]);
  }
  const cards:Card[]=[];
  for(const row of rows){
@@ -123,13 +127,6 @@ export default function AccountCollectionShell(){
   if(liveCardsResult.cards.length)local={...local,cards:liveCardsResult.cards};
 
   if(!nextUser){
-   // Logged-out visitors still get a public Felicity sandbox so treatment work never
-   // depends on an account or stale local ownership. This is preview-only: it does
-   // not write to collection_items and therefore never grants real ownership.
-   const felicity=local.cards.find(card=>card.name==='Felicity');
-   if(felicity&&!local.wallet.owned.includes(felicity.id)){
-    local={...local,wallet:{...local.wallet,owned:[...local.wallet.owned,felicity.id]}};
-   }
    try{localStorage.setItem(LOCAL_KEY,JSON.stringify(local))}catch{}
    setHydrated(true);
    return;
@@ -187,7 +184,7 @@ export default function AccountCollectionShell(){
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>Opening your collection…</h1></main>;
  return <div className={user?'cloud-authenticated':''}>
-  <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onSpendInk={async amount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('spend_ink',{amount});if(error)throw error;const next={ink:Number(data.ink),shards:Number(data.shards)};setWallet(next);return next}}/>
+  <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onCraftCard={async cardId=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_missing_card',{target_card_id:cardId});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onOpenPack={async duplicateCount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('settle_pack',{duplicate_count:duplicateCount});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
    <summary aria-label="Open account menu">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</summary>
    <div className="cloud-account-popover">
