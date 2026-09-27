@@ -271,3 +271,16 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .account-showcase-grid>div:not(.showcase-placeholder){display:block}
  .account-showcase-grid>div>img{aspect-ratio:2/3;border-radius:7px}
 }
+
+/* iPhone QA round 3 */
+.account-home{margin:0 0 14px}.detail-layout{position:relative}.card-step{position:absolute;top:34%;z-index:6;width:44px;height:52px;border-radius:22px;border:1px solid #59634d;background:#10150ed9;color:#e7dfc1;display:flex;align-items:center;justify-content:center}.card-step.prev{left:-28px}.card-step.next{right:-28px}
+@media(max-width:600px){
+ .sidebar{height:calc(96px + env(safe-area-inset-bottom));padding:4px 8px env(safe-area-inset-bottom)}
+ .sidebar nav{height:74px;align-items:start}
+ .sidebar .nav-link{height:70px;min-height:70px;padding:4px 2px 16px;justify-content:flex-start;gap:2px}
+ .sidebar .nav-link svg{width:18px;height:18px;margin-top:0}
+ .workspace{padding-bottom:calc(106px + env(safe-area-inset-bottom))}
+ .how-it-works{bottom:calc(110px + env(safe-area-inset-bottom))!important}
+ .account-page{padding-top:22px}.account-home{min-height:44px;margin-bottom:14px}
+ .card-step{top:250px;width:42px;height:50px}.card-step.prev{left:-14px}.card-step.next{right:-14px}
+}
