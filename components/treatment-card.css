@@ -168,3 +168,101 @@
 }
 [data-treatment=aftercare] .physical-card__grain{opacity:calc(.30 + var(--energy)*.40)}
 [data-treatment=aftercare] .physical-card__glare{opacity:calc(.16 + var(--energy)*.34)}
+
+
+/* Premium sheen pass: strong specular band over every specialty finish. */
+[data-treatment=holo] .physical-card__glare,
+[data-treatment=heartthrob] .physical-card__glare,
+[data-treatment=unhinged] .physical-card__glare,
+[data-treatment=slowburn] .physical-card__glare,
+[data-treatment=aftercare] .physical-card__glare{
+  background:
+    linear-gradient(112deg,transparent 18%,rgba(255,255,255,.04) 30%,rgba(255,255,255,.48) 43%,rgba(255,255,255,.92) 49%,rgba(255,255,255,.32) 55%,transparent 68%),
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.82) 0%,rgba(255,255,255,.22) 18%,transparent 48%);
+  background-size:220% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
+  mix-blend-mode:screen;
+  animation:ambient-sheen 8.5s ease-in-out infinite;
+}
+
+/* Heartthrob: sleeve-print scale rather than floating sticker hearts. */
+[data-treatment=heartthrob] .physical-card__material{
+  opacity:calc(.34 + var(--energy)*.22);
+  -webkit-mask-size:72% 72%;
+  -webkit-mask-repeat:repeat;
+  mask-size:72% 72%;
+  mask-repeat:repeat;
+  filter:brightness(calc(1.08 + var(--energy)*.28)) saturate(calc(1.35 + var(--energy)*.4)) drop-shadow(0 0 1.2px rgba(255,255,255,.38));
+}
+[data-treatment=heartthrob] .physical-card__material--second{
+  opacity:calc(.30 + var(--energy)*.22);
+  -webkit-mask-size:62% 62%;
+  -webkit-mask-repeat:repeat;
+  mask-size:62% 62%;
+  mask-repeat:repeat;
+}
+
+/* Slow Burn: Blue-Rain-inspired hot foil striations instead of flame blobs. */
+[data-treatment=slowburn] .physical-card__material{
+  opacity:calc(.42 + var(--energy)*.34);
+  background-image:
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,250,205,.95) 0 4%,rgba(255,174,44,.34) 14%,transparent 31%),
+    repeating-linear-gradient(96deg,
+      rgba(65,4,17,.82) 0 2px,
+      rgba(156,20,17,.88) 2px 4px,
+      rgba(255,67,12,.96) 4px 6px,
+      rgba(255,161,22,.98) 6px 8px,
+      rgba(255,239,142,.94) 8px 9px,
+      rgba(255,91,12,.9) 9px 12px,
+      rgba(95,8,30,.84) 12px 15px);
+  background-size:100% 100%,145% 230%;
+  mix-blend-mode:color-dodge;
+  filter:saturate(calc(1.7 + var(--energy)*.55)) contrast(1.12) brightness(calc(1.05 + var(--energy)*.2));
+  animation:ambient-fire-rain 7.5s linear infinite;
+}
+[data-treatment=slowburn] .physical-card__grain{opacity:calc(.12 + var(--energy)*.18)}
+
+/* Holo: broad soft optical bloom like smooth holographic laminate. */
+[data-treatment=holo] .physical-card__material{
+  background-image:
+    radial-gradient(ellipse 72% 58% at var(--lx) var(--ly),rgba(255,255,255,.96) 0%,rgba(255,246,87,.88) 11%,rgba(83,255,172,.7) 22%,rgba(74,213,255,.62) 34%,rgba(164,103,255,.58) 47%,rgba(255,74,174,.64) 59%,rgba(255,92,72,.52) 70%,transparent 82%),
+    linear-gradient(118deg,#ff4ca8,#8f6cff 18%,#45e7ff 35%,#79ffb5 50%,#fff36f 64%,#ff8d54 80%,#ff4ca8);
+  background-size:125% 125%,185% 185%;
+  opacity:calc(.40 + var(--energy)*.28);
+  filter:saturate(calc(1.38 + var(--energy)*.36)) brightness(calc(1.05 + var(--energy)*.15));
+}
+
+/* Unhinged: make the fractured laminate read across the whole card. */
+[data-treatment=unhinged] .physical-card__material{
+  opacity:calc(.48 + var(--energy)*.30);
+  filter:contrast(calc(1.38 + var(--energy)*.42)) saturate(calc(1.72 + var(--energy)*.45)) brightness(1.08);
+}
+
+/* Aftercare: glassy opal surface, bright but soft. */
+[data-treatment=aftercare] .physical-card__material{
+  opacity:calc(.38 + var(--energy)*.22);
+  filter:saturate(calc(1.35 + var(--energy)*.24)) brightness(calc(1.10 + var(--energy)*.14));
+}
+[data-treatment=aftercare] .physical-card__grain{
+  opacity:calc(.34 + var(--energy)*.34);
+  mix-blend-mode:screen;
+}
+
+@keyframes ambient-sheen{
+  0%,100%{background-position:-70% center,center;opacity:.16}
+  18%{opacity:.24}
+  48%{background-position:165% center,center;opacity:.52}
+  62%{opacity:.20}
+  100%{background-position:165% center,center;opacity:.16}
+}
+@keyframes ambient-fire-rain{
+  0%{background-position:center,30% 110%}
+  100%{background-position:center,70% -110%}
+}
+
+.physical-card:hover .physical-card__glare,
+.physical-card:active .physical-card__glare{animation-play-state:paused}
+
+@media(prefers-reduced-motion:reduce){
+  [data-treatment] .physical-card__glare{animation:none}
+}
