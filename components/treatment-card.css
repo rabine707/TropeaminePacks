@@ -39,3 +39,70 @@
 [data-treatment=aftercare] .physical-card__grain{opacity:calc(.18 + var(--energy)*.36);filter:brightness(calc(1.05 + var(--energy)*.5))}
 
 @media(prefers-reduced-motion:reduce){.physical-card__surface{transform:none}.physical-card__material{animation:none}}
+
+
+/* Ambient foil lifecycle: the card and treatment shapes stay fixed while virtual light moves across the material. */
+[data-treatment=holo] .physical-card__material{animation:ambient-holo 11s ease-in-out infinite}
+[data-treatment=heartthrob] .physical-card__material{animation:ambient-heart-light 12s ease-in-out infinite}
+[data-treatment=heartthrob] .physical-card__material--second{animation:ambient-heart-light-secondary 15s ease-in-out -4s infinite}
+[data-treatment=unhinged] .physical-card__material{animation:ambient-unhinged 9s ease-in-out infinite}
+[data-treatment=slowburn] .physical-card__material{animation:ambient-slowburn 13s ease-in-out infinite}
+[data-treatment=aftercare] .physical-card__material{animation:ambient-aftercare 16s ease-in-out infinite}
+[data-treatment=aftercare] .physical-card__grain{animation:ambient-diamond-dust 7s ease-in-out -2s infinite}
+
+@keyframes ambient-holo{
+  0%,100%{background-position:18% 42%;filter:saturate(1.1) brightness(1.02)}
+  32%{background-position:72% 58%;filter:saturate(1.28) brightness(1.10)}
+  58%{background-position:88% 28%;filter:saturate(1.18) brightness(1.05)}
+  78%{background-position:38% 70%;filter:saturate(1.34) brightness(1.12)}
+}
+
+@keyframes ambient-heart-light{
+  0%,100%{background-position:center,12% 34%;filter:brightness(1.08) saturate(1.26) drop-shadow(0 0 2px rgba(255,135,196,.28))}
+  24%{background-position:center,48% 58%;filter:brightness(1.20) saturate(1.42) drop-shadow(0 0 3px rgba(255,194,225,.42))}
+  48%{background-position:center,88% 32%;filter:brightness(1.12) saturate(1.34) drop-shadow(0 0 2px rgba(128,229,255,.38))}
+  72%{background-position:center,62% 78%;filter:brightness(1.24) saturate(1.46) drop-shadow(0 0 3px rgba(191,169,255,.42))}
+}
+
+@keyframes ambient-heart-light-secondary{
+  0%,100%{background-position:center,84% 24%;filter:brightness(1.02) saturate(1.14)}
+  35%{background-position:center,32% 68%;filter:brightness(1.17) saturate(1.32)}
+  67%{background-position:center,68% 44%;filter:brightness(1.08) saturate(1.22)}
+}
+
+@keyframes ambient-unhinged{
+  0%,100%{background-position:center,18% 32%;filter:contrast(1.08) saturate(1.14)}
+  37%{background-position:center,78% 62%;filter:contrast(1.28) saturate(1.38)}
+  42%{background-position:center,70% 48%;filter:contrast(1.18) saturate(1.30)}
+  74%{background-position:center,36% 76%;filter:contrast(1.34) saturate(1.42)}
+}
+
+@keyframes ambient-slowburn{
+  0%,100%{background-position:38% 82%;filter:saturate(1.14) brightness(1.02)}
+  28%{background-position:52% 56%;filter:saturate(1.30) brightness(1.08)}
+  57%{background-position:66% 28%;filter:saturate(1.22) brightness(1.05)}
+  79%{background-position:44% 48%;filter:saturate(1.38) brightness(1.12)}
+}
+
+@keyframes ambient-aftercare{
+  0%,100%{background-position:12% 42%;filter:saturate(1.02) brightness(1.02)}
+  36%{background-position:58% 54%;filter:saturate(1.08) brightness(1.09)}
+  68%{background-position:88% 36%;filter:saturate(1.04) brightness(1.05)}
+  84%{background-position:64% 72%;filter:saturate(1.10) brightness(1.11)}
+}
+
+@keyframes ambient-diamond-dust{
+  0%,100%{opacity:.18;filter:brightness(1.05)}
+  46%{opacity:.30;filter:brightness(1.32)}
+  52%{opacity:.42;filter:brightness(1.62)}
+  60%{opacity:.24;filter:brightness(1.18)}
+}
+
+/* Interaction raises the existing pointer-driven energy above the ambient baseline. */
+.physical-card:hover .physical-card__material,
+.physical-card:active .physical-card__material{animation-play-state:paused}
+
+@media(prefers-reduced-motion:reduce){
+  [data-treatment] .physical-card__material,
+  [data-treatment] .physical-card__grain{animation:none}
+}
