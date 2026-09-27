@@ -2,7 +2,7 @@
 
 import {useEffect, useRef, type PointerEvent, type ReactNode} from 'react';
 import './treatment-card.css';
-import './treatment-holo-heart-preview.css';
+import './treatment-holo-live.css';
 
 export type Treatment = 'base' | 'holo' | 'heartthrob' | 'unhinged' | 'slowburn' | 'aftercare';
 
