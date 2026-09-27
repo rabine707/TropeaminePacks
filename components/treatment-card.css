@@ -1,268 +1,230 @@
-.physical-card{--rx:0deg;--ry:0deg;--lx:50%;--ly:50%;--foil-x:50%;--foil-y:50%;--energy:0;perspective:1000px;position:relative;touch-action:pan-y pinch-zoom;user-select:none;cursor:grab;border-radius:11px}
+.physical-card{
+  --rx:0deg;--ry:0deg;--lx:50%;--ly:50%;--foil-x:50%;--foil-y:50%;--energy:0;
+  perspective:1000px;position:relative;touch-action:pan-y pinch-zoom;user-select:none;cursor:grab;border-radius:11px;
+}
 .physical-card:active{cursor:grabbing}
 .physical-card:focus-visible{outline:2px solid var(--gold);outline-offset:7px}
-.physical-card__surface{position:relative;isolation:isolate;border-radius:inherit;transform:rotateX(var(--rx)) rotateY(var(--ry));box-shadow:0 14px 32px #0005}
+.physical-card__surface{
+  position:relative;isolation:isolate;border-radius:inherit;
+  transform:rotateX(var(--rx)) rotateY(var(--ry));
+  box-shadow:0 14px 32px #0005;
+}
 .physical-card .card-art{margin:0;isolation:isolate}
 .physical-card img{-webkit-user-drag:none;pointer-events:none}
-.physical-card__finish{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;mix-blend-mode:color-dodge;mask-image:linear-gradient(#0003,#0005 12%,#000 24%,#000 65%,#0004 81%,#0002)}
-.physical-card__material,.physical-card__grain,.physical-card__glare{position:absolute;inset:0;border-radius:inherit;transition:transform 120ms linear,filter 120ms linear,opacity 120ms linear}
 
-/* Shared physical foil base: always visible, movement increases the light response. */
-.physical-card__material{background:repeating-linear-gradient(118deg,#ec87cf 0%,#8d9eeb 12%,#87dce5 24%,#bde8a1 36%,#efd799 48%,#ef9cba 60%);background-size:280% 260%;background-position:var(--foil-x) var(--foil-y);mix-blend-mode:color-dodge;opacity:calc(.12 + var(--energy)*.24);mask-image:radial-gradient(ellipse at var(--lx) var(--ly),#000 6%,#0009 36%,#0001 74%);filter:saturate(calc(1.05 + var(--energy)*.18)) brightness(calc(1 + var(--energy)*.08))}
-.physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),#fff9 0%,#fff3 16%,#fff0 48%);mix-blend-mode:screen;opacity:calc(.06 + var(--energy)*.32)}
-.physical-card__grain{background-image:url('/treatments/dust.svg');background-size:100% 100%;mix-blend-mode:screen;opacity:calc(.025 + var(--energy)*.10);mask-image:radial-gradient(ellipse at var(--lx) var(--ly),#000,transparent 62%)}
-
-/* Holo: clean directional rainbow diffraction. */
-[data-treatment=holo] .physical-card__material{opacity:calc(.16 + var(--energy)*.22);background-size:260% 230%;filter:saturate(calc(1.1 + var(--energy)*.22)) brightness(calc(1.02 + var(--energy)*.10))}
-[data-treatment=holo] .physical-card__glare{opacity:calc(.08 + var(--energy)*.34)}
-
-/* Heartthrob: unmistakable layered heart foil. Hearts stay visible at rest; tilt changes their light, not their size. */
-[data-treatment=heartthrob] .physical-card__finish{background:transparent}
-[data-treatment=heartthrob] .physical-card__material{mask-image:url('/treatments/hearts-a.svg');mask-size:100% 100%;opacity:calc(.46 + var(--energy)*.24);background-image:radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#ffd0e8 18%,#8fe7ff 38%,#7568ff 54%,#151515 78%),repeating-linear-gradient(118deg,#ff58ad 0%,#ffd1e6 12%,#80eaff 27%,#fff 41%,#a991ff 55%,#ff85c2 70%,#72dcff 84%,#ff58ad 100%);background-size:100% 100%,230% 220%;background-position:center,var(--foil-x) var(--foil-y);background-blend-mode:multiply;filter:brightness(calc(1.12 + var(--energy)*.34)) saturate(calc(1.3 + var(--energy)*.42)) drop-shadow(0 0 2px rgba(255,135,196,.34))}
-[data-treatment=heartthrob] .physical-card__material--second{mask-image:url('/treatments/hearts-b.svg');mask-size:100% 100%;opacity:calc(.34 + var(--energy)*.26);background-image:radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#ffb6dc 22%,#b9f2ff 42%,#26212d 78%),repeating-linear-gradient(72deg,#fff 0%,#ff9ed0 18%,#87e9ff 34%,#fff 50%,#bd9dff 67%,#ff7dbb 84%,#fff 100%);background-size:100% 100%,190% 210%;background-position:center,var(--foil-y) var(--foil-x);background-blend-mode:screen;filter:brightness(calc(1.05 + var(--energy)*.26)) saturate(calc(1.18 + var(--energy)*.3))}
-[data-treatment=heartthrob] .physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.92) 0%,rgba(255,151,207,.34) 16%,rgba(123,225,255,.24) 31%,rgba(255,255,255,0) 54%);opacity:calc(.12 + var(--energy)*.32)}
-[data-treatment=heartthrob] .physical-card__grain{opacity:calc(.045 + var(--energy)*.12)}
-
-/* Unhinged: visible fractured facets at rest; motion sharpens and destabilizes the refraction. */
-[data-treatment=unhinged] .physical-card__material{mask-image:url('/treatments/ice.svg');mask-size:100% 100%;opacity:calc(.18 + var(--energy)*.30);background-image:radial-gradient(ellipse at var(--lx) var(--ly),#fff 0%,#999 35%,#171717 75%),repeating-linear-gradient(118deg,#ec87cf 0%,#8d9eeb 12%,#87dce5 24%,#bde8a1 36%,#efd799 48%,#ef9cba 60%);background-size:100% 100%,210% 210%;background-position:center,var(--foil-x) var(--foil-y);background-blend-mode:multiply;filter:contrast(calc(1.08 + var(--energy)*.28)) saturate(calc(1.14 + var(--energy)*.34));transform:translate(calc((var(--foil-x) - 50%)*.018),calc((var(--foil-y) - 50%)*.018))}
-[data-treatment=unhinged] .physical-card__glare{background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.08) 33%,rgba(255,255,255,.34) 48%,rgba(140,220,255,.16) 55%,rgba(255,155,225,.10) 61%,transparent 74%),radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.45) 0%,rgba(255,255,255,.12) 16%,rgba(255,255,255,0) 44%);opacity:calc(.09 + var(--energy)*.36);filter:contrast(calc(1 + var(--energy)*.35))}
-[data-treatment=unhinged] .physical-card__grain{opacity:calc(.05 + var(--energy)*.18)}
-
-/* Slow Burn: warm ember/oil interference at rest; movement visibly stokes the heat. */
-[data-treatment=slowburn] .physical-card__material{background-image:repeating-radial-gradient(ellipse at 28% 71%,#501c39 0%,#9a432a 7%,#f08539 13%,#ffd986 19%,#c36b38 23%,#74536b 27%,#ad502e 32%);background-size:220% 230%;background-position:var(--foil-x) var(--foil-y);opacity:calc(.18 + var(--energy)*.28);mix-blend-mode:color-dodge;filter:saturate(calc(1.14 + var(--energy)*.42)) brightness(calc(1.02 + var(--energy)*.14))}
-[data-treatment=slowburn] .physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,248,205,.58) 0%,rgba(255,176,72,.24) 18%,rgba(255,91,28,.12) 34%,rgba(255,255,255,0) 56%),linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(255,115,35,.08) 84%,rgba(255,160,70,.14) 100%);opacity:calc(.08 + var(--energy)*.42)}
-[data-treatment=slowburn] .physical-card__grain{opacity:calc(.06 + var(--energy)*.16);filter:blur(.35px) brightness(calc(1 + var(--energy)*.45))}
-
-/* Aftercare: persistent pearl/satin finish; movement adds a smooth premium bloom and diamond dust. */
-[data-treatment=aftercare] .physical-card__material{background-image:linear-gradient(120deg,#aebedc,#f7edcf 25%,#fff 38%,#efcddb 47%,#b9cedc 56%,#f7edcf 68%,#fff 80%);background-size:230% 230%;background-position:var(--foil-x) var(--foil-y);opacity:calc(.15 + var(--energy)*.18);mix-blend-mode:screen;filter:saturate(calc(1.02 + var(--energy)*.12)) brightness(calc(1.02 + var(--energy)*.08))}
-[data-treatment=aftercare] .physical-card__glare{background:radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.78) 0%,rgba(255,244,233,.22) 18%,rgba(235,240,255,.12) 34%,rgba(255,255,255,0) 56%);opacity:calc(.09 + var(--energy)*.24);filter:blur(calc(1px + var(--energy)*1.5px))}
-[data-treatment=aftercare] .physical-card__grain{opacity:calc(.18 + var(--energy)*.36);filter:brightness(calc(1.05 + var(--energy)*.5))}
-
-@media(prefers-reduced-motion:reduce){.physical-card__surface{transform:none}.physical-card__material{animation:none}}
-
-
-/* Ambient foil lifecycle: the card and treatment shapes stay fixed while virtual light moves across the material. */
-[data-treatment=holo] .physical-card__material{animation:ambient-holo 11s ease-in-out infinite}
-[data-treatment=heartthrob] .physical-card__material{animation:ambient-heart-light 12s ease-in-out infinite}
-[data-treatment=heartthrob] .physical-card__material--second{animation:ambient-heart-light-secondary 15s ease-in-out -4s infinite}
-[data-treatment=unhinged] .physical-card__material{animation:ambient-unhinged 9s ease-in-out infinite}
-[data-treatment=slowburn] .physical-card__material{animation:ambient-slowburn 13s ease-in-out infinite}
-[data-treatment=aftercare] .physical-card__material{animation:ambient-aftercare 16s ease-in-out infinite}
-[data-treatment=aftercare] .physical-card__grain{animation:ambient-diamond-dust 7s ease-in-out -2s infinite}
-
-@keyframes ambient-holo{
-  0%,100%{background-position:18% 42%;filter:saturate(1.1) brightness(1.02)}
-  32%{background-position:72% 58%;filter:saturate(1.28) brightness(1.10)}
-  58%{background-position:88% 28%;filter:saturate(1.18) brightness(1.05)}
-  78%{background-position:38% 70%;filter:saturate(1.34) brightness(1.12)}
+.physical-card__finish{
+  position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;isolation:isolate;
 }
+[data-treatment=base] .physical-card__finish{display:none}
 
-@keyframes ambient-heart-light{
-  0%,100%{background-position:center,12% 34%;filter:brightness(1.08) saturate(1.26) drop-shadow(0 0 2px rgba(255,135,196,.28))}
-  24%{background-position:center,48% 58%;filter:brightness(1.20) saturate(1.42) drop-shadow(0 0 3px rgba(255,194,225,.42))}
-  48%{background-position:center,88% 32%;filter:brightness(1.12) saturate(1.34) drop-shadow(0 0 2px rgba(128,229,255,.38))}
-  72%{background-position:center,62% 78%;filter:brightness(1.24) saturate(1.46) drop-shadow(0 0 3px rgba(191,169,255,.42))}
-}
+.foil{position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+.foil--pattern{z-index:1}
+.foil--diffraction{z-index:2}
+.foil--texture{z-index:3}
+.foil--specular{z-index:4}
 
-@keyframes ambient-heart-light-secondary{
-  0%,100%{background-position:center,84% 24%;filter:brightness(1.02) saturate(1.14)}
-  35%{background-position:center,32% 68%;filter:brightness(1.17) saturate(1.32)}
-  67%{background-position:center,68% 44%;filter:brightness(1.08) saturate(1.22)}
-}
-
-@keyframes ambient-unhinged{
-  0%,100%{background-position:center,18% 32%;filter:contrast(1.08) saturate(1.14)}
-  37%{background-position:center,78% 62%;filter:contrast(1.28) saturate(1.38)}
-  42%{background-position:center,70% 48%;filter:contrast(1.18) saturate(1.30)}
-  74%{background-position:center,36% 76%;filter:contrast(1.34) saturate(1.42)}
-}
-
-@keyframes ambient-slowburn{
-  0%,100%{background-position:38% 82%;filter:saturate(1.14) brightness(1.02)}
-  28%{background-position:52% 56%;filter:saturate(1.30) brightness(1.08)}
-  57%{background-position:66% 28%;filter:saturate(1.22) brightness(1.05)}
-  79%{background-position:44% 48%;filter:saturate(1.38) brightness(1.12)}
-}
-
-@keyframes ambient-aftercare{
-  0%,100%{background-position:12% 42%;filter:saturate(1.02) brightness(1.02)}
-  36%{background-position:58% 54%;filter:saturate(1.08) brightness(1.09)}
-  68%{background-position:88% 36%;filter:saturate(1.04) brightness(1.05)}
-  84%{background-position:64% 72%;filter:saturate(1.10) brightness(1.11)}
-}
-
-@keyframes ambient-diamond-dust{
-  0%,100%{opacity:.18;filter:brightness(1.05)}
-  46%{opacity:.30;filter:brightness(1.32)}
-  52%{opacity:.42;filter:brightness(1.62)}
-  60%{opacity:.24;filter:brightness(1.18)}
-}
-
-/* Interaction raises the existing pointer-driven energy above the ambient baseline. */
-.physical-card:hover .physical-card__material,
-.physical-card:active .physical-card__material{animation-play-state:paused}
-
-@media(prefers-reduced-motion:reduce){
-  [data-treatment] .physical-card__material,
-  [data-treatment] .physical-card__grain{animation:none}
-}
-
-
-/* High-intensity laminate pass — closer to real holographic sleeves. */
-[data-treatment=holo] .physical-card__material{
-  opacity:calc(.34 + var(--energy)*.28);
-  background-image:
-    radial-gradient(circle at var(--lx) var(--ly),rgba(255,255,255,.95) 0 3%,rgba(255,255,255,0) 22%),
-    repeating-linear-gradient(112deg,#ff3eb5 0 7%,#8c6cff 11%,#42dfff 18%,#64ffbf 26%,#fff46d 34%,#ff8a4c 42%,#ff4bb2 50%);
-  background-size:100% 100%,185% 185%;
-  mix-blend-mode:color-dodge;
-}
-[data-treatment=holo] .physical-card__glare{opacity:calc(.18 + var(--energy)*.46)}
-
-[data-treatment=heartthrob] .physical-card__material{
-  opacity:calc(.62 + var(--energy)*.25);
-  -webkit-mask-image:url('/treatments/hearts-a.svg');
-  -webkit-mask-size:100% 100%;
-  mask-image:url('/treatments/hearts-a.svg');
-  mask-size:100% 100%;
-  mix-blend-mode:color-dodge;
-  filter:brightness(calc(1.2 + var(--energy)*.38)) saturate(calc(1.55 + var(--energy)*.5)) drop-shadow(0 0 2.5px rgba(255,255,255,.5));
-}
-[data-treatment=heartthrob] .physical-card__material--second{
-  opacity:calc(.52 + var(--energy)*.25);
-  -webkit-mask-image:url('/treatments/hearts-b.svg');
-  -webkit-mask-size:100% 100%;
-  mask-image:url('/treatments/hearts-b.svg');
-  mask-size:100% 100%;
+/* shared optical layers */
+.foil--texture{
+  background-image:url('/treatments/dust.svg');
+  background-size:100% 100%;
   mix-blend-mode:screen;
+  opacity:calc(.04 + var(--energy)*.08);
 }
-[data-treatment=heartthrob] .physical-card__glare{opacity:calc(.18 + var(--energy)*.38)}
-
-[data-treatment=unhinged] .physical-card__material{
-  opacity:calc(.38 + var(--energy)*.34);
-  background-image:
-    radial-gradient(circle at var(--lx) var(--ly),#fff 0 4%,transparent 28%),
-    repeating-linear-gradient(127deg,#ff2fa6 0 6%,#705dff 9%,#2de1ff 15%,#51ffb6 21%,#fff56a 28%,#ff6547 34%,#ff2fa6 42%);
-  background-size:100% 100%,150% 170%;
-  filter:contrast(calc(1.3 + var(--energy)*.45)) saturate(calc(1.5 + var(--energy)*.55)) brightness(1.1);
-}
-[data-treatment=unhinged] .physical-card__glare{opacity:calc(.18 + var(--energy)*.48)}
-
-[data-treatment=slowburn] .physical-card__material{
-  opacity:calc(.36 + var(--energy)*.34);
-  background-image:
-    radial-gradient(ellipse at var(--lx) var(--ly),#fff6bd 0 5%,transparent 26%),
-    repeating-radial-gradient(ellipse at 35% 82%,#4b0719 0 5%,#a21d19 9%,#ff5a16 15%,#ffb21c 20%,#fff0a0 24%,#ff7a19 29%,#761326 35%);
-  background-size:100% 100%,175% 190%;
-  filter:saturate(calc(1.6 + var(--energy)*.6)) brightness(calc(1.08 + var(--energy)*.2));
-}
-[data-treatment=slowburn] .physical-card__glare{opacity:calc(.18 + var(--energy)*.48)}
-
-[data-treatment=aftercare] .physical-card__material{
-  opacity:calc(.32 + var(--energy)*.26);
-  background-image:
-    radial-gradient(circle at var(--lx) var(--ly),rgba(255,255,255,.95) 0 4%,transparent 25%),
-    linear-gradient(118deg,#9dc8ff 0%,#fff 14%,#ffd0e6 27%,#fff0b8 39%,#c8fff3 52%,#d8c7ff 66%,#fff 80%,#ffcfe3 100%);
-  background-size:100% 100%,180% 190%;
-  filter:saturate(calc(1.22 + var(--energy)*.28)) brightness(calc(1.08 + var(--energy)*.16));
-}
-[data-treatment=aftercare] .physical-card__grain{opacity:calc(.30 + var(--energy)*.40)}
-[data-treatment=aftercare] .physical-card__glare{opacity:calc(.16 + var(--energy)*.34)}
-
-
-/* Premium sheen pass: strong specular band over every specialty finish. */
-[data-treatment=holo] .physical-card__glare,
-[data-treatment=heartthrob] .physical-card__glare,
-[data-treatment=unhinged] .physical-card__glare,
-[data-treatment=slowburn] .physical-card__glare,
-[data-treatment=aftercare] .physical-card__glare{
+.foil--specular{
   background:
-    linear-gradient(112deg,transparent 18%,rgba(255,255,255,.04) 30%,rgba(255,255,255,.48) 43%,rgba(255,255,255,.92) 49%,rgba(255,255,255,.32) 55%,transparent 68%),
-    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.82) 0%,rgba(255,255,255,.22) 18%,transparent 48%);
-  background-size:220% 100%,100% 100%;
+    linear-gradient(112deg,transparent 18%,rgba(255,255,255,.03) 32%,rgba(255,255,255,.38) 43%,rgba(255,255,255,.95) 49%,rgba(255,255,255,.28) 56%,transparent 69%),
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.48) 0%,rgba(255,255,255,.12) 18%,transparent 44%);
+  background-size:230% 100%,100% 100%;
   background-position:var(--foil-x) center,center;
   mix-blend-mode:screen;
-  animation:ambient-sheen 8.5s ease-in-out infinite;
+  opacity:calc(.16 + var(--energy)*.34);
+  filter:blur(.2px);
+  animation:foil-sheen 8.5s ease-in-out infinite;
 }
 
-/* Heartthrob: sleeve-print scale rather than floating sticker hearts. */
-[data-treatment=heartthrob] .physical-card__material{
-  opacity:calc(.34 + var(--energy)*.22);
-  -webkit-mask-size:72% 72%;
-  -webkit-mask-repeat:repeat;
-  mask-size:72% 72%;
-  mask-repeat:repeat;
-  filter:brightness(calc(1.08 + var(--energy)*.28)) saturate(calc(1.35 + var(--energy)*.4)) drop-shadow(0 0 1.2px rgba(255,255,255,.38));
-}
-[data-treatment=heartthrob] .physical-card__material--second{
-  opacity:calc(.30 + var(--energy)*.22);
-  -webkit-mask-size:62% 62%;
-  -webkit-mask-repeat:repeat;
-  mask-size:62% 62%;
-  mask-repeat:repeat;
-}
-
-/* Slow Burn: Blue-Rain-inspired hot foil striations instead of flame blobs. */
-[data-treatment=slowburn] .physical-card__material{
-  opacity:calc(.42 + var(--energy)*.34);
-  background-image:
-    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,250,205,.95) 0 4%,rgba(255,174,44,.34) 14%,transparent 31%),
-    repeating-linear-gradient(96deg,
-      rgba(65,4,17,.82) 0 2px,
-      rgba(156,20,17,.88) 2px 4px,
-      rgba(255,67,12,.96) 4px 6px,
-      rgba(255,161,22,.98) 6px 8px,
-      rgba(255,239,142,.94) 8px 9px,
-      rgba(255,91,12,.9) 9px 12px,
-      rgba(95,8,30,.84) 12px 15px);
-  background-size:100% 100%,145% 230%;
+/* HOLO — smooth full-card diffraction film. */
+[data-treatment=holo] .foil--pattern{display:none}
+[data-treatment=holo] .foil--diffraction{
+  background:
+    radial-gradient(ellipse 72% 58% at var(--lx) var(--ly),rgba(255,255,255,.9) 0%,rgba(255,241,84,.66) 12%,rgba(76,255,170,.56) 24%,rgba(66,214,255,.54) 37%,rgba(151,103,255,.48) 50%,rgba(255,77,176,.5) 63%,rgba(255,105,69,.42) 74%,transparent 84%),
+    linear-gradient(118deg,#ff56af,#8a70ff 18%,#48dcff 35%,#72ffb3 50%,#fff078 64%,#ff9557 80%,#ff56af);
+  background-size:135% 135%,190% 190%;
+  background-position:var(--lx) var(--ly),var(--foil-x) var(--foil-y);
   mix-blend-mode:color-dodge;
-  filter:saturate(calc(1.7 + var(--energy)*.55)) contrast(1.12) brightness(calc(1.05 + var(--energy)*.2));
-  animation:ambient-fire-rain 7.5s linear infinite;
+  opacity:calc(.31 + var(--energy)*.24);
+  filter:saturate(calc(1.25 + var(--energy)*.28)) brightness(calc(1.03 + var(--energy)*.12));
+  animation:holo-drift 12s ease-in-out infinite;
 }
-[data-treatment=slowburn] .physical-card__grain{opacity:calc(.12 + var(--energy)*.18)}
+[data-treatment=holo] .foil--texture{opacity:calc(.035 + var(--energy)*.06)}
 
-/* Holo: broad soft optical bloom like smooth holographic laminate. */
-[data-treatment=holo] .physical-card__material{
-  background-image:
-    radial-gradient(ellipse 72% 58% at var(--lx) var(--ly),rgba(255,255,255,.96) 0%,rgba(255,246,87,.88) 11%,rgba(83,255,172,.7) 22%,rgba(74,213,255,.62) 34%,rgba(164,103,255,.58) 47%,rgba(255,74,174,.64) 59%,rgba(255,92,72,.52) 70%,transparent 82%),
-    linear-gradient(118deg,#ff4ca8,#8f6cff 18%,#45e7ff 35%,#79ffb5 50%,#fff36f 64%,#ff8d54 80%,#ff4ca8);
-  background-size:125% 125%,185% 185%;
-  opacity:calc(.40 + var(--energy)*.28);
-  filter:saturate(calc(1.38 + var(--energy)*.36)) brightness(calc(1.05 + var(--energy)*.15));
+/* HEARTTHROB — etched heart laminate. Pattern is a mask, not painted stickers. */
+[data-treatment=heartthrob] .foil--pattern,
+[data-treatment=heartthrob] .foil--diffraction{
+  -webkit-mask-image:url('/treatments/heartthrob-pattern.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/heartthrob-pattern.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
 }
-
-/* Unhinged: make the fractured laminate read across the whole card. */
-[data-treatment=unhinged] .physical-card__material{
-  opacity:calc(.48 + var(--energy)*.30);
-  filter:contrast(calc(1.38 + var(--energy)*.42)) saturate(calc(1.72 + var(--energy)*.45)) brightness(1.08);
-}
-
-/* Aftercare: glassy opal surface, bright but soft. */
-[data-treatment=aftercare] .physical-card__material{
-  opacity:calc(.38 + var(--energy)*.22);
-  filter:saturate(calc(1.35 + var(--energy)*.24)) brightness(calc(1.10 + var(--energy)*.14));
-}
-[data-treatment=aftercare] .physical-card__grain{
-  opacity:calc(.34 + var(--energy)*.34);
+[data-treatment=heartthrob] .foil--pattern{
+  background:linear-gradient(118deg,rgba(255,255,255,.28),rgba(255,255,255,.06) 45%,rgba(255,255,255,.22));
   mix-blend-mode:screen;
+  opacity:.34;
+}
+[data-treatment=heartthrob] .foil--diffraction{
+  background:
+    linear-gradient(108deg,transparent 14%,rgba(255,93,176,.72) 28%,rgba(110,226,255,.86) 40%,rgba(255,255,255,.92) 49%,rgba(177,134,255,.78) 58%,rgba(255,226,126,.68) 67%,rgba(255,97,180,.56) 77%,transparent 88%);
+  background-size:230% 180%;
+  background-position:var(--foil-x) var(--foil-y);
+  mix-blend-mode:color-dodge;
+  opacity:calc(.31 + var(--energy)*.29);
+  filter:saturate(calc(1.28 + var(--energy)*.38)) brightness(calc(1.03 + var(--energy)*.18));
+  animation:heart-light 11s ease-in-out infinite;
+}
+[data-treatment=heartthrob] .foil--texture{opacity:calc(.025 + var(--energy)*.05)}
+[data-treatment=heartthrob] .foil--specular{opacity:calc(.13 + var(--energy)*.31)}
+
+/* UNHINGED — shattered prism laminate. */
+[data-treatment=unhinged] .foil--pattern,
+[data-treatment=unhinged] .foil--diffraction{
+  -webkit-mask-image:url('/treatments/ice.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/ice.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+}
+[data-treatment=unhinged] .foil--pattern{
+  background:rgba(182,166,255,.22);
+  mix-blend-mode:screen;
+  opacity:.34;
+}
+[data-treatment=unhinged] .foil--diffraction{
+  background:
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.88) 0%,rgba(113,231,255,.45) 18%,transparent 42%),
+    linear-gradient(125deg,#ff48b0,#695cff 17%,#34dfff 33%,#4bffb5 48%,#fff169 62%,#ff774f 76%,#ff48b0);
+  background-size:100% 100%,165% 175%;
+  background-position:center,var(--foil-x) var(--foil-y);
+  mix-blend-mode:color-dodge;
+  opacity:calc(.39 + var(--energy)*.28);
+  filter:contrast(calc(1.22 + var(--energy)*.34)) saturate(calc(1.48 + var(--energy)*.38));
+  animation:unhinged-drift 9s ease-in-out infinite;
+}
+[data-treatment=unhinged] .foil--texture{opacity:calc(.05 + var(--energy)*.1)}
+
+/* SLOW BURN — irregular ember streak foil. */
+[data-treatment=slowburn] .foil--pattern,
+[data-treatment=slowburn] .foil--diffraction{
+  -webkit-mask-image:url('/treatments/slowburn-streaks.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/slowburn-streaks.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
+}
+[data-treatment=slowburn] .foil--pattern{
+  background:linear-gradient(180deg,rgba(107,8,27,.18),rgba(255,75,18,.24) 46%,rgba(255,188,44,.18));
+  mix-blend-mode:screen;
+  opacity:.44;
+}
+[data-treatment=slowburn] .foil--diffraction{
+  background:
+    linear-gradient(100deg,transparent 8%,#6f071d 20%,#cc2617 31%,#ff5f12 41%,#ffb51f 49%,#fff0a2 53%,#ff8a15 61%,#a51022 72%,transparent 86%);
+  background-size:225% 190%;
+  background-position:var(--foil-x) var(--foil-y);
+  mix-blend-mode:color-dodge;
+  opacity:calc(.42 + var(--energy)*.31);
+  filter:saturate(calc(1.5 + var(--energy)*.45)) contrast(1.08) brightness(calc(1.03 + var(--energy)*.16));
+  animation:ember-drift 8s linear infinite;
+}
+[data-treatment=slowburn] .foil--texture{
+  opacity:calc(.07 + var(--energy)*.1);
+  filter:saturate(1.25) brightness(1.18);
+}
+[data-treatment=slowburn] .foil--specular{
+  background:
+    linear-gradient(112deg,transparent 20%,rgba(255,111,22,.05) 33%,rgba(255,194,74,.42) 44%,rgba(255,247,204,.96) 50%,rgba(255,119,24,.28) 57%,transparent 70%),
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,239,177,.48) 0%,rgba(255,130,25,.13) 20%,transparent 46%);
+  background-size:230% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
 }
 
-@keyframes ambient-sheen{
-  0%,100%{background-position:-70% center,center;opacity:.16}
-  18%{opacity:.24}
-  48%{background-position:165% center,center;opacity:.52}
-  62%{opacity:.20}
-  100%{background-position:165% center,center;opacity:.16}
+/* AFTERCARE — decorative opal laminate. */
+[data-treatment=aftercare] .foil--pattern,
+[data-treatment=aftercare] .foil--diffraction{
+  -webkit-mask-image:url('/treatments/aftercare-ornament.svg');
+  -webkit-mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-image:url('/treatments/aftercare-ornament.svg');
+  mask-size:100% 100%;
+  mask-repeat:no-repeat;
 }
-@keyframes ambient-fire-rain{
-  0%{background-position:center,30% 110%}
-  100%{background-position:center,70% -110%}
+[data-treatment=aftercare] .foil--pattern{
+  background:linear-gradient(125deg,rgba(255,255,255,.34),rgba(248,221,233,.18) 35%,rgba(205,238,255,.20) 65%,rgba(255,255,255,.3));
+  mix-blend-mode:screen;
+  opacity:.36;
+}
+[data-treatment=aftercare] .foil--diffraction{
+  background:
+    linear-gradient(112deg,transparent 12%,rgba(255,235,203,.68) 25%,rgba(255,204,229,.62) 38%,rgba(187,236,255,.7) 49%,rgba(215,201,255,.66) 60%,rgba(195,255,238,.56) 70%,rgba(255,242,203,.55) 80%,transparent 90%);
+  background-size:230% 180%;
+  background-position:var(--foil-x) var(--foil-y);
+  mix-blend-mode:screen;
+  opacity:calc(.27 + var(--energy)*.22);
+  filter:saturate(calc(1.18 + var(--energy)*.2)) brightness(calc(1.02 + var(--energy)*.1));
+  animation:opal-drift 15s ease-in-out infinite;
+}
+[data-treatment=aftercare] .foil--texture{
+  opacity:calc(.13 + var(--energy)*.16);
+  filter:brightness(calc(1.04 + var(--energy)*.28));
+}
+[data-treatment=aftercare] .foil--specular{
+  opacity:calc(.14 + var(--energy)*.29);
+  background:
+    linear-gradient(112deg,transparent 20%,rgba(255,255,255,.04) 34%,rgba(255,241,229,.45) 44%,rgba(221,245,255,.9) 50%,rgba(255,224,240,.34) 57%,transparent 70%),
+    radial-gradient(ellipse at var(--lx) var(--ly),rgba(255,255,255,.42) 0%,rgba(255,244,236,.11) 18%,transparent 44%);
+  background-size:230% 100%,100% 100%;
+  background-position:var(--foil-x) center,center;
 }
 
-.physical-card:hover .physical-card__glare,
-.physical-card:active .physical-card__glare{animation-play-state:paused}
+@keyframes foil-sheen{
+  0%,100%{background-position:-70% center,center;opacity:.13}
+  18%{opacity:.2}
+  48%{background-position:165% center,center;opacity:.48}
+  64%{opacity:.18}
+  100%{background-position:165% center,center;opacity:.13}
+}
+@keyframes holo-drift{
+  0%,100%{background-position:28% 48%,18% 42%}
+  33%{background-position:63% 44%,76% 58%}
+  66%{background-position:72% 60%,45% 74%}
+}
+@keyframes heart-light{
+  0%,100%{background-position:5% 45%}
+  50%{background-position:95% 58%}
+}
+@keyframes unhinged-drift{
+  0%,100%{background-position:center,18% 34%}
+  45%{background-position:center,82% 62%}
+  70%{background-position:center,52% 76%}
+}
+@keyframes ember-drift{
+  0%{background-position:18% 112%}
+  100%{background-position:78% -12%}
+}
+@keyframes opal-drift{
+  0%,100%{background-position:8% 44%}
+  35%{background-position:58% 55%}
+  70%{background-position:94% 36%}
+}
+
+.physical-card:hover .foil--diffraction,
+.physical-card:hover .foil--specular,
+.physical-card:active .foil--diffraction,
+.physical-card:active .foil--specular{animation-play-state:paused}
 
 @media(prefers-reduced-motion:reduce){
-  [data-treatment] .physical-card__glare{animation:none}
+  .physical-card__surface{transform:none}
+  .foil{animation:none!important}
 }
