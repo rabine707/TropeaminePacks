@@ -241,3 +241,36 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  dialog.modal{overscroll-behavior:contain}
  .detail-layout{touch-action:pan-y;overscroll-behavior:contain}
 }
+
+/* iOS dock sizing — keep icon + label entirely above the home-indicator safe area. */
+@media(max-width:600px){
+ :root{--mobile-dock-content:64px}
+ .workspace{padding-bottom:calc(var(--mobile-dock-content) + env(safe-area-inset-bottom) + 8px)}
+ .sidebar{
+  box-sizing:border-box;
+  height:calc(var(--mobile-dock-content) + env(safe-area-inset-bottom))!important;
+  min-height:calc(var(--mobile-dock-content) + env(safe-area-inset-bottom))!important;
+  padding:0 8px env(safe-area-inset-bottom)!important;
+  align-items:flex-start;
+  overflow:visible;
+ }
+ .sidebar nav{
+  height:var(--mobile-dock-content)!important;
+  min-height:var(--mobile-dock-content)!important;
+  align-items:stretch;
+  overflow:visible;
+ }
+ .sidebar .nav-link{
+  box-sizing:border-box;
+  height:var(--mobile-dock-content)!important;
+  min-height:var(--mobile-dock-content)!important;
+  padding:8px 1px 7px!important;
+  justify-content:center;
+  overflow:visible;
+  font-size:9px!important;
+  line-height:12px!important;
+ }
+ .sidebar .nav-link svg{width:20px;height:20px;margin-bottom:2px}
+ .how-it-works{bottom:calc(var(--mobile-dock-content) + env(safe-area-inset-bottom) + 10px)!important}
+ .starter-checklist{bottom:calc(var(--mobile-dock-content) + env(safe-area-inset-bottom) + 64px)!important}
+}
