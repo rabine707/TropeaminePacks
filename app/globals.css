@@ -326,3 +326,16 @@ footer{margin-top:24px;border-top:1px solid #242b22}
  .sidebar .nav-link svg{display:block!important;width:20px!important;height:20px!important;margin:0 0 3px!important;flex:none!important}
  .workspace{padding-bottom:calc(var(--mobile-nav-visible) + env(safe-area-inset-bottom) + 8px)!important}
 }
+
+/* Deliberately lift the complete mobile nav well clear of Safari chrome. */
+@media(max-width:600px){
+ :root{--mobile-nav-lift:50px}
+ .sidebar{
+  height:calc(var(--mobile-nav-visible) + env(safe-area-inset-bottom) + var(--mobile-nav-lift))!important;
+  min-height:calc(var(--mobile-nav-visible) + env(safe-area-inset-bottom) + var(--mobile-nav-lift))!important;
+ }
+ .sidebar nav{transform:translateY(calc(-1 * var(--mobile-nav-lift)))!important}
+ .workspace{padding-bottom:calc(var(--mobile-nav-visible) + var(--mobile-nav-lift) + env(safe-area-inset-bottom) + 8px)!important}
+ .how-it-works{bottom:calc(var(--mobile-nav-visible) + var(--mobile-nav-lift) + env(safe-area-inset-bottom) + 10px)!important}
+ .starter-checklist{bottom:calc(var(--mobile-nav-visible) + var(--mobile-nav-lift) + env(safe-area-inset-bottom) + 64px)!important}
+}
