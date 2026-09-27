@@ -1,1 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420"><defs><path id="h" d="M0 8C-18-5-15-23 0-14C15-23 18-5 0 8Z"/><circle id="d" r="2.2"/></defs><g fill="none" stroke="white" stroke-width="2.4" opacity=".95"><use href="#h" transform="translate(20 24) scale(.48)"/><use href="#h" transform="translate(66 38) scale(.7)"/><use href="#h" transform="translate(122 22) scale(.4)"/><use href="#h" transform="translate(172 47) scale(.58)"/><use href="#h" transform="translate(236 29) scale(.44)"/><use href="#h" transform="translate(282 52) scale(.34)"/><use href="#h" transform="translate(43 86) scale(.62)"/><use href="#h" transform="translate(101 77) scale(.38)"/><use href="#h" transform="translate(151 99) scale(.74)"/><use href="#h" transform="translate(218 83) scale(.46)"/><use href="#h" transform="translate(271 103) scale(.56)"/><use href="#h" transform="translate(18 147) scale(.36)"/><use href="#h" transform="translate(72 158) scale(.56)"/><use href="#h" transform="translate(126 141) scale(.42)"/><use href="#h" transform="translate(185 164) scale(.68)"/><use href="#h" transform="translate(247 148) scale(.44)"/><use href="#h" transform="translate(292 174) scale(.32)"/><use href="#h" transform="translate(40 219) scale(.7)"/><use href="#h" transform="translate(99 205) scale(.38)"/><use href="#h" transform="translate(155 227) scale(.54)"/><use href="#h" transform="translate(211 211) scale(.4)"/><use href="#h" transform="translate(264 234) scale(.64)"/><use href="#h" transform="translate(17 278) scale(.42)"/><use href="#h" transform="translate(67 291) scale(.52)"/><use href="#h" transform="translate(127 275) scale(.7)"/><use href="#h" transform="translate(189 298) scale(.46)"/><use href="#h" transform="translate(247 282) scale(.58)"/><use href="#h" transform="translate(292 304) scale(.34)"/><use href="#h" transform="translate(38 352) scale(.58)"/><use href="#h" transform="translate(95 337) scale(.4)"/><use href="#h" transform="translate(151 360) scale(.66)"/><use href="#h" transform="translate(213 345) scale(.46)"/><use href="#h" transform="translate(271 371) scale(.54)"/><use href="#h" transform="translate(17 405) scale(.32)"/><use href="#h" transform="translate(79 399) scale(.48)"/><use href="#h" transform="translate(136 410) scale(.36)"/><use href="#h" transform="translate(194 398) scale(.52)"/><use href="#h" transform="translate(252 411) scale(.4)"/></g><g fill="white" opacity=".52"><use href="#d" x="41" y="53"/><use href="#d" x="144" y="56"/><use href="#d" x="258" y="67"/><use href="#d" x="33" y="119"/><use href="#d" x="185" y="124"/><use href="#d" x="232" y="192"/><use href="#d" x="84" y="242"/><use href="#d" x="145" y="255"/><use href="#d" x="278" y="261"/><use href="#d" x="31" y="326"/><use href="#d" x="174" y="331"/><use href="#d" x="241" y="389"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420">
+  <defs>
+    <path id="heart" d="M0 12C-26-8-22-34 0-20C22-34 26-8 0 12Z"/>
+    <g id="nested">
+      <use href="#heart" fill="none" stroke="white" stroke-width="2.8" opacity=".95"/>
+      <use href="#heart" fill="none" stroke="white" stroke-width="2.2" opacity=".82" transform="scale(.70)"/>
+      <use href="#heart" fill="none" stroke="white" stroke-width="1.9" opacity=".72" transform="scale(.40)"/>
+    </g>
+    <g id="spark" stroke="white" stroke-linecap="round">
+      <path d="M0-6V6M-6 0H6" stroke-width="1.5" opacity=".8"/>
+      <path d="M-4-4L4 4M4-4L-4 4" stroke-width="1" opacity=".55"/>
+    </g>
+  </defs>
+
+  <g fill="none">
+    <use href="#nested" transform="translate(38 40) scale(.82)"/>
+    <use href="#nested" transform="translate(112 42) scale(.72)"/>
+    <use href="#nested" transform="translate(188 38) scale(.86)"/>
+    <use href="#nested" transform="translate(263 44) scale(.68)"/>
+
+    <use href="#nested" transform="translate(74 118) scale(.76)"/>
+    <use href="#nested" transform="translate(151 112) scale(.90)"/>
+    <use href="#nested" transform="translate(230 120) scale(.72)"/>
+
+    <use href="#nested" transform="translate(34 196) scale(.70)"/>
+    <use href="#nested" transform="translate(111 194) scale(.86)"/>
+    <use href="#nested" transform="translate(188 198) scale(.74)"/>
+    <use href="#nested" transform="translate(264 192) scale(.82)"/>
+
+    <use href="#nested" transform="translate(72 276) scale(.84)"/>
+    <use href="#nested" transform="translate(150 274) scale(.72)"/>
+    <use href="#nested" transform="translate(230 280) scale(.88)"/>
+
+    <use href="#nested" transform="translate(36 356) scale(.76)"/>
+    <use href="#nested" transform="translate(112 354) scale(.88)"/>
+    <use href="#nested" transform="translate(188 360) scale(.70)"/>
+    <use href="#nested" transform="translate(264 352) scale(.82)"/>
+  </g>
+
+  <g opacity=".7">
+    <use href="#spark" transform="translate(76 78) scale(.7)"/>
+    <use href="#spark" transform="translate(150 76) scale(.5)"/>
+    <use href="#spark" transform="translate(226 80) scale(.65)"/>
+    <use href="#spark" transform="translate(34 156) scale(.55)"/>
+    <use href="#spark" transform="translate(112 156) scale(.7)"/>
+    <use href="#spark" transform="translate(189 156) scale(.5)"/>
+    <use href="#spark" transform="translate(264 158) scale(.7)"/>
+    <use href="#spark" transform="translate(74 236) scale(.55)"/>
+    <use href="#spark" transform="translate(150 238) scale(.7)"/>
+    <use href="#spark" transform="translate(228 236) scale(.55)"/>
+    <use href="#spark" transform="translate(36 316) scale(.7)"/>
+    <use href="#spark" transform="translate(112 318) scale(.52)"/>
+    <use href="#spark" transform="translate(188 316) scale(.68)"/>
+    <use href="#spark" transform="translate(264 318) scale(.52)"/>
+  </g>
+
+  <g fill="white" opacity=".58">
+    <circle cx="20" cy="86" r="1.5"/><circle cx="94" cy="82" r="1.2"/><circle cx="170" cy="86" r="1.4"/><circle cx="246" cy="84" r="1.2"/>
+    <circle cx="52" cy="164" r="1.2"/><circle cx="132" cy="166" r="1.5"/><circle cx="208" cy="164" r="1.2"/><circle cx="284" cy="168" r="1.4"/>
+    <circle cx="20" cy="244" r="1.4"/><circle cx="96" cy="242" r="1.2"/><circle cx="170" cy="246" r="1.5"/><circle cx="248" cy="244" r="1.2"/>
+    <circle cx="54" cy="324" r="1.3"/><circle cx="132" cy="322" r="1.5"/><circle cx="210" cy="326" r="1.2"/><circle cx="286" cy="324" r="1.4"/>
+  </g>
+</svg>
