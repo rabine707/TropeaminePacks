@@ -113,13 +113,6 @@ export default function AccountCollectionShell(){
   if(liveCardsResult.cards.length)local={...local,cards:liveCardsResult.cards};
 
   if(!nextUser){
-   // Logged-out visitors still get a public Felicity sandbox so treatment work never
-   // depends on an account or stale local ownership. This is preview-only: it does
-   // not write to collection_items and therefore never grants real ownership.
-   const felicity=local.cards.find(card=>card.name==='Felicity');
-   if(felicity&&!local.wallet.owned.includes(felicity.id)){
-    local={...local,wallet:{...local.wallet,owned:[...local.wallet.owned,felicity.id]}};
-   }
    try{localStorage.setItem(LOCAL_KEY,JSON.stringify(local))}catch{}
    setHydrated(true);
    return;
@@ -177,7 +170,7 @@ export default function AccountCollectionShell(){
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>Opening your collection…</h1></main>;
  return <div className={user?'cloud-authenticated':''}>
-  <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onSpendInk={async amount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('spend_ink',{amount});if(error)throw error;const next={ink:Number(data.ink),shards:Number(data.shards)};setWallet(next);return next}}/>
+  <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onOpenPack={async duplicateCount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('settle_pack',{duplicate_count:duplicateCount});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
    <summary aria-label="Open account menu">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</summary>
    <div className="cloud-account-popover">
