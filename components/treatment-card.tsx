@@ -2,7 +2,6 @@
 
 import {useEffect, useRef, type PointerEvent, type ReactNode} from 'react';
 import './treatment-card.css';
-import './treatment-pattern-preview.css';
 
 export type Treatment = 'base' | 'holo' | 'heartthrob' | 'unhinged' | 'slowburn' | 'aftercare';
 
@@ -45,7 +44,6 @@ export default function TreatmentCard({treatment, label, children}: {
   function reset() { pointer.current = null; move(0, 0, 0); }
   function track(event: PointerEvent<HTMLDivElement>) {
     if (!event.isPrimary || (event.pointerType !== 'mouse' && pointer.current !== event.pointerId)) return;
-    // Measure the untransformed stage, so tilt never changes the input coordinate space.
     const box = event.currentTarget.getBoundingClientRect();
     move((event.clientX-box.left)/box.width*2-1, (event.clientY-box.top)/box.height*2-1);
   }
@@ -80,10 +78,10 @@ export default function TreatmentCard({treatment, label, children}: {
     <div className="physical-card__surface">
       {children}
       <div className="physical-card__finish" aria-hidden="true">
-        <span className="physical-card__material"/>
-        {treatment === 'heartthrob' && <span className="physical-card__material physical-card__material--second"/>}
-        <span className="physical-card__grain"/>
-        <span className="physical-card__glare"/>
+        <span className="foil foil--pattern"/>
+        <span className="foil foil--diffraction"/>
+        <span className="foil foil--texture"/>
+        <span className="foil foil--specular"/>
       </div>
     </div>
   </div>;
