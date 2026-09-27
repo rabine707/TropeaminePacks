@@ -85,7 +85,7 @@
 [data-treatment=heartthrob] .foil--texture{opacity:calc(.025 + var(--energy)*.05)}
 [data-treatment=heartthrob] .foil--specular{opacity:calc(.13 + var(--energy)*.31)}
 
-/* UNHINGED — quiet shattered prism at rest; movement wakes the fracture foil up. */
+/* UNHINGED — solid fracture laminate at rest; the moving white catch reveals rainbow foil. */
 [data-treatment=unhinged] .foil--pattern,
 [data-treatment=unhinged] .foil--diffraction{
   -webkit-mask-image:url('/treatments/ice.svg');
@@ -95,58 +95,61 @@
   mask-size:100% 100%;
   mask-repeat:no-repeat;
 }
+
+/* Outside the light: restrained, mostly solid shattered facets. */
 [data-treatment=unhinged] .foil--pattern{
-  background:linear-gradient(128deg,rgba(190,170,255,.28),rgba(86,220,255,.12) 48%,rgba(255,96,184,.18));
-  mix-blend-mode:screen;
-  opacity:.18;
+  background:
+    linear-gradient(132deg,
+      rgba(75,69,92,.44),
+      rgba(105,98,124,.34) 34%,
+      rgba(58,76,88,.38) 66%,
+      rgba(92,70,99,.36));
+  mix-blend-mode:soft-light;
+  opacity:.30;
+  filter:contrast(1.10);
 }
+
+/* Rainbow lives INSIDE the moving light pool instead of tinting the whole card. */
 [data-treatment=unhinged] .foil--diffraction{
   background:
     radial-gradient(ellipse 42% 34% at var(--lx) var(--ly),
-      rgba(255,255,255,1) 0%,
-      rgba(111,232,255,.78) 14%,
-      rgba(180,95,255,.52) 27%,
-      transparent 52%),
-    linear-gradient(125deg,
-      #ff48b0,
-      #695cff 17%,
-      #34dfff 33%,
-      #4bffb5 48%,
-      #fff169 62%,
-      #ff774f 76%,
-      #ff48b0);
-  background-size:100% 100%,165% 175%;
-  background-position:center,var(--foil-x) var(--foil-y);
+      rgba(255,255,255,.98) 0%,
+      rgba(76,229,255,.94) 14%,
+      rgba(100,107,255,.86) 25%,
+      rgba(210,82,255,.82) 35%,
+      rgba(255,73,177,.78) 43%,
+      rgba(255,218,67,.72) 51%,
+      rgba(85,255,187,.48) 59%,
+      transparent 72%);
+  background-size:100% 100%;
+  background-position:center;
   mix-blend-mode:color-dodge;
-  opacity:calc(.16 + var(--energy)*.62);
+  opacity:calc(.035 + var(--energy)*.86);
   filter:
-    contrast(calc(1.10 + var(--energy)*.72))
-    saturate(calc(1.20 + var(--energy)*.92))
-    brightness(calc(.98 + var(--energy)*.30));
+    contrast(calc(1.08 + var(--energy)*.68))
+    saturate(calc(1.15 + var(--energy)*1.18))
+    brightness(calc(.98 + var(--energy)*.26));
   animation:none;
 }
+
 [data-treatment=unhinged] .foil--texture{
-  opacity:calc(.025 + var(--energy)*.12);
+  opacity:calc(.02 + var(--energy)*.075);
 }
+
+/* Narrow white/chrome hotspot: this is the light source that makes nearby facets pop. */
 [data-treatment=unhinged] .foil--specular{
   background:
-    linear-gradient(112deg,
-      transparent 0 34%,
-      rgba(255,255,255,.05) 39%,
-      rgba(124,236,255,.34) 44%,
-      rgba(255,255,255,.98) 49%,
-      rgba(211,118,255,.56) 54%,
-      rgba(255,80,181,.22) 59%,
-      transparent 66% 100%),
-    radial-gradient(ellipse 30% 24% at var(--lx) var(--ly),
-      rgba(255,255,255,.92) 0%,
-      rgba(91,225,255,.30) 30%,
-      transparent 68%);
-  background-size:250% 100%,100% 100%;
-  background-position:var(--foil-x) center,center;
+    radial-gradient(ellipse 24% 30% at var(--lx) var(--ly),
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,.76) 16%,
+      rgba(202,245,255,.34) 32%,
+      rgba(255,255,255,.08) 48%,
+      transparent 66%);
+  background-size:100% 100%;
+  background-position:center;
   mix-blend-mode:screen;
-  opacity:calc(.035 + var(--energy)*.74);
-  filter:contrast(calc(1.02 + var(--energy)*.34)) saturate(calc(1.08 + var(--energy)*.44));
+  opacity:calc(.04 + var(--energy)*.72);
+  filter:blur(.15px);
   animation:none;
 }
 
