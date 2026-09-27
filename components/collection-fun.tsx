@@ -78,7 +78,7 @@ export default function CollectionFun(){
     added.forEach(id=>existing.add(id));
     writeJson(NEW_KEY,[...existing]);
     const addedCards=added.map(id=>cards.find(card=>cardId(card)===id)).filter((card):card is LooseCard=>Boolean(card));
-    showUnlock(addedCards);
+    // Cloud/local collection hydration is silent. Action-driven pack/craft UI handles celebrations.
    }
    if(current.length!==known.length||current.some(id=>!knownSet.has(id)))writeJson(KNOWN_KEY,current);
   }
@@ -124,7 +124,7 @@ export default function CollectionFun(){
     let hint=tile.querySelector<HTMLDivElement>('.locked-acquire-hint');
     if(!isOwned){
      if(!hint){hint=document.createElement('div');hint.className='locked-acquire-hint';tile.appendChild(hint)}
-     const nextText=card.available===false?'Currently unavailable':'Find in packs · Craft for 30 Shards';
+     const nextText=card.available===false?'Currently unavailable':'Find in packs · Craft for 200 Shards';
      if(hint.textContent!==nextText)hint.textContent=nextText;
     }else hint?.remove();
     const heart=tile.querySelector<HTMLButtonElement>('.heart');
