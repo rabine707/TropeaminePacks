@@ -1,1 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420"><g fill="none" stroke="white" stroke-linecap="round"><path d="M12 38l28-8" stroke-width="2.1"/><path d="M54 22l19 6" stroke-width="1.3"/><path d="M88 48l31-12" stroke-width="1.7"/><path d="M132 25l24 4" stroke-width="2.2"/><path d="M173 54l36-10" stroke-width="1.4"/><path d="M224 28l22 7" stroke-width="1.9"/><path d="M264 58l26-9" stroke-width="1.5"/><path d="M18 92l39-14" stroke-width="1.4"/><path d="M72 111l28-7" stroke-width="2"/><path d="M116 86l22 5" stroke-width="1.2"/><path d="M154 116l35-13" stroke-width="1.8"/><path d="M207 91l26 8" stroke-width="1.5"/><path d="M246 123l38-11" stroke-width="2.1"/><path d="M8 164l24-6" stroke-width="1.7"/><path d="M46 147l33 9" stroke-width="1.3"/><path d="M94 178l28-12" stroke-width="2.2"/><path d="M137 151l21 6" stroke-width="1.4"/><path d="M176 183l37-14" stroke-width="1.8"/><path d="M230 157l27 8" stroke-width="1.2"/><path d="M270 190l21-7" stroke-width="2"/><path d="M14 228l34-10" stroke-width="1.5"/><path d="M63 206l22 6" stroke-width="2.1"/><path d="M101 239l38-13" stroke-width="1.3"/><path d="M151 211l25 8" stroke-width="1.7"/><path d="M194 247l31-11" stroke-width="2.2"/><path d="M238 220l20 5" stroke-width="1.4"/><path d="M272 253l23-8" stroke-width="1.8"/><path d="M5 295l27-9" stroke-width="2"/><path d="M43 274l36 12" stroke-width="1.2"/><path d="M95 308l24-7" stroke-width="1.7"/><path d="M133 282l31 9" stroke-width="2.2"/><path d="M178 316l36-13" stroke-width="1.4"/><path d="M225 287l24 7" stroke-width="1.9"/><path d="M262 327l29-10" stroke-width="1.5"/><path d="M16 361l37-12" stroke-width="1.4"/><path d="M67 389l26-8" stroke-width="2"/><path d="M108 353l22 6" stroke-width="1.2"/><path d="M145 398l34-12" stroke-width="1.8"/><path d="M194 367l29 9" stroke-width="1.5"/><path d="M237 409l36-11" stroke-width="2.1"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420">
+  <defs>
+    <filter id="soft"><feGaussianBlur stdDeviation=".45"/></filter>
+    <path id="cinderA" d="M0-5C3-3 4 1 1 5C-2 7-5 4-4 0C-3-3-2-4 0-5Z"/>
+    <path id="cinderB" d="M-1-7C2-5 5-1 3 3C2 6-2 8-4 4C-6 1-3-3-1-7Z"/>
+    <path id="ash" d="M-5-2C-2-5 3-4 5-1C3 2 0 4-4 3Z"/>
+    <path id="wisp" d="M-8 7C-2 4-5-1 1-4C5-6 7-10 6-14" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+  </defs>
+  <g fill="white">
+    <use href="#cinderA" transform="translate(28 390) scale(.48) rotate(18)"/>
+    <use href="#cinderB" transform="translate(61 348) scale(.30) rotate(-22)"/>
+    <use href="#cinderA" transform="translate(95 402) scale(.22) rotate(41)"/>
+    <use href="#cinderB" transform="translate(126 326) scale(.44) rotate(12)"/>
+    <use href="#cinderA" transform="translate(165 371) scale(.31) rotate(-35)"/>
+    <use href="#cinderB" transform="translate(204 409) scale(.24) rotate(27)"/>
+    <use href="#cinderA" transform="translate(239 337) scale(.52) rotate(-9)"/>
+    <use href="#cinderB" transform="translate(276 382) scale(.28) rotate(33)"/>
+    <use href="#cinderB" transform="translate(42 292) scale(.38) rotate(-14)"/>
+    <use href="#cinderA" transform="translate(79 257) scale(.24) rotate(29)"/>
+    <use href="#cinderB" transform="translate(112 282) scale(.19) rotate(-40)"/>
+    <use href="#cinderA" transform="translate(151 236) scale(.43) rotate(8)"/>
+    <use href="#cinderB" transform="translate(188 304) scale(.26) rotate(38)"/>
+    <use href="#cinderA" transform="translate(224 266) scale(.35) rotate(-18)"/>
+    <use href="#cinderB" transform="translate(266 223) scale(.22) rotate(25)"/>
+    <use href="#cinderA" transform="translate(22 214) scale(.20) rotate(-31)"/>
+    <use href="#cinderB" transform="translate(57 181) scale(.46) rotate(16)"/>
+    <use href="#cinderA" transform="translate(101 204) scale(.27) rotate(-7)"/>
+    <use href="#cinderB" transform="translate(137 164) scale(.34) rotate(44)"/>
+    <use href="#cinderA" transform="translate(177 195) scale(.18) rotate(-26)"/>
+    <use href="#cinderB" transform="translate(216 145) scale(.40) rotate(13)"/>
+    <use href="#cinderA" transform="translate(253 178) scale(.25) rotate(-38)"/>
+    <use href="#cinderB" transform="translate(285 130) scale(.18) rotate(21)"/>
+    <use href="#cinderA" transform="translate(34 116) scale(.31) rotate(32)"/>
+    <use href="#cinderB" transform="translate(74 87) scale(.20) rotate(-17)"/>
+    <use href="#cinderA" transform="translate(113 126) scale(.37) rotate(11)"/>
+    <use href="#cinderB" transform="translate(157 73) scale(.25) rotate(-36)"/>
+    <use href="#cinderA" transform="translate(196 111) scale(.21) rotate(39)"/>
+    <use href="#cinderB" transform="translate(235 58) scale(.32) rotate(-12)"/>
+    <use href="#cinderA" transform="translate(278 92) scale(.18) rotate(26)"/>
+    <use href="#cinderB" transform="translate(49 35) scale(.22) rotate(-29)"/>
+    <use href="#cinderA" transform="translate(132 29) scale(.17) rotate(17)"/>
+    <use href="#cinderB" transform="translate(210 22) scale(.20) rotate(-8)"/>
+  </g>
+  <g fill="white" opacity=".56">
+    <use href="#ash" transform="translate(18 365) scale(.42) rotate(32)"/>
+    <use href="#ash" transform="translate(72 316) scale(.28) rotate(-18)"/>
+    <use href="#ash" transform="translate(144 349) scale(.35) rotate(51)"/>
+    <use href="#ash" transform="translate(218 318) scale(.25) rotate(-42)"/>
+    <use href="#ash" transform="translate(283 352) scale(.31) rotate(13)"/>
+    <use href="#ash" transform="translate(31 248) scale(.24) rotate(-28)"/>
+    <use href="#ash" transform="translate(92 232) scale(.36) rotate(37)"/>
+    <use href="#ash" transform="translate(169 273) scale(.22) rotate(-11)"/>
+    <use href="#ash" transform="translate(246 202) scale(.30) rotate(49)"/>
+    <use href="#ash" transform="translate(14 151) scale(.31) rotate(22)"/>
+    <use href="#ash" transform="translate(84 143) scale(.20) rotate(-36)"/>
+    <use href="#ash" transform="translate(153 116) scale(.27) rotate(16)"/>
+    <use href="#ash" transform="translate(229 123) scale(.35) rotate(-48)"/>
+    <use href="#ash" transform="translate(290 66) scale(.22) rotate(29)"/>
+    <use href="#ash" transform="translate(102 54) scale(.25) rotate(-14)"/>
+  </g>
+  <g opacity=".38" filter="url(#soft)">
+    <use href="#wisp" transform="translate(54 402) scale(.8) rotate(8)"/>
+    <use href="#wisp" transform="translate(146 385) scale(.65) rotate(-12)"/>
+    <use href="#wisp" transform="translate(244 397) scale(.72) rotate(15)"/>
+    <use href="#wisp" transform="translate(98 305) scale(.55) rotate(11)"/>
+    <use href="#wisp" transform="translate(205 286) scale(.62) rotate(-9)"/>
+    <use href="#wisp" transform="translate(42 205) scale(.50) rotate(14)"/>
+    <use href="#wisp" transform="translate(168 184) scale(.58) rotate(-15)"/>
+    <use href="#wisp" transform="translate(268 154) scale(.48) rotate(10)"/>
+    <use href="#wisp" transform="translate(116 94) scale(.46) rotate(-7)"/>
+    <use href="#wisp" transform="translate(224 73) scale(.52) rotate(13)"/>
+  </g>
+</svg>
