@@ -216,7 +216,7 @@
   opacity:.82;
   filter:blur(10px) saturate(1.62) brightness(1.18);
   transform-origin:50% 100%;
-  animation:slowburn-fire-flicker 2.35s steps(7,end) infinite;
+  animation:slowburn-fire-breathe 6.8s ease-in-out infinite;
 }
 /* Warm moving catch only; no white/rainbow foil. */
 [data-treatment=slowburn] .foil--specular{
@@ -245,15 +245,11 @@
   82%{-webkit-mask-position:55% -79%;mask-position:55% -79%}
   100%{-webkit-mask-position:46% -118%;mask-position:46% -118%}
 }
-@keyframes slowburn-fire-flicker{
-  0%{opacity:.42;transform:translate3d(-1%,2%,0) scale(1.03,1.00)}
-  14%{opacity:.66;transform:translate3d(1%,0,0) scale(1.08,1.10)}
-  29%{opacity:.50;transform:translate3d(-2%,1%,0) scale(1.04,1.05)}
-  43%{opacity:.74;transform:translate3d(2%,-1%,0) scale(1.10,1.14)}
-  57%{opacity:.54;transform:translate3d(0,1%,0) scale(1.06,1.04)}
-  71%{opacity:.69;transform:translate3d(-1%,-1%,0) scale(1.09,1.12)}
-  86%{opacity:.47;transform:translate3d(1%,2%,0) scale(1.05,1.02)}
-  100%{opacity:.62;transform:translate3d(0,0,0) scale(1.08,1.09)}
+@keyframes slowburn-fire-breathe{
+  0%,100%{opacity:.58;transform:translate3d(-1%,1%,0) scale(1.05,1.04)}
+  28%{opacity:.76;transform:translate3d(1%,-1%,0) scale(1.09,1.11)}
+  52%{opacity:.88;transform:translate3d(0,-2%,0) scale(1.12,1.16)}
+  76%{opacity:.70;transform:translate3d(-1%,0,0) scale(1.08,1.09)}
 }
 @keyframes slowburn-warm-sweep{
   0%,100%{background-position:-75% center}

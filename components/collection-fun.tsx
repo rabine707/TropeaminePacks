@@ -25,6 +25,7 @@ export default function CollectionFun(){
   const cardId=(card:LooseCard)=>String(card.id??'');
   const cardName=(card:LooseCard)=>String(card.name??'').trim();
   const cardVariant=(card:LooseCard)=>String(card.variant??'').trim();
+  const isPublicPreview=(card:LooseCard)=>cardName(card)==='Felicity';
 
   function stateParts(){
    const state=readState();
@@ -97,7 +98,7 @@ export default function CollectionFun(){
    document.querySelectorAll<HTMLButtonElement>('.popular-grid button').forEach(button=>{
     const name=button.querySelector('strong')?.textContent?.trim()||'';
     const matching=cards.filter(card=>cardName(card)===name);
-    const isOwned=matching.some(card=>owned.has(cardId(card)));
+    const isOwned=matching.some(card=>owned.has(cardId(card))||isPublicPreview(card));
     button.classList.toggle('locked-character',!isOwned);
     button.disabled=!isOwned;
     button.setAttribute('aria-disabled',String(!isOwned));
@@ -115,7 +116,7 @@ export default function CollectionFun(){
    const fresh=new Set(readJson<string[]>(NEW_KEY,[]).map(String));
    document.querySelectorAll<HTMLElement>('.card-tile').forEach(tile=>{
     const card=matchCardFromTile(tile,cards);if(!card)return;
-    const id=cardId(card),isOwned=owned.has(id);
+    const id=cardId(card),isOwned=owned.has(id)||isPublicPreview(card);
     let newBadge=tile.querySelector<HTMLSpanElement>('.new-card-badge');
     if(isOwned&&fresh.has(id)){
      if(!newBadge){newBadge=document.createElement('span');newBadge.className='new-card-badge';newBadge.textContent='NEW';tile.querySelector('.art-button')?.appendChild(newBadge)}
