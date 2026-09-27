@@ -274,3 +274,53 @@ footer{margin-top:24px;border-top:1px solid #242b22}
 .treatment-panel{margin:18px 0;padding:16px;border:1px solid #3b4435;border-radius:12px;background:#151a14}.treatment-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}.treatment-heading h3{margin:2px 0}.treatment-heading strong{font-family:var(--serif);font-weight:400;color:var(--gold)}.treatment-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.treatment-option{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:3px 7px;text-align:left;padding:9px 10px;border:1px solid #394234;border-radius:8px;background:#1a2018;color:#e8e7dd}.treatment-option small{grid-column:2;color:#8f998a;font-size:9px}.treatment-option.active{border-color:#d9c991;box-shadow:inset 0 0 0 1px #d9c99155;background:#252a20}.treatment-option.locked{opacity:.55}.creator-unlock,.treatment-note{display:flex;align-items:center;gap:6px;margin:11px 0 0;color:#aeb6a4;font-size:11px;line-height:1.45}.creator-unlock{color:#d9c991}
 @media(max-width:600px){.treatment-panel{padding:13px}.treatment-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.treatment-option{min-height:48px}}
 @media(prefers-reduced-motion:reduce){.treatment-overlay,.treatment-overlay:after{animation:none!important}}
+
+
+/* Treatment prototype v3 tuning from mobile review */
+/* Heartthrob: true edge-to-edge pattern; smaller hearts, more rows, no oversized spill outside card */
+.treatment-heartthrob .treatment-overlay{inset:0!important;opacity:.9!important;border-radius:inherit;background:
+ radial-gradient(circle at 18% 20%,rgba(255,70,190,.18),transparent 22%),
+ radial-gradient(circle at 82% 72%,rgba(90,210,255,.18),transparent 24%),
+ linear-gradient(125deg,transparent 18%,rgba(255,255,255,.24) 40%,rgba(255,90,205,.17) 50%,rgba(100,220,255,.19) 59%,transparent 78%)!important;background-size:auto,auto,230% 100%!important}
+.treatment-heartthrob .treatment-overlay:after{content:'♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡ ♡';position:absolute!important;inset:-4% -3%!important;width:106%!important;height:108%!important;box-sizing:border-box;color:rgba(255,255,255,.5)!important;font-size:19px!important;line-height:1.7!important;letter-spacing:5px!important;word-spacing:4px!important;text-shadow:0 0 5px rgba(255,75,190,.78),0 0 10px rgba(90,205,255,.55)!important;transform:none!important;animation:heartFloat 3.4s ease-in-out infinite alternate!important}
+@keyframes heartFloat{0%{translate:-1% -1%;opacity:.58}100%{translate:1% 1%;opacity:.96}}
+
+/* Unhinged: refractive shard glints, not opaque rainbow geometry */
+.treatment-unhinged .treatment-overlay{opacity:.5!important;background:
+ linear-gradient(132deg,transparent 0 22%,rgba(255,255,255,.18) 23% 24%,transparent 25% 48%,rgba(115,210,255,.17) 49% 51%,transparent 52%),
+ linear-gradient(42deg,transparent 0 31%,rgba(255,115,210,.15) 32% 35%,transparent 36% 67%,rgba(255,230,120,.14) 68% 71%,transparent 72%),
+ conic-gradient(from 35deg at 18% 24%,transparent 0 22deg,rgba(120,215,255,.2) 23deg 36deg,transparent 37deg 76deg,rgba(255,120,215,.16) 77deg 91deg,transparent 92deg),
+ conic-gradient(from 190deg at 76% 67%,transparent 0 31deg,rgba(255,240,170,.18) 32deg 46deg,transparent 47deg 88deg,rgba(150,120,255,.16) 89deg 105deg,transparent 106deg)!important;
+ filter:saturate(1.2)!important;animation:shardGlint 3s ease-in-out infinite alternate!important}
+.treatment-unhinged .treatment-overlay:after{content:''!important;position:absolute;inset:0;background:
+ linear-gradient(68deg,transparent 0 39%,rgba(255,255,255,.34) 40%,transparent 41%),
+ linear-gradient(151deg,transparent 0 57%,rgba(255,255,255,.24) 58%,transparent 59%)!important;opacity:.38!important;animation:shardFlash 2.2s ease-in-out infinite!important}
+@keyframes shardGlint{0%{transform:translate3d(-2%,-1%,0) scale(1.03);opacity:.34}100%{transform:translate3d(2%,1%,0) scale(1.03);opacity:.58}}
+@keyframes shardFlash{0%,100%{opacity:.16}48%{opacity:.52}}
+
+/* Slow Burn: licking flame/ember tongues instead of dots */
+.treatment-slowburn .treatment-overlay{opacity:.82!important;background:
+ radial-gradient(ellipse at 15% 108%,rgba(255,220,115,.68),rgba(255,90,18,.34) 22%,transparent 52%),
+ radial-gradient(ellipse at 42% 112%,rgba(255,245,175,.58),rgba(255,110,20,.3) 24%,transparent 50%),
+ radial-gradient(ellipse at 70% 110%,rgba(255,205,85,.64),rgba(255,70,12,.3) 25%,transparent 52%),
+ radial-gradient(ellipse at 92% 108%,rgba(255,235,145,.54),rgba(255,95,18,.26) 23%,transparent 49%)!important;
+ background-size:34% 46%,38% 54%,36% 49%,31% 43%!important;background-repeat:no-repeat!important;
+ animation:flameLick 2.25s ease-in-out infinite alternate!important}
+.treatment-slowburn .treatment-overlay:after{content:''!important;position:absolute;inset:35% -15% -8%;background:
+ radial-gradient(ellipse at 24% 100%,rgba(255,160,35,.25),transparent 38%),
+ radial-gradient(ellipse at 56% 104%,rgba(255,75,12,.3),transparent 42%),
+ radial-gradient(ellipse at 83% 100%,rgba(255,190,55,.22),transparent 36%)!important;filter:blur(7px);mix-blend-mode:screen;animation:fireDance 1.65s ease-in-out infinite alternate!important}
+@keyframes flameLick{0%{background-position:-3% 116%,27% 120%,61% 116%,88% 119%;filter:blur(.2px)}100%{background-position:1% 80%,30% 68%,60% 76%,91% 72%;filter:blur(1.2px)}}
+@keyframes fireDance{0%{transform:skewX(-4deg) scaleY(.86);opacity:.45}100%{transform:skewX(5deg) scaleY(1.15);opacity:.86}}
+
+/* Aftercare: retain white pearl identity, add premium diffraction + crisp luxury glints */
+.treatment-aftercare .treatment-overlay{opacity:.82!important;background:
+ radial-gradient(circle at 18% 16%,rgba(255,255,255,.98) 0 1px,transparent 2px),
+ radial-gradient(circle at 79% 28%,rgba(255,250,230,.95) 0 1.2px,transparent 2.4px),
+ radial-gradient(circle at 34% 72%,rgba(220,235,255,.95) 0 1px,transparent 2px),
+ radial-gradient(circle at 82% 82%,rgba(255,225,245,.95) 0 1px,transparent 2px),
+ linear-gradient(108deg,transparent 5%,rgba(255,255,255,.08) 18%,rgba(255,255,255,.76) 36%,rgba(205,225,255,.28) 45%,rgba(255,220,245,.24) 53%,rgba(255,250,215,.18) 62%,transparent 80%),
+ repeating-linear-gradient(118deg,transparent 0 17px,rgba(255,255,255,.055) 18px 19px,transparent 20px 36px)!important;
+ background-size:71px 83px,97px 89px,79px 103px,107px 91px,245% 100%,auto!important}
+.treatment-aftercare .treatment-overlay:after{content:'✦  ✧      ✦    ✧   ✦       ✧  ✦     ✦   ✧       ✦    ✧  ✦      ✧   ✦';position:absolute!important;inset:-4%!important;color:rgba(255,255,255,.96)!important;font-size:24px!important;line-height:3.55!important;letter-spacing:15px!important;text-shadow:0 0 4px #fff,0 0 11px rgba(220,235,255,.95),0 0 25px rgba(255,225,245,.62)!important;animation:premiumSparkle 1.9s ease-in-out infinite alternate!important}
+@keyframes premiumSparkle{0%{opacity:.22;transform:scale(.98)}45%{opacity:.92}100%{opacity:.48;transform:scale(1.02)}}
