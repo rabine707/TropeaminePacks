@@ -9,6 +9,19 @@ import {createClient} from '@/lib/supabase/client';
 
 const LOCAL_KEY='tropeamine-packs-v1';
 
+const LOADING_PRAISE=[
+ 'Look at you, waiting so patiently…',
+ 'So patient. You deserve a reward.',
+ 'That’s it. Just a little longer…',
+ 'Doing so well. Almost there…',
+ 'You’ve been so good. Your reward is loading…',
+ 'Patience looks good on you.',
+ 'There you go. You earned this.',
+ 'Someone deserves a little Tropeamine…',
+ 'Oh, you really want it, don’t you?',
+ 'Eager, aren’t we?'
+];
+
 type CloudProfile={display_name:string|null;username:string|null;avatar_url:string|null};
 type CloudWallet={ink:number;shards:number};
 
@@ -104,6 +117,7 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
 
 export default function AccountCollectionShell(){
  const [hydrated,setHydrated]=useState(false);
+ const [loadingPraise,setLoadingPraise]=useState(LOADING_PRAISE[0]);
  const [user,setUser]=useState<User|null>(null);
  const [profile,setProfile]=useState<CloudProfile|null>(null);
  const [wallet,setWallet]=useState<CloudWallet|null>(null);
@@ -114,6 +128,7 @@ export default function AccountCollectionShell(){
  const lastOwnedRef=useRef('');
  const client=useMemo(()=>createClient(),[]);
 
+ useEffect(()=>{setLoadingPraise(LOADING_PRAISE[Math.floor(Math.random()*LOADING_PRAISE.length)])},[]);
  useEffect(()=>{let active=true;(async()=>{
   const [{data:{user:nextUser}},liveCardsResult]=await Promise.all([
    client.auth.getUser(),
@@ -182,7 +197,7 @@ export default function AccountCollectionShell(){
  }
  async function signOut(){await client.auth.signOut();window.location.href='/'}
 
- if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>Opening your collection…</h1></main>;
+ if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>{loadingPraise}</h1></main>;
  return <div className={user?'cloud-authenticated':''}>
   <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onCraftCard={async cardId=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_missing_card',{target_card_id:cardId});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onOpenPack={async duplicateCount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('settle_pack',{duplicate_count:duplicateCount});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
