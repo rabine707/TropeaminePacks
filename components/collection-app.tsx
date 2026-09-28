@@ -28,6 +28,7 @@ export default function CollectionApp({signedIn=false,cloudWallet,onOpenPack,onC
  useEffect(()=>{try{const saved=localStorage.getItem('tropeamine-packs-v1');if(saved){const p=JSON.parse(saved);if(p.wallet&&Array.isArray(p.cards)&&Array.isArray(p.requests))setState({...initial,...p})}}catch{}setReady(true)},[]);
  useEffect(()=>{if(ready){try{localStorage.setItem('tropeamine-packs-v1',JSON.stringify(state))}catch{setToast('Your browser storage is full. Export your collection in Settings.')}}},[state,ready]);
  useEffect(()=>{if(toast){const t=setTimeout(()=>setToast(''),4200);return()=>clearTimeout(t)}},[toast]);
+ useEffect(()=>{if(!pulls)return;const urls=pulls.flatMap(p=>{const card=stateRef.current.cards.find(c=>c.id===p.id);return card?[card.image,card.back].filter((url):url is string=>!!url):[]});const preloads=urls.map(url=>{const img=new window.Image();img.decoding='async';img.src=url;return img});return()=>{preloads.forEach(img=>{img.onload=null;img.onerror=null})}},[pulls]);
  useEffect(()=>{setMobile(false);setQuery('')},[page]);
  useEffect(()=>{if(ready&&page==='series'&&!state.discovered)setState(s=>({...s,discovered:true}));},[ready,page,state.discovered]);
  function update(fn:(s:State)=>State){setState(s=>{const next=fn(s);stateRef.current=next;return next})}
