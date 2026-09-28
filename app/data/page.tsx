@@ -1,0 +1,13 @@
+import {LegalShell} from '@/components/legal-shell';
+export default function Data(){return <LegalShell title="What Data We Collect" kicker="PLAIN-ENGLISH DATA GUIDE">
+<p>This is the quick version of what Tropeamine Packs currently knows about a signed-in collector and why.</p>
+<h2>Account identity</h2><p><strong>May include:</strong> Google/Supabase account ID, email address, name/display name and profile picture. <strong>Why:</strong> signing you in and connecting your collection to the right account.</p>
+<h2>Tropeamine profile</h2><p><strong>May include:</strong> username, display name, avatar, bio, pronouns, favorite series and whether your profile is public. <strong>Why:</strong> account and community/profile features. Optional fields are only used when you provide or enable them.</p>
+<h2>Your collection</h2><p><strong>Includes:</strong> cards/editions owned, quantities and acquisition times, favorites, showcase cards, badges and claimed rewards. <strong>Why:</strong> making your binder and collection persist between devices.</p>
+<h2>Virtual currency</h2><p><strong>Includes:</strong> Ink and Shard balances plus a ledger of changes and reasons. <strong>Why:</strong> opening packs, crafting and keeping the in-app economy consistent.</p>
+<h2>Preferences and progress</h2><p><strong>May include:</strong> binder theme, accent, showcase title, onboarding status and related collection preferences. <strong>Why:</strong> remembering how you use and personalize the site.</p>
+<h2>Infrastructure data</h2><p>Supabase and Vercel may process ordinary authentication, request, security and technical information needed to run and protect the service. Tropeamine does not treat Google sign-in as permission to read unrelated Google services.</p>
+<h2>Guest demo packs</h2><p>If you open a free demo pack while signed out, the pulls are for demonstration and are not saved into a Tropeamine account or binder.</p>
+<h2>What we do not currently ask for</h2><p>Tropeamine does not currently ask you to provide a home address, phone number, government ID, bank account, credit-card number, Gmail contents, Google Drive files, contacts or Google Photos library as part of normal collection use.</p>
+<p className="legal-callout">This page describes the current implementation. If Tropeamine adds new account, analytics, payment, advertising or community features, this disclosure and the Privacy Policy should be updated before those features are relied on.</p>
+</LegalShell>}
