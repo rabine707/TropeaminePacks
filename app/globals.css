@@ -673,3 +673,11 @@ input[type="checkbox"]{accent-color:#ef4da8}
 .reveal-all{min-height:36px;padding:7px 14px;font-size:11px}
 .cinematic-card-stage{contain:layout paint}
 @media(hover:none){.cinematic-card-stage:hover{transform:none}}
+
+/* Lock the cinematic reveal header geometry so copy changes never move the card stage. */
+.cinematic-reveal>h1{height:48px;min-height:48px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;font-size:clamp(24px,4vw,37px);line-height:1}
+.cinematic-reveal>h1+p{height:24px;min-height:24px;margin-bottom:0;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+@media(max-width:600px){
+  .cinematic-reveal>h1{height:42px;min-height:42px;font-size:clamp(20px,6.6vw,30px);letter-spacing:-.5px}
+  .cinematic-reveal>h1+p{height:22px;min-height:22px;font-size:clamp(9px,3vw,13px);letter-spacing:-.15px}
+}
