@@ -39,7 +39,7 @@ test('replacement uploads use unique revisions compatible with existing Storage 
   assert.match(newCardArtPath('adult', id, 'back', 'webp'), /^adult\/[0-9a-f-]{36}\/[0-9a-f-]{36}-back\.webp$/);
 });
 
-test('original is byte-identical and cacheable; access query enforces published SFW hierarchy', async () => {
+test('original is byte-identical and cacheable; access query matches published SFW catalog rules', async () => {
   const {request, calls} = fixture();
   const response = await request();
   assert.equal(response.status, 200);
@@ -47,7 +47,9 @@ test('original is byte-identical and cacheable; access query enforces published 
   assert.equal(response.headers.get('cache-control'), 'public, max-age=3600, s-maxage=3600');
   assert.equal(response.headers.get('set-cookie'), null);
   const query = calls[0].url.searchParams;
-  for (const [key, value] of Object.entries({id, storage_path: path, 'variants.rating': 'sfw', 'variants.available': 'true', 'variants.cards.published': 'true', 'variants.cards.characters.series.published': 'true', 'variants.cards.card_sets.published': 'true'})) assert.equal(query.get(key), `eq.${value}`);
+  for (const [key, value] of Object.entries({id, storage_path: path, 'variants.rating': 'sfw', 'variants.available': 'true', 'variants.cards.published': 'true'})) assert.equal(query.get(key), `eq.${value}`);
+  assert.equal(query.get('variants.cards.characters.series.published'), null);
+  assert.equal(query.get('variants.cards.card_sets.published'), null);
   assert.equal(JSON.parse(String(calls[1].init?.body)).transform, undefined);
 });
 
