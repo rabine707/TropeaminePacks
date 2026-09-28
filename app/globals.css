@@ -682,3 +682,20 @@ input[type="checkbox"]{accent-color:#ef4da8}
 .physical-reveal-card.is-back .physical-back-face{visibility:visible}
 .physical-reveal-card.is-front,.physical-reveal-card.is-back{filter:drop-shadow(0 22px 35px #0009)}
 @media(prefers-reduced-motion:reduce){.physical-reveal-inner{transition-duration:.01ms}}
+
+
+/* Premium polish · content-aware gallery mood lighting */
+.app{--mood-a:255,79,163;--mood-b:157,99,255;position:relative;isolation:isolate}
+.app:before,.app:after{content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(72px);opacity:.2;transition:background .65s ease,opacity .65s ease,transform .65s ease}
+.app:before{width:min(58vw,760px);height:min(58vw,760px);right:-16vw;top:8vh;background:radial-gradient(circle,rgba(var(--mood-a),.42) 0,rgba(var(--mood-a),.13) 38%,transparent 70%)}
+.app:after{width:min(46vw,620px);height:min(46vw,620px);left:12vw;bottom:-20vw;background:radial-gradient(circle,rgba(var(--mood-b),.3) 0,rgba(var(--mood-b),.09) 42%,transparent 72%)}
+.workspace{position:relative;background:linear-gradient(180deg,rgba(var(--mood-a),.018),transparent 26rem)}
+.app.mood-warlock{--mood-a:177,35,86;--mood-b:111,35,86}
+.app.mood-coven-king{--mood-a:121,65,190;--mood-b:39,18,67}
+.app.mood-into-darkness-series,.app.mood-lights-out,.app.mood-caught-up,.app.mood-game-on,.app.mood-dark-romance-1{--mood-a:70,87,190;--mood-b:110,49,150}
+.app.mood-ruinous-love-trilogy{--mood-a:160,46,89;--mood-b:76,48,131}
+.app.mood-dungeon-diving-101,.app.mood-haremlit-1{--mood-a:207,55,128;--mood-b:112,58,178}
+.app[class*="mood-"] .series-banner,.app[class*="mood-"] .pack-layout,.app[class*="mood-"] .binder-completion-card{box-shadow:0 24px 70px #0007,0 0 46px rgba(var(--mood-a),.07)}
+.app[class*="mood-"] .card-tile:hover,.app[class*="mood-"] .hero-card{filter:drop-shadow(0 18px 30px #0009) drop-shadow(0 0 18px rgba(var(--mood-a),.12))}
+@media(max-width:800px){.app:before{width:95vw;height:95vw;right:-45vw;top:12vh;opacity:.17}.app:after{width:80vw;height:80vw;left:-38vw;bottom:-18vw;opacity:.14}}
+@media(prefers-reduced-motion:reduce){.app:before,.app:after{transition:none}}
