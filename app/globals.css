@@ -623,3 +623,20 @@ main.empty>h1{color:#f3d7e7!important;text-shadow:0 0 36px #d94b9422}
  .collector-card-stack .hero-card{top:50%!important}
  .collector-card-stack .hero-edition{bottom:4px!important}
 }
+
+
+/* Collectible redesign: final legacy-palette cleanup */
+:root{--bg:#09080c;--surface:#100c12;--panel:#160d15;--line:#493044;--muted:#b8a9b3;--text:#f7eff4;--gold:#ef82bc;--gold-dark:#b84e88}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline-color:#ef82bc}
+.avatar{background:#351326;border-color:#70405e;color:#f7eff4}
+.eyebrow,.balances svg,.brand-mark,.brand-period,.mini-diamond{color:#ef82bc}
+.gold{background:linear-gradient(110deg,#ff4fa3,#bd47ff);color:#fff;border-color:transparent}
+.gold:hover{background:linear-gradient(110deg,#ff65ae,#c65aff)}
+.outline{border-color:#70405e;color:#f7eff4}.outline:hover{background:#25101f;border-color:#b04b82}
+.text-link{color:#d7c7d1}.text-link:hover{color:#ef82bc}
+.tile-info p,.rarity,.set-progress p,.set-progress strong small,.quick-strip small{color:#b8a9b3}
+.icon-btn{color:#c8b8c2}.icon-btn:hover{background:#25101f}.heart.active{color:#ef82bc}.heart.active svg{fill:#ef82bc33}
+.community-callout{border-color:#493044}
+input[type="checkbox"]{accent-color:#ef4da8}
+.site-footer{padding-bottom:110px}
+@media(max-width:700px){.site-footer{padding-bottom:130px}}
