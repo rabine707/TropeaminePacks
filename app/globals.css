@@ -369,3 +369,7 @@ footer{margin-top:24px;border-top:1px solid #242b22}
 .showing-pull .cinematic-pull-card{animation:cinematicFaceIn .38s ease both}
 @keyframes cinematicFaceIn{from{opacity:.25;transform:perspective(1000px) rotateY(70deg) scale(.96)}to{opacity:1;transform:perspective(1000px) rotateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.showing-pull .cinematic-pull-card{animation:none}}
+
+.mystery-card.mystery-card-art{padding:0;overflow:hidden;background:#111;border-color:#777}
+.mystery-card.mystery-card-art:before{display:none}
+.mystery-card-art img{display:block;width:100%;height:100%;object-fit:cover;border-radius:11px}
