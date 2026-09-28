@@ -11,21 +11,24 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   const [nearby, setNearby] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
   const browse = browseArtUrl(src);
-  const imageSrc = original || failed === browse ? src : browse;
+  // Felicity's current source asset has a different canvas than the rest of the catalog.
+  // Keep her on the original image path so the shared 2:3 thumbnail transform cannot distort the card frame.
+  const useOriginal = original || /^Felicity\b/i.test(alt);
+  const imageSrc = useOriginal || failed === browse ? src : browse;
 
   useEffect(() => {
-    if (original || nearby || !enabled) return;
+    if (useOriginal || nearby || !enabled) return;
     if (!('IntersectionObserver' in window)) {setNearby(true); return;}
     const observer = new IntersectionObserver(entries => {
       if (entries.some(entry => entry.isIntersecting)) {setNearby(true); observer.disconnect();}
     }, {rootMargin: '200px'});
     if (container.current) observer.observe(container.current);
     return () => observer.disconnect();
-  }, [original, nearby, enabled]);
+  }, [useOriginal, nearby, enabled]);
 
   return <span ref={container} style={{position: 'absolute', inset: 0}}>
-    {enabled && (original || nearby) && <Image src={imageSrc} alt={alt} fill unoptimized
-      loading={original ? 'eager' : 'lazy'} sizes="(max-width: 600px) 45vw, 280px"
+    {enabled && (useOriginal || nearby) && <Image src={imageSrc} alt={alt} fill unoptimized
+      loading={useOriginal ? 'eager' : 'lazy'} sizes="(max-width: 600px) 45vw, 280px"
       style={{objectFit: 'contain'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
   </span>;
 }
