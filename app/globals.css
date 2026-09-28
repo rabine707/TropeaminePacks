@@ -763,3 +763,15 @@ input[type="checkbox"]{accent-color:#ef4da8}
 /* Recap title gets the same fixed-geometry fit treatment; cards never move down. */
 .cinematic-reveal>.recap-heading{width:100%;max-width:100%;height:48px;min-height:48px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:clip;padding-inline:4px;line-height:1}
 @media(max-width:600px){.cinematic-reveal>.recap-heading{height:42px;min-height:42px;margin-bottom:12px}}
+
+/* Explicit face visibility/order: mystery art is always the unopened face. */
+.cinematic-mystery-face{z-index:3;transform:rotateY(0deg)}
+.cinematic-front-face{z-index:2;transform:rotateY(180deg)}
+.cinematic-dossier-face{z-index:1;transform:rotateY(360deg)}
+.face-mystery .cinematic-mystery-face{visibility:visible}
+.face-mystery .cinematic-front-face,.face-mystery .cinematic-dossier-face{visibility:hidden}
+.face-front .cinematic-front-face{visibility:visible}
+.face-front .cinematic-mystery-face,.face-front .cinematic-dossier-face{visibility:hidden}
+.face-back .cinematic-dossier-face{visibility:visible}
+.face-back .cinematic-mystery-face,.face-back .cinematic-front-face{visibility:hidden}
+.cinematic-dossier-face.pack-foil-pull:before,.cinematic-dossier-face.pack-foil-pull:after{border-radius:inherit}
