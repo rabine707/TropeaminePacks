@@ -344,3 +344,22 @@ footer{margin-top:24px;border-top:1px solid #242b22}
 @media(max-width:600px){
  :root{--mobile-nav-lift:32px}
 }
+
+
+/* Cinematic pack opening */
+.cinematic-reveal{min-height:650px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.cinematic-reveal>h1{max-width:650px;margin-left:auto;margin-right:auto}
+.cinematic-card-stage{position:relative;width:min(330px,70vw);aspect-ratio:2/3;margin:18px auto 10px;padding:0;border:0;background:transparent;perspective:1200px;transition:transform .22s ease}
+.cinematic-card-stage:hover{transform:translateY(-5px) scale(1.012)}
+.stage-glow{position:absolute;inset:10% -25%;z-index:-1;background:radial-gradient(ellipse,rgba(212,197,147,.2),transparent 65%);filter:blur(16px)}
+.mystery-card{position:absolute;inset:0;border:1px solid #817b58;border-radius:12px;background:radial-gradient(circle at 50% 42%,#4b513455,transparent 34%),linear-gradient(145deg,#252b20,#10140f 72%);box-shadow:0 28px 70px #000c,inset 0 0 0 7px #161b14,inset 0 0 0 8px #6e704b66;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#cfc49a}
+.mystery-card:before{content:'';position:absolute;inset:15px;border:1px solid #a39a6a55;border-radius:6px}
+.mystery-card span,.mystery-card small{font-size:9px;letter-spacing:4px;z-index:1}.mystery-card strong{font-family:var(--serif);font-size:72px;font-weight:400;letter-spacing:-5px;line-height:1.15;z-index:1}
+.cinematic-hint{font-size:9px;letter-spacing:2.4px;color:#8f987f;margin-top:10px}
+.final-pull .stage-glow{background:radial-gradient(ellipse,rgba(225,205,135,.34),rgba(160,120,190,.12),transparent 68%);animation:finalPulse 1.8s ease-in-out infinite}
+.final-pull .mystery-card{box-shadow:0 30px 80px #000d,0 0 34px rgba(212,197,147,.14),inset 0 0 0 7px #161b14,inset 0 0 0 8px #a69a6466}
+.pack-recap-actions{justify-content:center;margin-top:26px}
+.recap-grid{width:100%}
+@keyframes finalPulse{50%{opacity:.55;transform:scale(.92)}}
+@media(max-width:600px){.cinematic-reveal{min-height:72dvh;padding:12px 0}.cinematic-reveal>h1{font-size:34px}.cinematic-card-stage{width:min(280px,72vw)}.mystery-card strong{font-size:62px}.recap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pack-recap-actions{width:100%}.pack-recap-actions .button{flex:1;min-width:140px}}
+@media(prefers-reduced-motion:reduce){.final-pull .stage-glow{animation:none}.cinematic-card-stage{transition:none}}
