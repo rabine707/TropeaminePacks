@@ -51,10 +51,10 @@ test('original is byte-identical and cacheable; access query enforces published 
   assert.equal(JSON.parse(String(calls[1].init?.body)).transform, undefined);
 });
 
-test('browse uses one bounded thumbnail representation and a fixed WebP accept header', async () => {
+test('browse uses one bounded full-card thumbnail representation and a fixed WebP accept header', async () => {
   const {request, calls} = fixture({type: 'image/webp'});
   assert.equal((await request(cardArtUrl(id, path, 'browse'))).status, 200);
-  assert.deepEqual(JSON.parse(String(calls[1].init?.body)).transform, {width: 560, quality: 85});
+  assert.deepEqual(JSON.parse(String(calls[1].init?.body)).transform, {width: 560, height: 840, resize: 'contain', quality: 85});
   assert.deepEqual(calls[2].init?.headers, {Accept: 'image/webp'});
 });
 
