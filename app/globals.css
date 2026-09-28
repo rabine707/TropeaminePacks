@@ -695,11 +695,11 @@ input[type="checkbox"]{accent-color:#ef4da8}
  radial-gradient(ellipse at 86% 12%,rgba(var(--mood-a),.16),transparent 34rem),
  radial-gradient(ellipse at 12% 72%,rgba(var(--mood-b),.1),transparent 38rem),
  linear-gradient(180deg,rgba(var(--mood-deep),.16),transparent 34rem)}
-.app.mood-warlock{--mood-a:181,28,76;--mood-b:105,24,78;--mood-deep:53,10,29}
-.app.mood-coven-king{--mood-a:112,45,205;--mood-b:55,24,116;--mood-deep:18,7,35}
-.app.mood-into-darkness-series,.app.mood-lights-out,.app.mood-caught-up,.app.mood-game-on,.app.mood-dark-romance-1{--mood-a:52,79,220;--mood-b:80,42,170;--mood-deep:8,15,48}
-.app.mood-ruinous-love-trilogy{--mood-a:158,36,82;--mood-b:75,35,139;--mood-deep:42,9,30}
-.app.mood-dungeon-diving-101,.app.mood-haremlit-1{--mood-a:190,43,134;--mood-b:99,50,181;--mood-deep:40,12,47}
+.app.mood-warlock{--mood-a:224,24,67;--mood-b:126,12,55;--mood-deep:62,4,22}
+.app.mood-coven-king{--mood-a:137,55,255;--mood-b:69,22,170;--mood-deep:18,4,49}
+.app.mood-into-darkness-series,.app.mood-lights-out,.app.mood-caught-up,.app.mood-game-on,.app.mood-dark-romance-1{--mood-a:31,82,255;--mood-b:54,32,202;--mood-deep:3,13,67}
+.app.mood-ruinous-love-trilogy{--mood-a:210,31,91;--mood-b:117,27,145;--mood-deep:60,5,28}
+.app.mood-dungeon-diving-101,.app.mood-haremlit-1{--mood-a:232,38,154;--mood-b:119,48,224;--mood-deep:49,7,55}
 .app[class*="mood-"] .series-banner,.app[class*="mood-"] .pack-layout,.app[class*="mood-"] .binder-completion-card{box-shadow:0 24px 70px #0008,0 0 54px rgba(var(--mood-a),.13)}
 .app[class*="mood-"] .card-tile:hover,.app[class*="mood-"] .hero-card{filter:drop-shadow(0 18px 30px #0009) drop-shadow(0 0 22px rgba(var(--mood-a),.18))}
 @media(max-width:800px){
