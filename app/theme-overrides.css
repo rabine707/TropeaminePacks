@@ -14,3 +14,20 @@
 .collector-banner small{
   color:#b995aa;
 }
+
+/* Keep the full desktop wordmark inside the fixed sidebar. */
+@media (min-width:851px){
+  .sidebar .brand{
+    max-width:100%;
+    min-width:0;
+    padding-left:4px;
+    padding-right:4px;
+    gap:7px;
+    font-size:clamp(24px,2vw,27px);
+    line-height:1.12;
+    letter-spacing:-.8px;
+  }
+  .sidebar .brand > *{
+    min-width:0;
+  }
+}
