@@ -749,3 +749,17 @@ input[type="checkbox"]{accent-color:#ef4da8}
 .cinematic-reveal-controls .cinematic-hint{line-height:1.2}
 .cinematic-reveal-controls .reveal-all{margin-top:1px}
 @media(prefers-reduced-motion:reduce){.cinematic-flip-card{transition:none}}
+
+/* Three-state physical flip: mystery -> front art -> dossier back. */
+.face-mystery .cinematic-flip-card{transform:rotateY(0deg)}
+.face-front .cinematic-flip-card{transform:rotateY(180deg)}
+.face-back .cinematic-flip-card{transform:rotateY(360deg)}
+.cinematic-mystery-face{transform:rotateY(0deg)}
+.cinematic-front-face{transform:rotateY(180deg)}
+.cinematic-dossier-face{transform:rotateY(360deg)}
+.cinematic-front-face,.cinematic-dossier-face{background:#09070b}
+.cinematic-front-face>.card-art,.cinematic-dossier-face>.card-art{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:inherit}
+
+/* Recap title gets the same fixed-geometry fit treatment; cards never move down. */
+.cinematic-reveal>.recap-heading{width:100%;max-width:100%;height:48px;min-height:48px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:clip;padding-inline:4px;line-height:1}
+@media(max-width:600px){.cinematic-reveal>.recap-heading{height:42px;min-height:42px;margin-bottom:12px}}
