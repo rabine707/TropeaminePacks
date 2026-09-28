@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { newCardArtPath } from '@/lib/card-art'
 
 type Draft = {
   seriesTitle: string
@@ -363,15 +364,16 @@ export default function CardManager({ email }: { email: string }) {
   }
 
   async function uploadArt(file: File, side: 'front' | 'back', cardId: string, variantId: string, existing?: ExistingAsset) {
-    const path = existing?.storage_path ?? `${draft.rating}/${cardId}/${variantId}-${side}.${extensionFor(file)}`
+    const path = newCardArtPath(draft.rating, cardId, side, extensionFor(file))
     const upload = await supabase.storage.from('card-art').upload(path, file, {
-      cacheControl: '3600', contentType: file.type, upsert: Boolean(existing),
+      cacheControl: '3600', contentType: file.type, upsert: false,
     })
     if (upload.error) throw upload.error
-    if (!existing) {
-      const asset = await supabase.from('card_assets').insert({ variant_id: variantId, side, storage_path: path })
-      if (asset.error) throw asset.error
-    }
+    // New object names preserve browser/CDN cache correctness without overwriting old bytes.
+    const asset = existing
+      ? await supabase.from('card_assets').update({ storage_path: path }).eq('id', existing.id).select('id').single()
+      : await supabase.from('card_assets').insert({ variant_id: variantId, side, storage_path: path })
+    if (asset.error) throw asset.error
   }
 
   async function saveExistingCard() {

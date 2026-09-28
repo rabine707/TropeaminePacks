@@ -7,6 +7,8 @@ import CollectionApp from '@/components/collection-app';
 import {initialCards,initialRequests,type Card} from '@/lib/catalog';
 import {createClient} from '@/lib/supabase/client';
 
+import {cardArtUrl} from '@/lib/card-art';
+
 const LOCAL_KEY='tropeamine-packs-v1';
 
 const LOADING_PRAISE=[
@@ -75,17 +77,12 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
   if(!character||!series||!set||!variant)continue;
 
   const assets=Array.isArray(variant.card_assets)?variant.card_assets:[];
-  const paths:{front?:string;back?:string}={};
+  const artwork:{front?:string;back?:string}={};
   for(const asset of assets){
-   if(asset?.side==='front')paths.front=String(asset.storage_path||'');
-   else if(asset?.side==='back')paths.back=String(asset.storage_path||'');
+   if((asset?.side==='front'||asset?.side==='back')&&asset.id&&asset.storage_path?.startsWith('sfw/')){
+    artwork[asset.side as 'front'|'back']=cardArtUrl(String(asset.id),String(asset.storage_path));
+   }
   }
-  const signed:{front?:string;back?:string}={};
-  await Promise.all((['front','back'] as const).map(async side=>{
-   const path=paths[side];if(!path)return;
-   const result=await client.storage.from('card-art').createSignedUrl(path,60*60*6);
-   if(result.data?.signedUrl)signed[side]=result.data.signedUrl;
-  }));
 
   const lore=(character.lore&&typeof character.lore==='object')?character.lore:{};
   const label=String(variant.label||'Standard');
@@ -104,8 +101,8 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
    tags:[String(row.book_range||''),String(set.code||'')].filter(Boolean),
    bio:String(row.description||character.bio||''),
    appearances:String(row.book_range||''),
-   image:signed.front,
-   back:signed.back,
+   image:artwork.front,
+   back:artwork.back,
    packs:memberships.get(String(row.id))??[],
    available:Boolean(variant.available),
    adult:false,
