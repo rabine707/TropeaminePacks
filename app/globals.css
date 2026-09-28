@@ -379,3 +379,10 @@ footer{margin-top:24px;border-top:1px solid #242b22}
 .set-art-image img{border-radius:inherit}
 .series-banner-art{position:relative;width:150px;aspect-ratio:1/1;overflow:hidden;border-radius:10px;flex:0 0 auto;border:1px solid #ffffff1a}
 @media(max-width:700px){.series-banner-art{width:100%;aspect-ratio:16/9}.series-banner{align-items:stretch}}
+
+/* Preserve complete poster-style set artwork */
+.set-art-image{aspect-ratio:2/3;min-height:0;background:#0b0e0a}
+.set-art-image img{object-fit:contain!important}
+.series-banner-art{aspect-ratio:2/3;background:#0b0e0a}
+.series-banner-art img{object-fit:contain!important}
+@media(max-width:700px){.series-banner-art{width:min(240px,68vw);aspect-ratio:2/3;align-self:center}.series-banner{align-items:center}}
