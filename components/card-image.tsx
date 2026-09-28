@@ -26,6 +26,6 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   return <span ref={container} style={{position: 'absolute', inset: 0}}>
     {enabled && (original || nearby) && <Image src={imageSrc} alt={alt} fill unoptimized
       loading={original ? 'eager' : 'lazy'} sizes="(max-width: 600px) 45vw, 280px"
-      style={{objectFit: 'cover'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
+      style={{objectFit: 'contain'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
   </span>;
 }
