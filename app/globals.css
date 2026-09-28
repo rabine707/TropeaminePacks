@@ -734,3 +734,18 @@ input[type="checkbox"]{accent-color:#ef4da8}
 .binder-foil .pack-foil-pull:before,
 .binder-foil .pack-foil-pull:after{border-radius:inherit}
 .binder-foil .pack-foil-pull{border-radius:11px;clip-path:inset(0 round 11px)}
+
+/* One physical card: mystery face and card art rotate inside the same fixed shell. */
+.cinematic-card-stage{perspective:1200px}
+.cinematic-flip-card{position:absolute;inset:0;width:100%;height:100%;border-radius:12px;transform-style:preserve-3d;transition:transform .58s cubic-bezier(.2,.72,.2,1);will-change:transform}
+.face-mystery .cinematic-flip-card{transform:rotateY(0deg)}
+.face-front .cinematic-flip-card,.face-back .cinematic-flip-card{transform:rotateY(180deg)}
+.cinematic-flip-face{position:absolute;inset:0;width:100%;height:100%;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;clip-path:inset(0 round 12px)}
+.cinematic-mystery-face{transform:rotateY(0deg)}
+.cinematic-art-face{transform:rotateY(180deg)}
+.cinematic-flip-face>.mystery-card,.cinematic-flip-face>.card-art{position:absolute;inset:0;width:100%;height:100%;margin:0;border-radius:inherit}
+.cinematic-art-face.pack-foil-pull:before,.cinematic-art-face.pack-foil-pull:after{border-radius:inherit}
+.cinematic-reveal-controls{gap:5px;min-height:58px;margin-top:4px}
+.cinematic-reveal-controls .cinematic-hint{line-height:1.2}
+.cinematic-reveal-controls .reveal-all{margin-top:1px}
+@media(prefers-reduced-motion:reduce){.cinematic-flip-card{transition:none}}
