@@ -26,7 +26,7 @@ export async function deliverCardArt(request: Request, id: string, client: Supab
     if (error) return fail(502);
     if (!asset) return fail(404);
 
-    const options = size === 'browse' ? {transform: {width: 560, quality: 85}} : undefined;
+    const options = size === 'browse' ? {transform: {width: 560, height: 840, resize: 'contain' as const, quality: 85}} : undefined;
     const signed = await client.storage.from('card-art').createSignedUrl(asset.storage_path, 120, options);
     if (signed.error || !signed.data?.signedUrl) return fail(502);
     // Normalize browse format so the CDN cache does not vary by the visitor's Accept header.
