@@ -4,7 +4,7 @@ const fail = (status: number) => new Response('Artwork unavailable', {
   status, headers: {'Cache-Control': 'no-store'},
 });
 
-/** Only anonymous-readable artwork for published, available SFW card variants may enter the shared cache. */
+/** Only anonymous-readable, published SFW artwork may enter the shared cache. */
 export async function deliverCardArt(request: Request, id: string, client: SupabaseClient, fetchImage: typeof fetch = fetch) {
   const params = new URL(request.url).searchParams;
   const revision = params.get('v');
@@ -16,10 +16,13 @@ export async function deliverCardArt(request: Request, id: string, client: Supab
 
   try {
     const {data: asset, error} = await client.from('card_assets').select(`
-      storage_path, variants!inner(rating,available,cards!inner(published))
+      storage_path, variants!inner(rating,available,cards!inner(published,
+        characters!inner(series!inner(published)),card_sets!inner(published)))
     `).eq('id', id).eq('storage_path', revision)
       .eq('variants.rating', 'sfw').eq('variants.available', true)
-      .eq('variants.cards.published', true).maybeSingle();
+      .eq('variants.cards.published', true)
+      .eq('variants.cards.characters.series.published', true)
+      .eq('variants.cards.card_sets.published', true).maybeSingle();
     if (error) return fail(502);
     if (!asset) return fail(404);
 
