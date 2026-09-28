@@ -2,6 +2,7 @@ import './globals.css';
 import './collection-locks.css';
 import './collection-fun.css';
 import './casual-guide.css';
+import './theme-overrides.css';
 import CollectionFun from '@/components/collection-fun';
 import CasualGuide from '@/components/casual-guide';
 import Link from 'next/link';
