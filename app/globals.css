@@ -557,3 +557,69 @@ dialog.modal article{background:#100c12!important}
 /* Retire the last obvious olive utility surfaces globally */
 .request-search,.request-search input{background:#100c12!important}
 .request-search{border-color:#56364e!important}
+
+
+/* === Collectible redesign v1 · pass 4: screenshot fixes === */
+
+/* Loading state belongs to the pink/plum redesign, not the legacy olive palette. */
+main.empty>.eyebrow{color:#ef9bc8!important}
+main.empty>h1{color:#f3d7e7!important;text-shadow:0 0 36px #d94b9422}
+
+/* The redesigned transforms are center-relative, so explicitly anchor the stack. */
+.collector-card-stack{position:relative}
+.collector-card-stack .hero-card{left:50%!important;top:50%!important}
+.collector-card-stack .hero-edition{left:50%;transform:translateX(-50%);white-space:nowrap}
+
+/* Floating How it works trigger + its non-dialog guide implementation. */
+.how-it-works{
+ background:#160d15!important;
+ border-color:#70405e!important;
+ color:#f6eaf1!important;
+ box-shadow:0 14px 38px #0008,0 0 22px #b5367620!important;
+}
+.how-it-works:hover{background:#25101f!important;border-color:#c05b91!important}
+.how-it-works svg{color:#f08bc1!important}
+
+/* Guide can be rendered outside the generic dialog component. Cover its shell/cards
+   without affecting the rest of the app. */
+.how-it-works-modal,
+.how-it-works-panel,
+.quick-guide,
+.guide-modal,
+.guide-panel{
+ background:linear-gradient(155deg,#160d15 0%,#0b090d 58%,#120b11 100%)!important;
+ border-color:#70405e!important;
+ color:#f7eff4!important;
+ box-shadow:0 30px 100px #000d,0 0 60px #8b255a22!important;
+}
+.how-it-works-modal *,
+.how-it-works-panel *,
+.quick-guide *,
+.guide-modal *,
+.guide-panel *{border-color:#493044}
+.how-it-works-modal .eyebrow,
+.how-it-works-panel .eyebrow,
+.quick-guide .eyebrow,
+.guide-modal .eyebrow,
+.guide-panel .eyebrow{color:#ef9bc8!important}
+.how-it-works-modal h1,.how-it-works-modal h2,.how-it-works-modal h3,.how-it-works-modal strong,
+.how-it-works-panel h1,.how-it-works-panel h2,.how-it-works-panel h3,.how-it-works-panel strong,
+.quick-guide h1,.quick-guide h2,.quick-guide h3,.quick-guide strong,
+.guide-modal h1,.guide-modal h2,.guide-modal h3,.guide-modal strong,
+.guide-panel h1,.guide-panel h2,.guide-panel h3,.guide-panel strong{color:#fff!important}
+.how-it-works-modal p,.how-it-works-modal small,
+.how-it-works-panel p,.how-it-works-panel small,
+.quick-guide p,.quick-guide small,
+.guide-modal p,.guide-modal small,
+.guide-panel p,.guide-panel small{color:#b8a9b3!important}
+.how-it-works-modal svg,.how-it-works-panel svg,.quick-guide svg,.guide-modal svg,.guide-panel svg{color:#ef82bc!important}
+.how-it-works-modal article,.how-it-works-panel article,.quick-guide article,.guide-modal article,.guide-panel article,
+.how-it-works-modal .panel,.how-it-works-panel .panel,.quick-guide .panel,.guide-modal .panel,.guide-panel .panel{
+ background:#100c12!important;border-color:#493044!important
+}
+
+@media(max-width:800px){
+ .collector-card-stack{min-height:300px!important;margin-top:18px!important}
+ .collector-card-stack .hero-card{top:50%!important}
+ .collector-card-stack .hero-edition{bottom:4px!important}
+}
