@@ -484,3 +484,76 @@ footer{border-top-color:#382936!important}footer .footer-brand{color:#fff!import
  .bottom-nav,.mobile-bottom-nav{background:#09080dcc!important;border-top-color:#392b38!important;backdrop-filter:blur(18px)}
  .nav-link.active{background:linear-gradient(180deg,#43162f99,#23131f99)!important;border-color:#74405e!important}
 }
+
+
+/* === Collectible redesign v1 · pass 3: kill remaining olive islands === */
+.request-list .request-card,
+.request-list .character-votes,
+.request-list .request-book,
+.request-list .book-monogram,
+.request-list .vote{
+  background:#100c12!important;
+  border-color:#493044!important;
+}
+.request-list .character-votes{
+  background:linear-gradient(145deg,#160d15,#0d0a0f)!important;
+  border-top-color:#5a304b!important;
+}
+.request-list .book-monogram{
+  color:#ff8fc8!important;
+  box-shadow:inset 0 0 0 1px #a74778;
+}
+.request-list .rank{color:#d565a1!important}
+.request-list .status{color:#f2a4cd!important}
+.request-list .request-card small,
+.request-list .character-votes span{color:#b891a8!important}
+.request-list .vote:hover{border-color:#d85a9c!important;background:#21101c!important}
+.request-list .vote.voted{background:#511638!important;border-color:#ff5aa6!important;color:#fff!important}
+
+/* Requests title becomes a mobile stack instead of clipping the subtitle */
+@media(max-width:800px){
+ .request-list{gap:20px}
+ .request-card{overflow:hidden}
+ .request-book{grid-template-columns:auto auto 1fr!important}
+ .request-book>.button{grid-column:1/-1;width:100%;justify-content:center}
+ .character-votes>div{padding:17px 0}
+ .character-votes>div>strong{display:block;margin-bottom:10px}
+ .character-votes .vote{margin:4px 6px 4px 0}
+ .page-heading+ .request-intro + .section-title,
+ .request-intro + .section-title{display:block!important}
+ .request-intro + .section-title h2{margin-bottom:5px}
+ .request-intro + .section-title .muted{display:block;max-width:none;text-align:left}
+}
+
+/* How-it-works / dialogs: adult collector system, not reading-room green */
+dialog.modal{
+ background:linear-gradient(155deg,#160d15 0%,#0b090d 58%,#120b11 100%)!important;
+ border-color:#673850!important;
+ color:#f7eff4!important;
+ box-shadow:0 30px 100px #000d,0 0 60px #8b255a22!important;
+}
+dialog.modal::backdrop{background:#050407d9;backdrop-filter:blur(8px)}
+dialog.modal .eyebrow{color:#ef9bc8!important}
+dialog.modal h1,dialog.modal h2,dialog.modal h3,dialog.modal strong{color:#fff!important}
+dialog.modal p,dialog.modal small{color:#b8a9b3!important}
+dialog.modal .panel,
+dialog.modal details,
+dialog.modal form>div{
+ background:#100c12!important;
+ border-color:#493044!important;
+}
+dialog.modal svg{color:#ef82bc}
+dialog.modal .close{background:#160f16!important;border-color:#503348!important;color:#fff!important}
+dialog.modal .button.gold{background:linear-gradient(110deg,#ff4299,#b643ff)!important;color:#fff!important;border-color:transparent!important}
+dialog.modal .button.outline{border-color:#6b405d!important;color:#f7eff4!important;background:#100c12!important}
+
+/* Guide cards are descendants of the dialog even when they use generic card markup */
+dialog.modal article,
+dialog.modal li{
+ border-color:#493044!important;
+}
+dialog.modal article{background:#100c12!important}
+
+/* Retire the last obvious olive utility surfaces globally */
+.request-search,.request-search input{background:#100c12!important}
+.request-search{border-color:#56364e!important}
