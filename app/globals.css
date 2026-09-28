@@ -700,3 +700,8 @@ input[type="checkbox"]{accent-color:#ef4da8}
   .pack-reveal:not(.cinematic-reveal) .reveal-grid,.recap-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
   .pack-recap-actions{justify-content:center}
 }
+
+/* JS fits cinematic headings to one line; keep geometry fixed and prevent clipping. */
+.cinematic-reveal>h1{width:100%;max-width:100%;overflow:hidden;text-overflow:clip;padding-inline:4px;font-size:30px}
+@media(max-width:600px){.cinematic-reveal>h1{font-size:30px}}
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){.cinematic-reveal>h1{font-size:30px}}
