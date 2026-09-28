@@ -784,3 +784,19 @@ input[type="checkbox"]{accent-color:#ef4da8}
 
 /* Email/password authentication */
 .auth-page{min-height:calc(100vh - 120px);display:grid;place-items:center;padding:48px 20px}.auth-card{width:min(430px,100%);padding:32px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(16,12,18,.92);box-shadow:0 24px 70px #0008}.auth-card h1{font-size:clamp(34px,8vw,52px);margin:6px 0 8px}.auth-form{display:grid;gap:12px;margin:24px 0 10px}.auth-form label{display:grid;gap:6px;font-size:12px;color:#b8a9b3}.auth-form input{width:100%;box-sizing:border-box;padding:12px;border-radius:7px;border:1px solid #493044;background:#0b090d;color:#f7eff4;font:inherit}.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:#806f7a;font-size:11px}.auth-divider:before,.auth-divider:after{content:"";height:1px;background:#493044;flex:1}.auth-google{width:100%;justify-content:center}.auth-text-button,.auth-switch button{border:0;background:none;color:#ef82bc;padding:0;cursor:pointer;text-decoration:underline}.auth-switch{font-size:13px;margin-top:20px}.auth-legal{display:block;color:#907d89;line-height:1.5;margin:16px 0}.auth-legal a{color:inherit}.auth-error{color:#ff9ea8;font-size:12px}.auth-success{color:#bce8c8;font-size:12px}.cloud-identities{display:grid;gap:6px;margin:10px 0;padding:10px;border:1px solid #493044;border-radius:7px}.cloud-identities>small{color:#907d89;font-size:9px;letter-spacing:.12em}.cloud-identities>span{display:flex;align-items:center;gap:6px;font-size:11px}.cloud-identities>span>button{padding:0;color:#ef82bc}
+
+
+/* Card finishes · current Tropeamine collector theme */
+.treatment-panel{border-color:#5f3550;background:radial-gradient(circle at 88% 8%,#7d27521f,transparent 38%),linear-gradient(145deg,#171017,#0e0b10);box-shadow:inset 0 0 0 1px #ef82bc08,0 14px 34px #0003}
+.treatment-panel .eyebrow{color:#ef82bc}
+.treatment-heading strong{color:#f3d8e7}
+.treatment-option{border-color:#493044;background:#151016;color:#f5edf2}
+.treatment-option:hover:not(:disabled){border-color:#86506f;background:#1d111a}
+.treatment-option small{color:#9f8f99}
+.treatment-option svg{color:#d55a9b}
+.treatment-option.active{border-color:#ef82bc;box-shadow:inset 0 0 0 1px #ef82bc55,0 0 18px #d94b9414;background:linear-gradient(145deg,#341426,#20101a)}
+.treatment-option.active svg{color:#ff9dcc}
+.treatment-option.locked{opacity:.56;background:#100d11;border-color:#3d2b39}
+.creator-unlock,.treatment-note{color:#bda9b6}
+.creator-unlock{color:#dba3c2}
+.creator-unlock svg,.treatment-note svg{color:#d55a9b}
