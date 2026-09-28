@@ -11,9 +11,11 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   const [nearby, setNearby] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
   const browse = browseArtUrl(src);
-  // Felicity's current source asset has a different canvas than the rest of the catalog.
-  // Keep her on the original image path so the shared 2:3 thumbnail transform cannot distort the card frame.
-  const useOriginal = original || /^Felicity\b/i.test(alt);
+  // Felicity's current source file is wider than the locked 2:3 card canvas.
+  // Use the original file and stretch only this one asset to the frame so we avoid
+  // both letterboxing (green bands) and left/right cropping until the source is re-uploaded at 2:3.
+  const felicity = /^Felicity\b/i.test(alt);
+  const useOriginal = original || felicity;
   const imageSrc = useOriginal || failed === browse ? src : browse;
 
   useEffect(() => {
@@ -29,6 +31,6 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   return <span ref={container} style={{position: 'absolute', inset: 0}}>
     {enabled && (useOriginal || nearby) && <Image src={imageSrc} alt={alt} fill unoptimized
       loading={useOriginal ? 'eager' : 'lazy'} sizes="(max-width: 600px) 45vw, 280px"
-      style={{objectFit: 'contain'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
+      style={{objectFit: felicity ? 'fill' : 'contain'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
   </span>;
 }
