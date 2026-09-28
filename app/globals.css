@@ -713,3 +713,24 @@ input[type="checkbox"]{accent-color:#ef4da8}
 .cinematic-reveal>h1{width:100%;max-width:100%;overflow:hidden;text-overflow:clip;padding-inline:4px;font-size:30px}
 @media(max-width:600px){.cinematic-reveal>h1{font-size:30px}}
 @media (orientation:landscape) and (max-height:600px) and (pointer:coarse){.cinematic-reveal>h1{font-size:30px}}
+
+/* Pack reveal geometry: mystery backs, fronts and backs share one exact 2:3 shell. */
+.cinematic-card-stage{aspect-ratio:2/3}
+.cinematic-pull-card{inset:0;width:100%;height:100%;aspect-ratio:2/3;border-radius:12px;overflow:hidden;clip-path:inset(0 round 12px)}
+.cinematic-pull-card>.mystery-card,
+.cinematic-pull-card>.card-art,
+.cinematic-pull-card>.pack-foil-pull,
+.cinematic-pull-card>.pack-foil-pull>.card-art{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;aspect-ratio:2/3;border-radius:inherit;box-sizing:border-box}
+.cinematic-pull-card>.mystery-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+
+/* Foil belongs to the card silhouette, including its rounded corners. */
+.pack-foil-pull{border-radius:inherit;overflow:hidden;clip-path:inset(0 round 12px)}
+.cinematic-pull-card.pack-foil-pull{border-radius:12px}
+.cinematic-pull-card.pack-foil-pull:before,
+.cinematic-pull-card.pack-foil-pull:after{border-radius:inherit}
+.reveal-card .pack-foil-pull{border-radius:11px;clip-path:inset(0 round 11px)}
+.reveal-card .pack-foil-pull:before,
+.reveal-card .pack-foil-pull:after,
+.binder-foil .pack-foil-pull:before,
+.binder-foil .pack-foil-pull:after{border-radius:inherit}
+.binder-foil .pack-foil-pull{border-radius:11px;clip-path:inset(0 round 11px)}
