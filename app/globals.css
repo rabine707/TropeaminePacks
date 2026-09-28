@@ -681,3 +681,35 @@ input[type="checkbox"]{accent-color:#ef4da8}
   .cinematic-reveal>h1{height:42px;min-height:42px;font-size:clamp(20px,6.6vw,30px);letter-spacing:-.5px}
   .cinematic-reveal>h1+p{height:22px;min-height:22px;font-size:clamp(9px,3vw,13px);letter-spacing:-.15px}
 }
+
+/* Lock the cinematic reveal header geometry so copy changes never move the card stage. */
+.cinematic-reveal>h1{height:48px;min-height:48px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;font-size:clamp(24px,4vw,37px);line-height:1}
+.cinematic-reveal>h1+p{height:24px;min-height:24px;margin-bottom:0;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+@media(max-width:600px){
+  .cinematic-reveal>h1{height:42px;min-height:42px;font-size:clamp(20px,6.6vw,30px);letter-spacing:-.5px}
+  .cinematic-reveal>h1+p{height:22px;min-height:22px;font-size:clamp(9px,3vw,13px);letter-spacing:-.15px}
+}
+
+/* Phone landscape: use the short viewport efficiently instead of stretching portrait UI. */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .topbar{height:52px;padding:0 16px}
+  main{padding:0 18px}
+  .cinematic-reveal{min-height:calc(100dvh - 80px);padding:4px 0;display:grid;grid-template-columns:minmax(220px,38vw) minmax(0,1fr);grid-template-rows:auto auto 1fr auto;column-gap:24px;align-items:center;justify-content:center;text-align:center}
+  .cinematic-reveal>.eyebrow{grid-column:2;grid-row:1;margin:0 0 2px}
+  .cinematic-reveal>h1{grid-column:2;grid-row:2;height:36px;min-height:36px;margin:0;font-size:clamp(20px,3.5vw,30px)}
+  .cinematic-reveal>h1+p{grid-column:2;grid-row:3;height:auto;min-height:22px;margin:0;align-self:start;font-size:12px}
+  .cinematic-card-stage{grid-column:1;grid-row:1/5;width:auto;height:min(78dvh,390px);aspect-ratio:2/3;margin:0;align-self:center}
+  .cinematic-reveal-controls{grid-column:2;grid-row:4;min-height:54px;align-self:end;gap:7px}
+  .cinematic-hint{margin:0}
+  .reveal-all{min-height:34px;padding:6px 14px}
+  .modal.wide:has(.cinematic-reveal){width:min(920px,calc(100% - 18px));max-height:96dvh;padding:14px 20px;overflow:hidden}
+  .modal.wide:has(.cinematic-reveal) .close{top:7px;right:7px}
+  .pack-reveal.cinematic-reveal .stage-glow{inset:8% -18%}
+  .pack-reveal:not(.cinematic-reveal) .reveal-grid,.recap-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .pack-recap-actions{justify-content:center}
+}
+
+/* JS fits cinematic headings to one line; keep geometry fixed and prevent clipping. */
+.cinematic-reveal>h1{width:100%;max-width:100%;overflow:hidden;text-overflow:clip;padding-inline:4px;font-size:30px}
+@media(max-width:600px){.cinematic-reveal>h1{font-size:30px}}
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){.cinematic-reveal>h1{font-size:30px}}
