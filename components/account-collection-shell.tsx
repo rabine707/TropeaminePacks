@@ -112,7 +112,7 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
  return cards;
 }
 
-export default function AccountCollectionShell(){
+export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean}){
  const [hydrated,setHydrated]=useState(false);
  const [loadingPraise,setLoadingPraise]=useState(LOADING_PRAISE[0]);
  const [user,setUser]=useState<User|null>(null);
@@ -196,7 +196,7 @@ export default function AccountCollectionShell(){
  async function signOut(){await client.auth.signOut();window.location.href='/'}
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>{loadingPraise}</h1></main>;
- return <div className={user?'cloud-authenticated':''}>
+ return <div className={`${user?'cloud-authenticated':''} ${isAdmin?'creator-admin':'creator-reader'}`}>
   <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onCraftCard={async cardId=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_missing_card',{target_card_id:cardId});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onOpenPack={async duplicateCount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('settle_pack',{duplicate_count:duplicateCount});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
    <summary aria-label="Open account menu">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</summary>
@@ -212,7 +212,7 @@ export default function AccountCollectionShell(){
    </div>
   </details>}
   <style jsx global>{`
-   .cloud-authenticated .balances>a.text-link,.cloud-authenticated .balances>button.avatar.small{display:none!important}
+   .cloud-authenticated .balances>a.text-link,.cloud-authenticated .balances>button.avatar.small{display:none!important}\n   .creator-reader a[href=\"/admin\"]{display:none!important}
    .cloud-account-menu{position:fixed;right:42px;top:22px;z-index:80}
    .cloud-account-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%}
    .cloud-account-menu>summary::-webkit-details-marker{display:none}
