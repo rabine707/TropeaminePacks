@@ -685,17 +685,30 @@ input[type="checkbox"]{accent-color:#ef4da8}
 
 
 /* Premium polish · content-aware gallery mood lighting */
-.app{--mood-a:255,79,163;--mood-b:157,99,255;position:relative;isolation:isolate}
-.app:before,.app:after{content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(58px);opacity:.34;transition:background .65s ease,opacity .65s ease,transform .65s ease}
-.app:before{width:min(58vw,760px);height:min(58vw,760px);right:-16vw;top:8vh;background:radial-gradient(circle,rgba(var(--mood-a),.62) 0,rgba(var(--mood-a),.2) 38%,transparent 70%)}
-.app:after{width:min(46vw,620px);height:min(46vw,620px);left:12vw;bottom:-20vw;background:radial-gradient(circle,rgba(var(--mood-b),.48) 0,rgba(var(--mood-b),.15) 42%,transparent 72%)}
-.workspace{position:relative;background:linear-gradient(180deg,rgba(var(--mood-a),.055),transparent 30rem)}
-.app.mood-warlock{--mood-a:177,35,86;--mood-b:111,35,86}
-.app.mood-coven-king{--mood-a:121,65,190;--mood-b:39,18,67}
-.app.mood-into-darkness-series,.app.mood-lights-out,.app.mood-caught-up,.app.mood-game-on,.app.mood-dark-romance-1{--mood-a:70,87,190;--mood-b:110,49,150}
-.app.mood-ruinous-love-trilogy{--mood-a:160,46,89;--mood-b:76,48,131}
-.app.mood-dungeon-diving-101,.app.mood-haremlit-1{--mood-a:207,55,128;--mood-b:112,58,178}
-.app[class*="mood-"] .series-banner,.app[class*="mood-"] .pack-layout,.app[class*="mood-"] .binder-completion-card{box-shadow:0 24px 70px #0007,0 0 46px rgba(var(--mood-a),.07)}
-.app[class*="mood-"] .card-tile:hover,.app[class*="mood-"] .hero-card{filter:drop-shadow(0 18px 30px #0009) drop-shadow(0 0 18px rgba(var(--mood-a),.12))}
-@media(max-width:800px){.app:before{width:95vw;height:95vw;right:-34vw;top:9vh;opacity:.3}.app:after{width:80vw;height:80vw;left:-28vw;bottom:-14vw;opacity:.24}}
+.app{--brand-glow:224,66,145;--mood-a:255,79,163;--mood-b:157,99,255;--mood-deep:35,14,31;position:relative;isolation:isolate;background:
+ radial-gradient(ellipse at 50% 18%,rgba(var(--brand-glow),.055),transparent 38rem),
+ var(--bg)}
+.app:before,.app:after{content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;transition:background .7s ease,opacity .7s ease,transform .7s ease}
+.app:before{width:min(76vw,980px);height:min(62vw,800px);right:-18vw;top:4vh;filter:blur(48px);opacity:.58;background:radial-gradient(ellipse,rgba(var(--mood-a),.68) 0,rgba(var(--mood-a),.3) 28%,rgba(var(--mood-deep),.14) 52%,transparent 73%)}
+.app:after{width:min(68vw,860px);height:min(60vw,760px);left:7vw;bottom:-22vw;filter:blur(58px);opacity:.46;background:radial-gradient(ellipse,rgba(var(--mood-b),.58) 0,rgba(var(--mood-b),.22) 34%,transparent 72%)}
+.workspace{position:relative;background:
+ radial-gradient(ellipse at 86% 12%,rgba(var(--mood-a),.16),transparent 34rem),
+ radial-gradient(ellipse at 12% 72%,rgba(var(--mood-b),.1),transparent 38rem),
+ linear-gradient(180deg,rgba(var(--mood-deep),.16),transparent 34rem)}
+.app.mood-warlock{--mood-a:181,28,76;--mood-b:105,24,78;--mood-deep:53,10,29}
+.app.mood-coven-king{--mood-a:112,45,205;--mood-b:55,24,116;--mood-deep:18,7,35}
+.app.mood-into-darkness-series,.app.mood-lights-out,.app.mood-caught-up,.app.mood-game-on,.app.mood-dark-romance-1{--mood-a:52,79,220;--mood-b:80,42,170;--mood-deep:8,15,48}
+.app.mood-ruinous-love-trilogy{--mood-a:158,36,82;--mood-b:75,35,139;--mood-deep:42,9,30}
+.app.mood-dungeon-diving-101,.app.mood-haremlit-1{--mood-a:190,43,134;--mood-b:99,50,181;--mood-deep:40,12,47}
+.app[class*="mood-"] .series-banner,.app[class*="mood-"] .pack-layout,.app[class*="mood-"] .binder-completion-card{box-shadow:0 24px 70px #0008,0 0 54px rgba(var(--mood-a),.13)}
+.app[class*="mood-"] .card-tile:hover,.app[class*="mood-"] .hero-card{filter:drop-shadow(0 18px 30px #0009) drop-shadow(0 0 22px rgba(var(--mood-a),.18))}
+@media(max-width:800px){
+ .app:before{width:120vw;height:92vw;right:-48vw;top:10vh;filter:blur(38px);opacity:.62}
+ .app:after{width:105vw;height:92vw;left:-42vw;bottom:3vh;filter:blur(44px);opacity:.5}
+ .workspace{background:
+  radial-gradient(ellipse at 92% 16%,rgba(var(--mood-a),.2),transparent 29rem),
+  radial-gradient(ellipse at 3% 67%,rgba(var(--mood-b),.14),transparent 32rem),
+  linear-gradient(180deg,rgba(var(--mood-deep),.22),transparent 36rem)}
+}
 @media(prefers-reduced-motion:reduce){.app:before,.app:after{transition:none}}
+
