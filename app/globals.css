@@ -674,9 +674,11 @@ input[type="checkbox"]{accent-color:#ef4da8}
 .physical-reveal-face>.card-art,.physical-reveal-face>.mystery-card{width:100%;height:100%}
 .physical-mystery-face{transform:rotateY(0deg)}
 .physical-front-face{transform:rotateY(180deg)}
-.physical-back-face{transform:rotateY(360deg)}
+.physical-back-face{transform:rotateY(0deg);visibility:hidden}
 .physical-reveal-card.is-mystery .physical-reveal-inner{transform:rotateY(0deg)}
 .physical-reveal-card.is-front .physical-reveal-inner{transform:rotateY(180deg)}
-.physical-reveal-card.is-back .physical-reveal-inner{transform:rotateY(360deg)}
+.physical-reveal-card.is-back .physical-reveal-inner{transform:rotateY(0deg)}
+.physical-reveal-card.is-back .physical-mystery-face{visibility:hidden}
+.physical-reveal-card.is-back .physical-back-face{visibility:visible}
 .physical-reveal-card.is-front,.physical-reveal-card.is-back{filter:drop-shadow(0 22px 35px #0009)}
 @media(prefers-reduced-motion:reduce){.physical-reveal-inner{transition-duration:.01ms}}
