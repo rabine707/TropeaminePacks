@@ -1,30 +1,107 @@
 # Tropeamine Packs
 
-A Next.js / React / TypeScript collectible book-character app for the Tropeamine Packs project. The current build is an interactive browser-local demo; it is not yet a connected multi-user service.
+> **Collect your fictional obsessions. Chase the cards. Get the dopamine.**
 
-## Current deployment target
+Tropeamine Packs is a collectible book-character experience built around the characters, series, and tropes readers cannot stop thinking about. Open themed packs, reveal character cards one at a time, build a binder, chase foil editions and treatments, and turn duplicates into progress toward the cards you still want.
 
-- **Source:** GitHub
-- **Hosting:** Vercel
-- **Backend later:** Supabase
-- **Current persistence:** browser localStorage + JSON export
-- **Authentication:** not enabled yet
-- **Billing / premium entitlement:** not enabled yet
+The project is built with **Next.js, React, TypeScript, Supabase, and Vercel**.
 
-The demo can be deployed publicly to Vercel without Supabase credentials. Collections, balances, requests, creator edits, and uploaded demo artwork remain local to each browser until the Supabase integration is activated.
+## The collector loop
 
-## Run
+**Open → Reveal → Collect → Complete → Craft → Chase again**
 
-Use Node 22 or newer.
+- Open five-card packs using **Ink**.
+- The first four pulls are unique within the pack opening.
+- The fifth pull is a **guaranteed foil** and may repeat a character from the first four as a separate foil collectible.
+- Reveal cards through the cinematic **mystery back → front → character back → next card** sequence.
+- Browse owned cards in the Binder and discover locked characters without exposing their artwork.
+- Duplicates award **Shards**.
+- Use Shards to craft missing cards and special card treatments.
+- Toggle owned foil/treatment finishes while viewing the collection.
+
+Mystery backs use a universal rotating Tropeamine design family and intentionally do not reveal the set, character, rarity, or foil underneath.
+
+## Packs & sets
+
+Tropeamine is designed so a pack can contain cards from multiple related sets.
+
+The initial **HaremLit 1** pack brings together:
+
+- **Warlock**
+- **Coven King** by Virgil Knightley
+
+The catalog is built to expand into additional authors, series, genres, and themed packs without changing the core collector loop.
+
+## Accounts & cloud data
+
+Supabase powers the live account and collection layer.
+
+- Google authentication
+- Cloud-backed profiles
+- Ink and Shard wallets
+- Collection ownership
+- Pack membership/catalog data
+- Signed card-art delivery from Supabase Storage
+- Account settings and usernames
+- Admin-controlled catalog/economy workflows
+
+Some UI preferences and local state are still cached in the browser for responsiveness and compatibility, while account-owned collection/economy data is synchronized with the signed-in user.
+
+## Card system
+
+Cards support:
+
+- Front and back artwork
+- Base and foil ownership
+- Special visual treatments
+- Character/set metadata
+- Pack membership
+- Locked/discovered states
+- Full-card inspection
+- Mobile-friendly 2:3 presentation
+
+The standard Tropeamine card artwork ratio is **2:3**. Production artwork is currently standardized around **1024 × 1536 px**.
+
+## Economy
+
+The current collector economy uses two currencies:
+
+**Ink** is used to open packs. A standard pack currently costs **100 Ink**.
+
+**Shards** come from duplicate pulls and are used for crafting. Economy values live in the application/database flow and should be treated as tunable game-balance values rather than permanent constants.
+
+Pack settlement and account-owned currency should remain server-authoritative. Client UI must never be trusted to grant itself currency, ownership, rewards, or pack results.
+
+## Admin tools
+
+Tropeamine includes creator/admin workflows for maintaining the collectible catalog, including card creation and editing, draft-card management, pack membership, card availability, currency administration, treatments, and production status.
+
+The goal is to let new books and sets be added without rebuilding the collector-facing experience each time.
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Framework | Next.js 16 |
+| UI | React 19 |
+| Language | TypeScript |
+| Database / Auth / Storage | Supabase |
+| Hosting | Vercel |
+| Icons | Lucide React |
+| Database testing | PGlite |
+
+## Local development
+
+Requires **Node.js 22+**.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:3000.
+Then open `http://127.0.0.1:3000`.
 
-Useful checks:
+### Useful checks
 
 ```bash
 npm run typecheck
@@ -33,42 +110,74 @@ npm run test:schema
 npm run build
 ```
 
-## Vercel
+## Environment variables
 
-Import this repository as a Next.js project. No custom build settings are required; the standard `npm run build` command is enough.
+Copy `.env.example` and configure the Supabase project values used by your environment:
 
-No environment variables are required for the browser-local demo.
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
+```
 
-Do **not** add `SUPABASE_SECRET_KEY` to client code or any `NEXT_PUBLIC_*` variable. When Supabase is connected later, only the Supabase URL and publishable/anon credential belong in browser-visible configuration; privileged credentials must remain server-only.
+`SUPABASE_SECRET_KEY` is **server-only**. Never expose it through a `NEXT_PUBLIC_*` variable or client-side code.
 
-## Included
+## Project structure
 
-- Home, searchable Discover, framed responsive Binder, Warlock set, and accessible card dialogs.
-- Editable neutral proofs for Noah, Sam, Cassandra, Rachel, and Morgan.
-- Card variants, image upload, front/back display, favorites, missing slots, collection filters, and large card view.
-- 100-Ink five-card packs, guaranteed uncommon-or-better last slot, 10-Shard duplicates, and 30-Shard crafting.
-- Daily visit reward and action-based quests with one-time reward claims.
-- Book/character requests, normalized duplicate detection, separate SFW/After Dark interest voting, production statuses, review approval, merge, report resolution, creator poll, and featured-set editing.
-- Browser persistence and JSON export. Local uploads support JPEG/PNG/WebP up to 1.5 MB each.
-- Collector+ preview, themes, and explicit 18+ preference. No billing or real premium entitlement is enabled. Adult artwork uploads are disabled in the demo.
+```text
+app/          Next.js routes, layouts, global styling, and server endpoints
+components/   Collector UI, account shell, pack opening, binder, admin interfaces
+lib/          Catalog types, economy rules, helpers, and shared application logic
+public/       Static assets, including universal mystery card backs
+supabase/     Database schema, seed data, migrations, and schema tests
+```
 
-## Architecture and production boundary
+Key areas include:
 
-`lib/catalog.ts` contains seed data and UI types. `lib/economy.ts` owns pack/crafting rules. `components/collection-app.tsx` connects the routed demo screens. `supabase/seed.sql` supplies the five-character, nine-edition demo metadata. `supabase/schema.sql` is a production schema blueprint; it has not been applied to a live database. `.env.example` names future credentials; setting them alone does not activate a backend.
+- `components/account-collection-shell.tsx` — Supabase account/session and cloud collection bridge
+- `components/collection-app.tsx` — primary collector experience and pack-opening UI
+- `lib/catalog.ts` — card/catalog types and seed data
+- `lib/economy.ts` — core pack draw rules
+- `supabase/` — production database definitions and supporting SQL
 
-The schema separates series, books, characters, cards, editions, private assets, collections, inventory, wallets, immutable currency ledger, pack pools/openings/contents, quests/progress, requests/votes, entitlements, and moderation. Flexible taxonomies cover genres, shelves, tags and tropes. Public variant rows contain no asset URLs or adult descriptions. RLS and grants default to no writes. Economy, entitlement, moderation, and catalog mutations require trusted server operations.
+## Pack-opening rules
 
-## Before enabling real accounts/economy
+The core pack algorithm currently enforces:
 
-1. Create and connect Supabase, apply a reviewed migration derived from the blueprint, seed the catalog, and test RLS with anonymous, collector, premium, expired-premium, opted-in, and creator accounts.
-2. Add Supabase Auth/session adapters and replace browser state with server reads/mutations. Verify creator role on every admin operation.
-3. Implement atomic database transactions for pack opening, crafting, approvals, and quest claims. Never trust client-provided balances, draws, progress, votes, premium status, or rewards.
-4. Serve protected artwork from private storage with short-lived signed URLs after entitlement and opt-in checks.
-5. Wire moderation, dedupe/merge reconciliation, rate limits, server-side rewards, and server-controlled daily boundaries.
-6. Add payment processing only when requested.
+1. A pack costs 100 Ink.
+2. At least four unique available cards must exist in the selected pool.
+3. Slots 1–4 cannot duplicate one another.
+4. Slot 5 is foil and is drawn independently, so its character may match one of the first four.
+5. Base and foil ownership are tracked separately.
+6. Duplicate ownership converts into Shards.
 
-Genre/Event/After Dark packs are future editions. Advanced stats, paid themes, high-resolution gating, and premium animations are previews, not sold or fulfilled.
+Changes to these rules should be covered by economy tests before deployment.
+
+## Security & production boundaries
+
+Tropeamine treats the browser as an untrusted client.
+
+Privileged operations—currency changes, pack settlement, crafting, catalog moderation, and admin actions—should be validated server-side and protected by Supabase policies/roles. Protected artwork should be served through appropriately scoped storage access or signed URLs.
+
+Never commit production secrets to the repository.
 
 ## Verification
 
-GitHub Actions runs lockfile install, TypeScript checks, tests, and the production Next.js build on pushes to `main` and pull requests. The exact source files are committed normally in `app/` and `components/`.
+GitHub Actions and local checks are used to validate TypeScript, economy/request tests, schema tests, and the production Next.js build.
+
+Before merging behavior changes, run:
+
+```bash
+npm run typecheck
+npm test
+npm run test:schema
+npm run build
+```
+
+## Status
+
+Tropeamine Packs is under active development. The collector loop, Supabase-backed accounts, pack catalog, cinematic reveals, binder, foil system, crafting, treatments, and admin tooling are all evolving as the card catalog grows.
+
+---
+
+**Tropeamine Packs** — for the characters you were definitely going to stop thinking about.
