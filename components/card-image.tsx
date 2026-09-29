@@ -10,6 +10,7 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   const container = useRef<HTMLSpanElement>(null);
   const [nearby, setNearby] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
+  const [loadedOriginal, setLoadedOriginal] = useState<string | null>(null);
   const browse = browseArtUrl(src);
   // Felicity's current source file is wider than the locked 2:3 card canvas.
   // Use the original file and stretch only this one asset to the frame so we avoid
@@ -19,6 +20,12 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   const imageSrc = useOriginal || failed === browse ? src : browse;
 
   useEffect(() => {
+    setFailed(null);
+    setLoadedOriginal(null);
+    setNearby(useOriginal || !enabled);
+  }, [src, useOriginal, enabled]);
+
+  useEffect(() => {
     if (useOriginal || nearby || !enabled) return;
     if (!('IntersectionObserver' in window)) {setNearby(true); return;}
     const observer = new IntersectionObserver(entries => {
@@ -26,11 +33,37 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
     }, {rootMargin: '200px'});
     if (container.current) observer.observe(container.current);
     return () => observer.disconnect();
-  }, [useOriginal, nearby, enabled]);
+  }, [src, useOriginal, nearby, enabled]);
 
-  return <span ref={container} style={{position: 'absolute', inset: 0}}>
-    {enabled && (useOriginal || nearby) && <Image src={imageSrc} alt={alt} fill unoptimized
-      loading={useOriginal ? 'eager' : 'lazy'} sizes="(max-width: 600px) 45vw, 280px"
+  return <span ref={container} style={{position: 'absolute', inset: 0, background: '#0d090d'}}>
+    {enabled && useOriginal && <img
+      key={src}
+      src={src}
+      alt={alt}
+      onLoad={() => setLoadedOriginal(src)}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: felicity ? 'fill' : 'contain',
+        opacity: loadedOriginal === src ? 1 : 0,
+        transition: 'opacity 90ms ease-out'
+      }}
+    />}
+    {enabled && !useOriginal && nearby && <Image key={imageSrc} src={imageSrc} alt={alt} fill unoptimized
+      loading="lazy" sizes="(max-width: 600px) 45vw, 280px"
       style={{objectFit: felicity ? 'fill' : 'contain'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
+    <style jsx global>{`
+      /* Pack backs are selected immediately after settlement. Hide the first image paint
+         long enough for that source assignment to settle so an old color cannot flash. */
+      .mystery-card-art{background:#0d090d}
+      .mystery-card-art img{animation:tropeamineMysterySettle 180ms ease-out both}
+      @keyframes tropeamineMysterySettle{0%,55%{opacity:0}100%{opacity:1}}
+
+      /* The pack is 3 base + 1 foil now. Do not reserve the old fifth recap column. */
+      .recap-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;max-width:760px;margin-left:auto;margin-right:auto}
+      @media(max-width:600px){.recap-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:100%}}
+    `}</style>
   </span>;
 }

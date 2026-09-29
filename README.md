@@ -10,9 +10,9 @@ The project is built with **Next.js, React, TypeScript, Supabase, and Vercel**.
 
 **Open → Reveal → Collect → Complete → Craft → Chase again**
 
-- Open five-card packs using **Ink**.
-- The first four pulls are unique within the pack opening.
-- The fifth pull is a **guaranteed foil** and may repeat a character from the first four as a separate foil collectible.
+- Open four-card packs using **Ink**.
+- The first three pulls are unique within the pack opening.
+- The fourth pull is a **guaranteed foil** and may repeat a character from the first three as a separate foil collectible.
 - Reveal cards through the cinematic **mystery back → front → character back → next card** sequence.
 - Browse owned cards in the Binder and discover locked characters without exposing their artwork.
 - Duplicates award **Shards**.
@@ -145,9 +145,9 @@ Key areas include:
 The core pack algorithm currently enforces:
 
 1. A pack costs 100 Ink.
-2. At least four unique available cards must exist in the selected pool.
-3. Slots 1–4 cannot duplicate one another.
-4. Slot 5 is foil and is drawn independently, so its character may match one of the first four.
+2. At least three unique available cards must exist in the selected pool.
+3. Slots 1–3 cannot duplicate one another.
+4. Slot 4 is foil and is drawn independently, so its character may match one of the first three.
 5. Base and foil ownership are tracked separately.
 6. Duplicate ownership converts into Shards.
 
