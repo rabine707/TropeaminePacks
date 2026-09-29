@@ -16,6 +16,9 @@ grant execute on function public.settle_pack(integer) to authenticated;
 revoke all on function public.craft_missing_card(text) from public, anon;
 grant execute on function public.craft_missing_card(text) to authenticated;
 
+-- Legacy treatment signature currently accepts shard_cost from the browser, but
+-- the function independently derives expected_cost from treatment_id and rejects
+-- any mismatch. This parameter can be removed in a later compatibility cleanup.
 revoke all on function public.craft_card_treatment(text, text, integer) from public, anon;
 grant execute on function public.craft_card_treatment(text, text, integer) to authenticated;
 
