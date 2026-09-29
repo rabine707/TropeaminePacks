@@ -7,6 +7,8 @@ import CollectionApp from '@/components/collection-app';
 import {initialCards,initialRequests,type Card} from '@/lib/catalog';
 import {createClient} from '@/lib/supabase/client';
 
+import {cardArtUrl} from '@/lib/card-art';
+
 const LOCAL_KEY='tropeamine-packs-v1';
 
 const LOADING_PRAISE=[
@@ -75,17 +77,12 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
   if(!character||!series||!set||!variant)continue;
 
   const assets=Array.isArray(variant.card_assets)?variant.card_assets:[];
-  const paths:{front?:string;back?:string}={};
+  const artwork:{front?:string;back?:string}={};
   for(const asset of assets){
-   if(asset?.side==='front')paths.front=String(asset.storage_path||'');
-   else if(asset?.side==='back')paths.back=String(asset.storage_path||'');
+   if((asset?.side==='front'||asset?.side==='back')&&asset.id&&asset.storage_path?.startsWith('sfw/')){
+    artwork[asset.side as 'front'|'back']=cardArtUrl(String(asset.id),String(asset.storage_path));
+   }
   }
-  const signed:{front?:string;back?:string}={};
-  await Promise.all((['front','back'] as const).map(async side=>{
-   const path=paths[side];if(!path)return;
-   const result=await client.storage.from('card-art').createSignedUrl(path,60*60*6);
-   if(result.data?.signedUrl)signed[side]=result.data.signedUrl;
-  }));
 
   const lore=(character.lore&&typeof character.lore==='object')?character.lore:{};
   const label=String(variant.label||'Standard');
@@ -104,8 +101,8 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
    tags:[String(row.book_range||''),String(set.code||'')].filter(Boolean),
    bio:String(row.description||character.bio||''),
    appearances:String(row.book_range||''),
-   image:signed.front,
-   back:signed.back,
+   image:artwork.front,
+   back:artwork.back,
    packs:memberships.get(String(row.id))??[],
    available:Boolean(variant.available),
    adult:false,
@@ -115,11 +112,11 @@ async function loadLiveCards(client:ReturnType<typeof createClient>):Promise<Car
  return cards;
 }
 
-export default function AccountCollectionShell(){
+export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean}){
  const [hydrated,setHydrated]=useState(false);
  const [loadingPraise,setLoadingPraise]=useState(LOADING_PRAISE[0]);
  const [user,setUser]=useState<User|null>(null);
- const [profile,setProfile]=useState<CloudProfile|null>(null);
+ const [profile,setProfile]=useState<CloudProfile|null>(null);const [identities,setIdentities]=useState<string[]>([]);
  const [wallet,setWallet]=useState<CloudWallet|null>(null);
  const [syncing,setSyncing]=useState(false);
  const [syncError,setSyncError]=useState('');
@@ -153,7 +150,7 @@ export default function AccountCollectionShell(){
    client.from('collection_items').select('card_id,quantity').eq('user_id',nextUser.id)
   ]);
   if(!active)return;
-  if(profileResult.data)setProfile(profileResult.data as CloudProfile);
+  if(profileResult.data)setProfile(profileResult.data as CloudProfile);const identityResult=await client.auth.getUserIdentities();if(identityResult.data?.identities)setIdentities(identityResult.data.identities.map(identity=>identity.provider));
   const cloudWallet={ink:Number(walletResult.data?.ink??350),shards:Number(walletResult.data?.shards??20)};
   setWallet(cloudWallet);
   const cloudOwned=normalizedOwned((collectionResult.data||[]).map(row=>String(row.card_id)));
@@ -195,10 +192,11 @@ export default function AccountCollectionShell(){
   if(error){setAccountMessage(error.code==='23505'?'That username is already taken.':'Could not save account settings.');return}
   setProfile(data as CloudProfile);setAccountMessage('Saved');setEditingAccount(false);
  }
+ async function linkGoogle(){setAccountMessage('Opening Google…');const {error}=await client.auth.linkIdentity({provider:'google',options:{redirectTo:window.location.href}});if(error)setAccountMessage(error.message)}
  async function signOut(){await client.auth.signOut();window.location.href='/'}
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>{loadingPraise}</h1></main>;
- return <div className={user?'cloud-authenticated':''}>
+ return <div className={`${user?'cloud-authenticated':''} ${isAdmin?'creator-admin':'creator-reader'}`}>
   <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onCraftCard={async cardId=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_missing_card',{target_card_id:cardId});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onOpenPack={async duplicateCount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('settle_pack',{duplicate_count:duplicateCount});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
    <summary aria-label="Open account menu">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</summary>
@@ -208,13 +206,13 @@ export default function AccountCollectionShell(){
     <div className={syncError?'cloud-sync error':'cloud-sync'}>{syncError?<Cloud size={14}/>:<CheckCircle2 size={14}/>} {syncError|| (syncing?'Syncing binder…':'Binder synced to cloud')}</div>
     {profile?.username&&<small className="cloud-username">@{profile.username}</small>}
     {editingAccount?<form className="cloud-account-form" onSubmit={saveAccount}><label>Display name<input name="display_name" defaultValue={accountName} maxLength={80} required/></label><label>Username<input name="username" defaultValue={profile?.username||''} placeholder="your_username" minLength={3} maxLength={30} pattern="[a-zA-Z0-9_]+" required/></label><small>Usernames are public-facing. Your Google email stays private.</small><div><button type="submit">Save settings</button><button type="button" onClick={()=>setEditingAccount(false)}>Cancel</button></div></form>:<button onClick={()=>{setEditingAccount(true);setAccountMessage('')}}>Account settings</button>}
-    {accountMessage&&<small className="cloud-account-message">{accountMessage}</small>}
-    <small className="cloud-wallet-note">Your Google email is private. Packs require an account so collection progress can stay tied to you.</small>
+    {accountMessage&&<small className="cloud-account-message">{accountMessage}</small>}<div className="cloud-identities"><small>SIGN-IN METHODS</small><span><CheckCircle2 size={13}/> Email {user.email?'connected':'unavailable'}</span><span>{identities.includes('google')?<><CheckCircle2 size={13}/> Google linked</>:<button type="button" onClick={linkGoogle}>Link Google account</button>}</span></div>
+    <small className="cloud-wallet-note">Your email is private. Linked sign-in methods access the same Tropeamine collection.</small>
     <button onClick={signOut}><LogOut size={15}/>Sign out</button>
    </div>
   </details>}
   <style jsx global>{`
-   .cloud-authenticated .balances>a.text-link,.cloud-authenticated .balances>button.avatar.small{display:none!important}
+   .cloud-authenticated .balances>a.text-link,.cloud-authenticated .balances>button.avatar.small{display:none!important}\n   .creator-reader a[href=\"/admin\"]{display:none!important}
    .cloud-account-menu{position:fixed;right:42px;top:22px;z-index:80}
    .cloud-account-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%}
    .cloud-account-menu>summary::-webkit-details-marker{display:none}

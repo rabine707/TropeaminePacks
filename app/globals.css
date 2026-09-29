@@ -681,3 +681,122 @@ input[type="checkbox"]{accent-color:#ef4da8}
   .cinematic-reveal>h1{height:42px;min-height:42px;font-size:clamp(20px,6.6vw,30px);letter-spacing:-.5px}
   .cinematic-reveal>h1+p{height:22px;min-height:22px;font-size:clamp(9px,3vw,13px);letter-spacing:-.15px}
 }
+
+/* Lock the cinematic reveal header geometry so copy changes never move the card stage. */
+.cinematic-reveal>h1{height:48px;min-height:48px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;font-size:clamp(24px,4vw,37px);line-height:1}
+.cinematic-reveal>h1+p{height:24px;min-height:24px;margin-bottom:0;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+@media(max-width:600px){
+  .cinematic-reveal>h1{height:42px;min-height:42px;font-size:clamp(20px,6.6vw,30px);letter-spacing:-.5px}
+  .cinematic-reveal>h1+p{height:22px;min-height:22px;font-size:clamp(9px,3vw,13px);letter-spacing:-.15px}
+}
+
+/* Phone landscape: use the short viewport efficiently instead of stretching portrait UI. */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .topbar{height:52px;padding:0 16px}
+  main{padding:0 18px}
+  .cinematic-reveal{min-height:calc(100dvh - 80px);padding:4px 0;display:grid;grid-template-columns:minmax(220px,38vw) minmax(0,1fr);grid-template-rows:auto auto 1fr auto;column-gap:24px;align-items:center;justify-content:center;text-align:center}
+  .cinematic-reveal>.eyebrow{grid-column:2;grid-row:1;margin:0 0 2px}
+  .cinematic-reveal>h1{grid-column:2;grid-row:2;height:36px;min-height:36px;margin:0;font-size:clamp(20px,3.5vw,30px)}
+  .cinematic-reveal>h1+p{grid-column:2;grid-row:3;height:auto;min-height:22px;margin:0;align-self:start;font-size:12px}
+  .cinematic-card-stage{grid-column:1;grid-row:1/5;width:auto;height:min(78dvh,390px);aspect-ratio:2/3;margin:0;align-self:center}
+  .cinematic-reveal-controls{grid-column:2;grid-row:4;min-height:54px;align-self:end;gap:7px}
+  .cinematic-hint{margin:0}
+  .reveal-all{min-height:34px;padding:6px 14px}
+  .modal.wide:has(.cinematic-reveal){width:min(920px,calc(100% - 18px));max-height:96dvh;padding:14px 20px;overflow:hidden}
+  .modal.wide:has(.cinematic-reveal) .close{top:7px;right:7px}
+  .pack-reveal.cinematic-reveal .stage-glow{inset:8% -18%}
+  .pack-reveal:not(.cinematic-reveal) .reveal-grid,.recap-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .pack-recap-actions{justify-content:center}
+}
+
+/* JS fits cinematic headings to one line; keep geometry fixed and prevent clipping. */
+.cinematic-reveal>h1{width:100%;max-width:100%;overflow:hidden;text-overflow:clip;padding-inline:4px;font-size:30px}
+@media(max-width:600px){.cinematic-reveal>h1{font-size:30px}}
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){.cinematic-reveal>h1{font-size:30px}}
+
+/* Pack reveal geometry: mystery backs, fronts and backs share one exact 2:3 shell. */
+.cinematic-card-stage{aspect-ratio:2/3}
+.cinematic-pull-card{inset:0;width:100%;height:100%;aspect-ratio:2/3;border-radius:12px;overflow:hidden;clip-path:inset(0 round 12px)}
+.cinematic-pull-card>.mystery-card,
+.cinematic-pull-card>.card-art,
+.cinematic-pull-card>.pack-foil-pull,
+.cinematic-pull-card>.pack-foil-pull>.card-art{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;aspect-ratio:2/3;border-radius:inherit;box-sizing:border-box}
+.cinematic-pull-card>.mystery-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+
+/* Foil belongs to the card silhouette, including its rounded corners. */
+.pack-foil-pull{border-radius:inherit;overflow:hidden;clip-path:inset(0 round 12px)}
+.cinematic-pull-card.pack-foil-pull{border-radius:12px}
+.cinematic-pull-card.pack-foil-pull:before,
+.cinematic-pull-card.pack-foil-pull:after{border-radius:inherit}
+.reveal-card .pack-foil-pull{border-radius:11px;clip-path:inset(0 round 11px)}
+.reveal-card .pack-foil-pull:before,
+.reveal-card .pack-foil-pull:after,
+.binder-foil .pack-foil-pull:before,
+.binder-foil .pack-foil-pull:after{border-radius:inherit}
+.binder-foil .pack-foil-pull{border-radius:11px;clip-path:inset(0 round 11px)}
+
+/* One physical card: mystery face and card art rotate inside the same fixed shell. */
+.cinematic-card-stage{perspective:1200px}
+.cinematic-flip-card{position:absolute;inset:0;width:100%;height:100%;border-radius:12px;transform-style:preserve-3d;transition:transform .58s cubic-bezier(.2,.72,.2,1);will-change:transform}
+.face-mystery .cinematic-flip-card{transform:rotateY(0deg)}
+.face-front .cinematic-flip-card,.face-back .cinematic-flip-card{transform:rotateY(180deg)}
+.cinematic-flip-face{position:absolute;inset:0;width:100%;height:100%;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;clip-path:inset(0 round 12px)}
+.cinematic-mystery-face{transform:rotateY(0deg)}
+.cinematic-art-face{transform:rotateY(180deg)}
+.cinematic-flip-face>.mystery-card,.cinematic-flip-face>.card-art{position:absolute;inset:0;width:100%;height:100%;margin:0;border-radius:inherit}
+.cinematic-art-face.pack-foil-pull:before,.cinematic-art-face.pack-foil-pull:after{border-radius:inherit}
+.cinematic-reveal-controls{gap:5px;min-height:58px;margin-top:4px}
+.cinematic-reveal-controls .cinematic-hint{line-height:1.2}
+.cinematic-reveal-controls .reveal-all{margin-top:1px}
+@media(prefers-reduced-motion:reduce){.cinematic-flip-card{transition:none}}
+
+/* Three-state physical flip: mystery -> front art -> dossier back. */
+.face-mystery .cinematic-flip-card{transform:rotateY(0deg)}
+.face-front .cinematic-flip-card{transform:rotateY(180deg)}
+.face-back .cinematic-flip-card{transform:rotateY(360deg)}
+.cinematic-mystery-face{transform:rotateY(0deg)}
+.cinematic-front-face{transform:rotateY(180deg)}
+.cinematic-dossier-face{transform:rotateY(360deg)}
+.cinematic-front-face,.cinematic-dossier-face{background:#09070b}
+.cinematic-front-face>.card-art,.cinematic-dossier-face>.card-art{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:inherit}
+
+/* Recap title gets the same fixed-geometry fit treatment; cards never move down. */
+.cinematic-reveal>.recap-heading{width:100%;max-width:100%;height:48px;min-height:48px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:clip;padding-inline:4px;line-height:1}
+@media(max-width:600px){.cinematic-reveal>.recap-heading{height:42px;min-height:42px;margin-bottom:12px}}
+
+/* Explicit face visibility/order: mystery art is always the unopened face. */
+.cinematic-mystery-face{z-index:3;transform:rotateY(0deg)}
+.cinematic-front-face{z-index:2;transform:rotateY(180deg)}
+.cinematic-dossier-face{z-index:1;transform:rotateY(360deg)}
+.face-mystery .cinematic-mystery-face{visibility:visible}
+.face-mystery .cinematic-front-face,.face-mystery .cinematic-dossier-face{visibility:hidden}
+.face-front .cinematic-front-face{visibility:visible}
+.face-front .cinematic-mystery-face,.face-front .cinematic-dossier-face{visibility:hidden}
+.face-back .cinematic-dossier-face{visibility:visible}
+.face-back .cinematic-mystery-face,.face-back .cinematic-front-face{visibility:hidden}
+.cinematic-dossier-face.pack-foil-pull:before,.cinematic-dossier-face.pack-foil-pull:after{border-radius:inherit}
+
+/* Legal / transparency */
+.site-legal-footer{margin-top:56px;padding:22px max(20px,4vw);border-top:1px solid rgba(255,255,255,.09);text-align:center;color:var(--muted,#aaa);font-size:12px;line-height:1.55}
+.site-legal-footer p{max-width:760px;margin:0 auto 10px}.site-legal-footer nav{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}.site-legal-footer a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.legal-page{min-height:100vh;padding:56px 20px 80px}.legal-wrap{width:min(820px,100%);margin:0 auto}.legal-brand{display:inline-block;margin-bottom:42px;font-weight:800;letter-spacing:.16em;text-decoration:none}.legal-page h1{font-size:clamp(38px,7vw,68px);line-height:.95;margin:8px 0 10px}.legal-updated{color:var(--muted,#aaa);margin-bottom:28px}.legal-notice,.legal-callout{padding:18px 20px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(255,255,255,.04);line-height:1.6}.legal-copy{margin-top:34px}.legal-copy h2{font-size:22px;margin:34px 0 10px}.legal-copy p{line-height:1.75;color:var(--muted,#c4c0c8)}.legal-copy strong{color:var(--text,#fff)}.legal-copy a{color:inherit}.legal-links{display:flex;gap:16px;flex-wrap:wrap;margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1)}.legal-links a{color:inherit}
+@media(max-width:600px){.legal-page{padding:34px 18px 64px}.legal-brand{margin-bottom:30px}.site-legal-footer{margin-top:36px}}
+
+/* Email/password authentication */
+.auth-page{min-height:calc(100vh - 120px);display:grid;place-items:center;padding:48px 20px}.auth-card{width:min(430px,100%);padding:32px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(16,12,18,.92);box-shadow:0 24px 70px #0008}.auth-card h1{font-size:clamp(34px,8vw,52px);margin:6px 0 8px}.auth-form{display:grid;gap:12px;margin:24px 0 10px}.auth-form label{display:grid;gap:6px;font-size:12px;color:#b8a9b3}.auth-form input{width:100%;box-sizing:border-box;padding:12px;border-radius:7px;border:1px solid #493044;background:#0b090d;color:#f7eff4;font:inherit}.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:#806f7a;font-size:11px}.auth-divider:before,.auth-divider:after{content:"";height:1px;background:#493044;flex:1}.auth-google{width:100%;justify-content:center}.auth-text-button,.auth-switch button{border:0;background:none;color:#ef82bc;padding:0;cursor:pointer;text-decoration:underline}.auth-switch{font-size:13px;margin-top:20px}.auth-legal{display:block;color:#907d89;line-height:1.5;margin:16px 0}.auth-legal a{color:inherit}.auth-error{color:#ff9ea8;font-size:12px}.auth-success{color:#bce8c8;font-size:12px}.cloud-identities{display:grid;gap:6px;margin:10px 0;padding:10px;border:1px solid #493044;border-radius:7px}.cloud-identities>small{color:#907d89;font-size:9px;letter-spacing:.12em}.cloud-identities>span{display:flex;align-items:center;gap:6px;font-size:11px}.cloud-identities>span>button{padding:0;color:#ef82bc}
+
+
+/* Card finishes · current Tropeamine collector theme */
+.treatment-panel{border-color:#5f3550;background:radial-gradient(circle at 88% 8%,#7d27521f,transparent 38%),linear-gradient(145deg,#171017,#0e0b10);box-shadow:inset 0 0 0 1px #ef82bc08,0 14px 34px #0003}
+.treatment-panel .eyebrow{color:#ef82bc}
+.treatment-heading strong{color:#f3d8e7}
+.treatment-option{border-color:#493044;background:#151016;color:#f5edf2}
+.treatment-option:hover:not(:disabled){border-color:#86506f;background:#1d111a}
+.treatment-option small{color:#9f8f99}
+.treatment-option svg{color:#d55a9b}
+.treatment-option.active{border-color:#ef82bc;box-shadow:inset 0 0 0 1px #ef82bc55,0 0 18px #d94b9414;background:linear-gradient(145deg,#341426,#20101a)}
+.treatment-option.active svg{color:#ff9dcc}
+.treatment-option.locked{opacity:.56;background:#100d11;border-color:#3d2b39}
+.creator-unlock,.treatment-note{color:#bda9b6}
+.creator-unlock{color:#dba3c2}
+.creator-unlock svg,.treatment-note svg{color:#d55a9b}
