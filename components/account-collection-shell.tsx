@@ -1,7 +1,7 @@
 'use client';
 
-import {useEffect,useMemo,useRef,useState} from 'react';
-import {CheckCircle2,Cloud,Diamond,Droplets,LogOut} from 'lucide-react';
+import {useEffect,useMemo,useState} from 'react';
+import {CheckCircle2,Diamond,Droplets,LogOut} from 'lucide-react';
 import type {User} from '@supabase/supabase-js';
 import CollectionApp from '@/components/collection-app';
 import {initialCards,initialRequests,type Card} from '@/lib/catalog';
@@ -118,11 +118,8 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
  const [user,setUser]=useState<User|null>(null);
  const [profile,setProfile]=useState<CloudProfile|null>(null);const [identities,setIdentities]=useState<string[]>([]);
  const [wallet,setWallet]=useState<CloudWallet|null>(null);
- const [syncing,setSyncing]=useState(false);
- const [syncError,setSyncError]=useState('');
  const [editingAccount,setEditingAccount]=useState(false);
  const [accountMessage,setAccountMessage]=useState('');
- const lastOwnedRef=useRef('');
  const client=useMemo(()=>createClient(),[]);
 
  useEffect(()=>{setLoadingPraise(LOADING_PRAISE[Math.floor(Math.random()*LOADING_PRAISE.length)])},[]);
@@ -156,26 +153,8 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
   const cloudOwned=normalizedOwned((collectionResult.data||[]).map(row=>String(row.card_id)));
   const merged={...local,wallet:{...local.wallet,...cloudWallet,owned:cloudOwned}};
   try{localStorage.setItem(LOCAL_KEY,JSON.stringify(merged))}catch{}
-  lastOwnedRef.current=JSON.stringify(cloudOwned);
   setHydrated(true);
  })();return()=>{active=false}},[client]);
-
- useEffect(()=>{if(!hydrated||!user)return;const activeUser=user;let stopped=false;async function syncCollection(){
-  let owned:string[]=[];
-  try{const raw=localStorage.getItem(LOCAL_KEY);if(!raw)return;const parsed=JSON.parse(raw);owned=normalizedOwned(Array.isArray(parsed?.wallet?.owned)?parsed.wallet.owned.map(String):[])}catch{return}
-  const signature=JSON.stringify(owned);if(signature===lastOwnedRef.current)return;
-  setSyncing(true);setSyncError('');
-  try{
-   const {data:rows,error}=await client.from('collection_items').select('card_id').eq('user_id',activeUser.id);if(error)throw error;
-   const current=new Set((rows||[]).map(row=>String(row.card_id))),desired=new Set(owned);
-   const add=[...desired].filter(id=>!current.has(id)),remove=[...current].filter(id=>!desired.has(id));
-   if(add.length){const {error:insertError}=await client.from('collection_items').upsert(add.map(card_id=>({user_id:activeUser.id,card_id,quantity:1})),{onConflict:'user_id,card_id'});if(insertError)throw insertError}
-   if(remove.length){const {error:deleteError}=await client.from('collection_items').delete().eq('user_id',activeUser.id).in('card_id',remove);if(deleteError)throw deleteError}
-   if(!stopped)lastOwnedRef.current=signature;
-  }catch{if(!stopped)setSyncError('Binder sync paused')}
-  finally{if(!stopped)setSyncing(false)}
- }
- const timer=window.setInterval(()=>{void syncCollection()},1200);void syncCollection();return()=>{stopped=true;window.clearInterval(timer)}},[client,hydrated,user]);
 
  const metaName=String(user?.user_metadata?.full_name||user?.user_metadata?.name||'').trim();
  const savedName=(profile?.display_name||'').trim();
@@ -197,13 +176,13 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
 
  if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>{loadingPraise}</h1></main>;
  return <div className={`${user?'cloud-authenticated':''} ${isAdmin?'creator-admin':'creator-reader'}`}>
-  <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onCraftCard={async cardId=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_missing_card',{target_card_id:cardId});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onOpenPack={async duplicateCount=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('settle_pack',{duplicate_count:duplicateCount});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
+  <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onCraftCard={async cardId=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_missing_card',{target_card_id:cardId});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onOpenPack={async packSlug=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('open_pack_v2',{pack_slug:packSlug});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const pulls=(Array.isArray(row?.pulls)?row.pulls:[]).map((pull:any)=>({id:String(pull?.id??''),duplicate:Boolean(pull?.duplicate),foil:Boolean(pull?.foil)})).filter((pull:{id:string})=>pull.id);if(pulls.length!==4||!pulls[3]?.foil)throw new Error('Pack settlement returned an invalid result.');const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0),pulls};setWallet({ink:next.ink,shards:next.shards});return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">
    <summary aria-label="Open account menu">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}</summary>
    <div className="cloud-account-popover">
     <div className="cloud-account-head">{avatar?<img src={avatar} alt="" referrerPolicy="no-referrer"/>:<span>{initials}</span>}<div><strong>{accountName}</strong><small>{user.email}</small></div></div>
     <div className="cloud-wallet"><span><Droplets size={15}/><strong>{wallet?.ink.toLocaleString()??'—'}</strong><small>Ink</small></span><span><Diamond size={15}/><strong>{wallet?.shards.toLocaleString()??'—'}</strong><small>Shards</small></span></div>
-    <div className={syncError?'cloud-sync error':'cloud-sync'}>{syncError?<Cloud size={14}/>:<CheckCircle2 size={14}/>} {syncError|| (syncing?'Syncing binder…':'Binder synced to cloud')}</div>
+    <div className="cloud-sync"><CheckCircle2 size={14}/> Binder synced to cloud</div>
     {profile?.username&&<small className="cloud-username">@{profile.username}</small>}
     {editingAccount?<form className="cloud-account-form" onSubmit={saveAccount}><label>Display name<input name="display_name" defaultValue={accountName} maxLength={80} required/></label><label>Username<input name="username" defaultValue={profile?.username||''} placeholder="your_username" minLength={3} maxLength={30} pattern="[a-zA-Z0-9_]+" required/></label><small>Usernames are public-facing. Your Google email stays private.</small><div><button type="submit">Save settings</button><button type="button" onClick={()=>setEditingAccount(false)}>Cancel</button></div></form>:<button onClick={()=>{setEditingAccount(true);setAccountMessage('')}}>Account settings</button>}
     {accountMessage&&<small className="cloud-account-message">{accountMessage}</small>}<div className="cloud-identities"><small>SIGN-IN METHODS</small><span><CheckCircle2 size={13}/> Email {user.email?'connected':'unavailable'}</span><span>{identities.includes('google')?<><CheckCircle2 size={13}/> Google linked</>:<button type="button" onClick={linkGoogle}>Link Google account</button>}</span></div>
@@ -220,7 +199,7 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
    .cloud-account-popover{position:absolute;right:0;top:45px;width:280px;padding:16px;background:#100c12;border:1px solid #493044;border-radius:9px;box-shadow:0 20px 55px #000a;color:#f7eff4}
    .cloud-account-head{display:flex;align-items:center;gap:10px;padding-bottom:13px;border-bottom:1px solid #3a2534}.cloud-account-head>div{min-width:0}.cloud-account-head strong{display:block;font-size:14px}.cloud-account-head small{display:block;color:#b8a9b3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
    .cloud-wallet{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px 0}.cloud-wallet>span{display:grid;grid-template-columns:auto 1fr;column-gap:7px;align-items:center;padding:9px;border:1px solid #493044;border-radius:6px;background:#160d15}.cloud-wallet svg{grid-row:1/3;color:#ef82bc}.cloud-wallet strong{font-size:13px}.cloud-wallet small{font-size:10px;color:#a68e9e}
-   .cloud-sync{display:flex;align-items:center;gap:6px;font-size:11px;color:#e6b2cf;margin:8px 0}.cloud-sync svg{color:#ef82bc}.cloud-sync.error{color:#d0a58d}.cloud-username{display:block;color:#ef82bc;margin:-2px 0 8px}.cloud-account-form{display:grid;gap:9px;margin:10px 0;padding:11px;border:1px solid #493044;border-radius:7px;background:#160d15}.cloud-account-form label{display:grid;gap:4px;font-size:10px;color:#b8a9b3}.cloud-account-form input{width:100%;box-sizing:border-box;border:1px solid #493044;border-radius:5px;background:#0b090d;color:#f7eff4;padding:8px;font:inherit}.cloud-account-form>small,.cloud-account-message{color:#a68e9e;font-size:10px;line-height:1.4}.cloud-account-form>div{display:flex;gap:14px}
+   .cloud-sync{display:flex;align-items:center;gap:6px;font-size:11px;color:#e6b2cf;margin:8px 0}.cloud-sync svg{color:#ef82bc}.cloud-username{display:block;color:#ef82bc;margin:-2px 0 8px}.cloud-account-form{display:grid;gap:9px;margin:10px 0;padding:11px;border:1px solid #493044;border-radius:7px;background:#160d15}.cloud-account-form label{display:grid;gap:4px;font-size:10px;color:#b8a9b3}.cloud-account-form input{width:100%;box-sizing:border-box;border:1px solid #493044;border-radius:5px;background:#0b090d;color:#f7eff4;padding:8px;font:inherit}.cloud-account-form>small,.cloud-account-message{color:#a68e9e;font-size:10px;line-height:1.4}.cloud-account-form>div{display:flex;gap:14px}
    .cloud-wallet-note{display:block;color:#907d89;line-height:1.45;margin:8px 0 12px}.cloud-account-popover button{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:#e2d4dd;padding:6px 0;font-size:12px}.cloud-account-popover button:hover{color:#ef82bc}
    @media(max-width:600px){.cloud-account-menu{right:14px;top:15px}.cloud-account-menu>summary{width:29px;height:29px}.cloud-account-menu>summary img,.cloud-account-menu>summary span{width:29px;height:29px}.cloud-account-popover{right:0;top:39px;width:min(280px,calc(100vw - 28px))}.cloud-authenticated .balances{padding-right:35px}}
   `}</style>
