@@ -3,10 +3,11 @@
 -- This file mirrors the security-sensitive RPC behavior currently deployed to
 -- Supabase so the database trust boundary is reviewable from the repository.
 --
--- IMPORTANT: collection_items still temporarily permits authenticated users to
--- write their own rows because the current browser client performs legacy binder
--- synchronization. Remove those write policies only after the frontend has moved
--- fully to open_pack_v2 / crafting RPC-owned collection mutations.
+-- IMPORTANT STAGED MIGRATION:
+-- collection_items still temporarily permits authenticated users to write their
+-- own rows because the current browser client performs legacy binder sync.
+-- Remove those INSERT/UPDATE/DELETE policies only after the frontend has moved
+-- fully to open_pack_v2 / crafting RPC-owned collection mutations. SELECT stays.
 
 -- Existing economy RPCs should never be callable anonymously.
 revoke all on function public.settle_pack(integer) from public, anon;
@@ -175,3 +176,9 @@ revoke all on function public.rls_auto_enable() from public, anon, authenticated
 -- rules are implemented.
 revoke all on function public.unlock_collector_achievement(text) from public, anon, authenticated;
 grant execute on function public.unlock_collector_achievement(text) to service_role;
+
+-- FINAL COLLECTION CUTOVER (DO NOT RUN BEFORE THE FRONTEND USES RPC-OWNED GRANTS):
+-- drop policy if exists "Users can add to their own collection" on public.collection_items;
+-- drop policy if exists "Users can update their own collection" on public.collection_items;
+-- drop policy if exists "Users can remove from their own collection" on public.collection_items;
+-- revoke insert, update, delete on public.collection_items from authenticated;
