@@ -19,6 +19,13 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   const imageSrc = useOriginal || failed === browse ? src : browse;
 
   useEffect(() => {
+    // A reveal reuses this component for successive cards. Reset all source-specific
+    // image state so the previous pull cannot flash while the next card is loading.
+    setFailed(null);
+    setNearby(useOriginal || !enabled);
+  }, [src, useOriginal, enabled]);
+
+  useEffect(() => {
     if (useOriginal || nearby || !enabled) return;
     if (!('IntersectionObserver' in window)) {setNearby(true); return;}
     const observer = new IntersectionObserver(entries => {
@@ -26,10 +33,10 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
     }, {rootMargin: '200px'});
     if (container.current) observer.observe(container.current);
     return () => observer.disconnect();
-  }, [useOriginal, nearby, enabled]);
+  }, [src, useOriginal, nearby, enabled]);
 
   return <span ref={container} style={{position: 'absolute', inset: 0}}>
-    {enabled && (useOriginal || nearby) && <Image src={imageSrc} alt={alt} fill unoptimized
+    {enabled && (useOriginal || nearby) && <Image key={imageSrc} src={imageSrc} alt={alt} fill unoptimized
       loading={useOriginal ? 'eager' : 'lazy'} sizes="(max-width: 600px) 45vw, 280px"
       style={{objectFit: felicity ? 'fill' : 'contain'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
   </span>;
