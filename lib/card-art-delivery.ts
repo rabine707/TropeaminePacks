@@ -26,7 +26,7 @@ export async function deliverCardArt(request: Request, id: string, client: Supab
     if (error) return fail(502);
     if (!asset) return fail(404);
 
-    const options = size === 'browse' ? {transform: {width: 560, height: 840, resize: 'contain' as const, quality: 85}} : undefined;
+    const options = size === 'browse' ? {transform: {width: 560, height: 840, resize: 'contain' as const, quality: 32}} : undefined;
     const signed = await client.storage.from('card-art').createSignedUrl(asset.storage_path, 120, options);
     if (signed.error || !signed.data?.signedUrl) return fail(502);
     // Normalize browse format so the CDN cache does not vary by the visitor's Accept header.
@@ -42,7 +42,11 @@ export async function deliverCardArt(request: Request, id: string, client: Supab
     }
     return new Response(image.body, {headers: {
       'Content-Type': type,
-      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      // Keep browser caching conservative so unpublishing propagates quickly, while
+      // letting Vercel's shared CDN retain revisioned artwork long enough to avoid
+      // repeated Supabase DB + Storage work for popular cards.
+      'Cache-Control': 'public, max-age=3600',
+      'Vercel-CDN-Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
       'X-Content-Type-Options': 'nosniff',
     }});
   } catch {
