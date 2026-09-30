@@ -40,5 +40,5 @@ export const metadata = {
 };
 
 export default function Layout({children}:{children:React.ReactNode}) {
- return <html lang="en"><body>{children}<footer className="site-legal-footer"><p><strong>Unofficial fan-made project.</strong> Not affiliated with or endorsed by any referenced author, publisher, or rights holder.</p><nav><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/data">What Data We Collect</Link></nav></footer><CollectionFun/><CasualGuide/><RevealStabilizer/></body></html>;
+ return <html lang="en"><body>{children}<footer className="site-legal-footer"><p><strong>Unofficial fan-made project.</strong> Not affiliated with or endorsed by any referenced author, publisher, or rights holder.</p><nav><Link href="/showcase/create">Showcase Studio</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/data">What Data We Collect</Link></nav></footer><CollectionFun/><CasualGuide/><RevealStabilizer/></body></html>;
 }
