@@ -210,7 +210,7 @@ export default function CardManager({ email }: { email: string }) {
       }
       clearArt(); setEditing(null); setDraft(item)
       setMessage(item.characterName + ' is preloaded. Add the art, review the text, then save when ready.')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Focused editor opens in place; no page jump needed.
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Could not load this preload.')
     } finally { setBusy(false) }
@@ -550,8 +550,9 @@ export default function CardManager({ email }: { email: string }) {
         )}
       </section>
 
+      {editing && <div aria-hidden="true" onClick={busy ? undefined : loadSavedNewDraft} style={{ position: 'fixed', inset: 0, background: 'rgba(7,9,7,.78)', backdropFilter: 'blur(3px)', zIndex: 80 }} />}
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, .75fr)', gap: 24, alignItems: 'start' }}>
-        <form onSubmit={saveCard} style={{ border: editing ? '1px solid #81744d' : '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 24 }}>
+        <form onSubmit={saveCard} style={editing ? { position: 'fixed', zIndex: 90, top: '4vh', left: '50%', transform: 'translateX(-50%)', width: 'min(920px, calc(100vw - 24px))', maxHeight: '92vh', overflowY: 'auto', border: '1px solid #81744d', background: '#191c18', borderRadius: 12, padding: 24, boxShadow: '0 24px 80px rgba(0,0,0,.55)' } : { border: '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 12 }}>
             <div>
               <p className="eyebrow" style={{ marginBottom: 7 }}>{editing ? (draft.published ? 'EDITING LIVE CARD' : 'EDITING DRAFT CARD') : 'NEW CATALOG ENTRY'}</p>
@@ -592,13 +593,13 @@ export default function CardManager({ email }: { email: string }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <label style={artBoxStyle}>
                 <span style={{ fontSize: 12, color: '#c7cdbd' }}>Front card art</span>
-                {frontPreview ? <img src={frontPreview} alt="Front card preview" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ aspectRatio: '2 / 3', border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No front image yet</div>}
+                {frontPreview ? <img src={frontPreview} alt="Front card preview" style={{ width: '100%', height: 220, objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ height: 220, border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No front image yet</div>}
                 <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => chooseArt('front', e)} disabled={busy} />
                 <small style={{ color: '#889181' }}>{frontFile ? frontFile.name : editing?.assets.front ? 'Existing front art — choose a file to replace it' : 'Choose front art'}</small>
               </label>
               <label style={artBoxStyle}>
                 <span style={{ fontSize: 12, color: '#c7cdbd' }}>Back / profile art</span>
-                {backPreview ? <img src={backPreview} alt="Back card preview" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ aspectRatio: '2 / 3', border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No back image yet</div>}
+                {backPreview ? <img src={backPreview} alt="Back card preview" style={{ width: '100%', height: 220, objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ height: 220, border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No back image yet</div>}
                 <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => chooseArt('back', e)} disabled={busy} />
                 <small style={{ color: '#889181' }}>{backFile ? backFile.name : editing?.assets.back ? 'Existing back art — choose a file to replace it' : 'Choose back art'}</small>
               </label>
