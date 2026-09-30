@@ -44,7 +44,8 @@ test('original is byte-identical and cacheable; access query enforces published 
   const response = await request();
   assert.equal(response.status, 200);
   assert.deepEqual(new Uint8Array(await response.arrayBuffer()), bytes);
-  assert.equal(response.headers.get('cache-control'), 'public, max-age=3600, s-maxage=3600');
+  assert.equal(response.headers.get('cache-control'), 'public, max-age=3600');
+  assert.equal(response.headers.get('vercel-cdn-cache-control'), 'public, s-maxage=86400, stale-while-revalidate=604800');
   assert.equal(response.headers.get('set-cookie'), null);
   const query = calls[0].url.searchParams;
   for (const [key, value] of Object.entries({id, storage_path: path, 'variants.rating': 'sfw', 'variants.available': 'true', 'variants.cards.published': 'true', 'variants.cards.characters.series.published': 'true', 'variants.cards.card_sets.published': 'true'})) assert.equal(query.get(key), `eq.${value}`);
@@ -54,7 +55,7 @@ test('original is byte-identical and cacheable; access query enforces published 
 test('browse uses one bounded full-card thumbnail representation and a fixed WebP accept header', async () => {
   const {request, calls} = fixture({type: 'image/webp'});
   assert.equal((await request(cardArtUrl(id, path, 'browse'))).status, 200);
-  assert.deepEqual(JSON.parse(String(calls[1].init?.body)).transform, {width: 560, height: 840, resize: 'contain', quality: 85});
+  assert.deepEqual(JSON.parse(String(calls[1].init?.body)).transform, {width: 560, height: 840, resize: 'contain', quality: 32});
   assert.deepEqual(calls[2].init?.headers, {Accept: 'image/webp'});
 });
 
