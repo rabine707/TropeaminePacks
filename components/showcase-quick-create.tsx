@@ -66,7 +66,7 @@ export default function ShowcaseQuickCreate(){
 
  function placements(width:number,height:number){
   const list=chosen;
-  const top=height*(format==='story'?.16:.18),bottom=height*.90;
+  const top=height*(format==='story' ? .16 : .18),bottom=height*.90;
   const areaH=bottom-top;
   const result:Placement[]=[];
   if(!list.length)return result;
@@ -81,7 +81,7 @@ export default function ShowcaseQuickCreate(){
    return result;
   }
   if(list.length===1){const cardW=Math.min(width*.52,areaH*.52),cardH=cardW*1.5;return[{card:list[0],x:width/2,y:top+areaH*.48,w:cardW,h:cardH,rotation:0}]}
-  if(list.length===2){const cardW=Math.min(width*.38,areaH*.42);list.forEach((card,i)=>result.push({card,x:width*(i?.69:.31),y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:i?3:-3}));return result}
+  if(list.length===2){const cardW=Math.min(width*.38,areaH*.42);list.forEach((card,i)=>result.push({card,x:width*(i ? .69 : .31),y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:i?3:-3}));return result}
   const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols);const cardW=Math.min(cols===2?width*.31:width*.245,(areaH/rows)/1.62),cardH=cardW*1.5;
   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);const x=(col+1)*width/(cols+1);const y=top+(row+.55)*(areaH/rows);result.push({card,x,y,w:cardW,h:cardH,rotation:template==='series'?(i%2?1.8:-1.8):0})});
   return result;
@@ -106,7 +106,7 @@ export default function ShowcaseQuickCreate(){
   ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='600 18px system-ui,sans-serif';ctx.fillText(`${chosen.length} card${chosen.length===1?'':'s'} from my collection`,dims.w/2,dims.h-48);
  }
 
- function canvasBlob(){return new Promise<Blob|null>(resolve=>canvasRef.current?.toBlob(resolve,'image/png')??resolve(null))}
+ function canvasBlob(){return new Promise<Blob|null>(resolve=>{const canvas=canvasRef.current;if(!canvas){resolve(null);return}canvas.toBlob(resolve,'image/png')})}
  async function savePng(){const blob=await canvasBlob();if(!blob)return;const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`tropeamine-showcase-${Date.now()}.png`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice('Showcase saved as a full-quality PNG.')}
  async function shareShowcase(){const blob=await canvasBlob();if(!blob)return;const file=new File([blob],'tropeamine-showcase.png',{type:'image/png'});try{if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:'My Tropeamine Packs Showcase',files:[file]});setNotice('Shared ✨');return}}catch(err){if((err as DOMException)?.name==='AbortError')return}await savePng();setNotice('Native sharing is not available here, so the PNG was saved instead.')}
 
