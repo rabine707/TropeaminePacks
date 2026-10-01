@@ -12,6 +12,8 @@ type Chase={series:string;author:string;cards:HomeCard[];ownedBase:number;ownedF
 
 function normalize(value:string){return value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'')}
 function readState():HomeState|null{try{const raw=localStorage.getItem(STORAGE_KEY);return raw?JSON.parse(raw) as HomeState:null}catch{return null}}
+function setText(el:HTMLElement|null,text:string){if(el&&el.textContent?.trim()!==text)el.textContent=text}
+function setLinkText(link:HTMLAnchorElement|null,text:string){if(link&&link.textContent?.trim()!==text)link.replaceChildren(document.createTextNode(text))}
 
 function chooseChase(state:HomeState|null):Chase|null{
  const cards=(state?.cards??[]).filter(card=>!card.adult&&card.series);
@@ -31,8 +33,6 @@ function chooseChase(state:HomeState|null):Chase|null{
  return untouched[0]??chases[0]??null;
 }
 
-function setLinkText(link:HTMLAnchorElement|null,text:string){if(!link)return;link.replaceChildren(document.createTextNode(text))}
-
 export default function HomepageDensity(){
  useEffect(()=>{
   const sync=()=>{
@@ -48,20 +48,20 @@ export default function HomepageDensity(){
 
    if(dashboard){
     dashboard.classList.add('home-v2-dashboard-title');
-    const eyebrow=dashboard.querySelector<HTMLElement>('.eyebrow');if(eyebrow)eyebrow.textContent='YOUR COLLECTION';
-    const heading=dashboard.querySelector<HTMLElement>('h2');if(heading)heading.textContent='Overview';
+    setText(dashboard.querySelector<HTMLElement>('.eyebrow'),'YOUR COLLECTION');
+    setText(dashboard.querySelector<HTMLElement>('h2'),'Overview');
     setLinkText(dashboard.querySelector<HTMLAnchorElement>('a.text-link'),'Binder →');
    }
    if(chaseTitle){
     chaseTitle.classList.add('home-v2-chase-title');
-    const eyebrow=chaseTitle.querySelector<HTMLElement>('.eyebrow');if(eyebrow)eyebrow.textContent='NEXT UP';
-    const heading=chaseTitle.querySelector<HTMLElement>('h2');if(heading)heading.textContent='Continue your chase';
+    setText(chaseTitle.querySelector<HTMLElement>('.eyebrow'),'NEXT UP');
+    setText(chaseTitle.querySelector<HTMLElement>('h2'),'Continue your chase');
     setLinkText(chaseTitle.querySelector<HTMLAnchorElement>('a.text-link'),'All sets →');
    }
    if(fresh){
     fresh.classList.add('home-v2-fresh-title');
-    const eyebrow=fresh.querySelector<HTMLElement>('.eyebrow');if(eyebrow)eyebrow.textContent='NEW CARDS';
-    const heading=fresh.querySelector<HTMLElement>('h2');if(heading)heading.textContent='Recently added';
+    setText(fresh.querySelector<HTMLElement>('.eyebrow'),'NEW CARDS');
+    setText(fresh.querySelector<HTMLElement>('h2'),'Recently added');
     setLinkText(fresh.querySelector<HTMLAnchorElement>('a.text-link'),'Browse →');
    }
 
@@ -74,31 +74,30 @@ export default function HomepageDensity(){
    const art=spotlight.querySelector<HTMLElement>('.set-art-image');
    if(art)art.setAttribute('aria-hidden','true');
    if(copy){
-    const pill=copy.querySelector<HTMLElement>('.pill');if(pill)pill.textContent=chase.ownedBase?chase.remainingBase?'CLOSEST TO COMPLETE':'BASE SET COMPLETE':'START A SET';
-    const heading=copy.querySelector<HTMLElement>('h2');if(heading)heading.textContent=chase.series;
-    const author=copy.querySelector<HTMLElement>(':scope > p:not(.chase-copy)');if(author)author.textContent=chase.author||'Tropeamine Packs';
+    setText(copy.querySelector<HTMLElement>('.pill'),chase.ownedBase?chase.remainingBase?'CLOSEST TO COMPLETE':'BASE SET COMPLETE':'START A SET');
+    setText(copy.querySelector<HTMLElement>('h2'),chase.series);
+    setText(copy.querySelector<HTMLElement>(':scope > p:not(.chase-copy)'),chase.author||'Tropeamine Packs');
     const tags=copy.querySelectorAll<HTMLElement>('.tags span');
-    if(tags[0])tags[0].textContent=`${chase.ownedBase}/${chase.total} base`;
-    if(tags[1])tags[1].textContent=`${chase.ownedFoil}/${chase.total} foil`;
-    const note=copy.querySelector<HTMLElement>('.chase-copy');
-    if(note)note.textContent=chase.remainingBase>0?`${chase.remainingBase} base ${chase.remainingBase===1?'card':'cards'} from completing this set.`:chase.remainingFoil>0?`Base set complete. ${chase.remainingFoil} foil ${chase.remainingFoil===1?'card':'cards'} left to master it.`:'You own every base and foil in this set.';
+    setText(tags[0]??null,`${chase.ownedBase}/${chase.total} base`);
+    setText(tags[1]??null,`${chase.ownedFoil}/${chase.total} foil`);
+    setText(copy.querySelector<HTMLElement>('.chase-copy'),chase.remainingBase>0?`${chase.remainingBase} base ${chase.remainingBase===1?'card':'cards'} from completing this set.`:chase.remainingFoil>0?`Base set complete. ${chase.remainingFoil} foil ${chase.remainingFoil===1?'card':'cards'} left to master it.`:'You own every base and foil in this set.');
     const view=copy.querySelector<HTMLAnchorElement>('a.button');
-    if(view){view.href=`/series/${normalize(chase.series)}`;view.replaceChildren(document.createTextNode('View set →'))}
+    if(view){const href=`/series/${normalize(chase.series)}`;if(view.getAttribute('href')!==href)view.href=href;setLinkText(view,'View set →')}
     let packs=copy.querySelector<HTMLAnchorElement>('.home-v2-pack-action');
     if(!packs){packs=document.createElement('a');packs.className='button gold home-v2-pack-action';packs.href='/packs';packs.textContent='Open packs';copy.appendChild(packs)}
    }
    if(progress){
-    const label=progress.querySelector<HTMLElement>('span');if(label)label.textContent=chase.remainingBase?'BASE SET':'MASTER SET';
-    const strong=progress.querySelector<HTMLElement>('strong');if(strong)strong.textContent=chase.remainingBase?`${chase.ownedBase} / ${chase.total}`:`${chase.ownedBase+chase.ownedFoil} / ${chase.total*2}`;
+    setText(progress.querySelector<HTMLElement>('span'),chase.remainingBase?'BASE SET':'MASTER SET');
+    setText(progress.querySelector<HTMLElement>('strong'),chase.remainingBase?`${chase.ownedBase} / ${chase.total}`:`${chase.ownedBase+chase.ownedFoil} / ${chase.total*2}`);
     const bar=progress.querySelector<HTMLProgressElement>('progress');if(bar){bar.max=chase.remainingBase?chase.total:chase.total*2;bar.value=chase.remainingBase?chase.ownedBase:chase.ownedBase+chase.ownedFoil}
-    const status=progress.querySelector<HTMLElement>(':scope > p');if(status)status.textContent=chase.remainingBase?`${chase.remainingBase} left to complete the base set`:chase.remainingFoil?`${chase.remainingFoil} foils left to master`:'Master set complete';
+    setText(progress.querySelector<HTMLElement>(':scope > p'),chase.remainingBase?`${chase.remainingBase} left to complete the base set`:chase.remainingFoil?`${chase.remainingFoil} foils left to master`:'Master set complete');
    }
   };
 
   const afterNavigation=()=>window.setTimeout(sync,0);
   sync();
   const observer=new MutationObserver(sync);
-  observer.observe(document.body,{childList:true,subtree:true,characterData:true});
+  observer.observe(document.body,{childList:true,subtree:true});
   document.addEventListener('click',afterNavigation,true);
   window.addEventListener('popstate',afterNavigation);
   window.addEventListener('storage',afterNavigation);
