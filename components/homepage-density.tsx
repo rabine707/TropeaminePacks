@@ -6,7 +6,7 @@ const HOME_CLASS='home-density-v2';
 const TITLE_CLASSES=['home-v2-chase-title','home-v2-dashboard-title','home-v2-fresh-title'];
 const STORAGE_KEY='tropeamine-packs-v1';
 
-type HomeCard={id:string;series?:string;author?:string;adult?:boolean;image?:string};
+type HomeCard={id:string;name?:string;series?:string;author?:string;adult?:boolean;image?:string};
 type HomeState={cards?:HomeCard[];wallet?:{owned?:string[]}};
 type Chase={series:string;author:string;cards:HomeCard[];ownedBase:number;ownedFoil:number;total:number;remainingBase:number;remainingFoil:number};
 
@@ -65,14 +65,35 @@ export default function HomepageDensity(){
     setLinkText(fresh.querySelector<HTMLAnchorElement>('a.text-link'),'Browse →');
    }
 
-   const chase=chooseChase(readState());
+   const homeState=readState();
+   const chase=chooseChase(homeState);
    const spotlight=document.querySelector<HTMLElement>('.collectible-spotlight');
    if(!spotlight||!chase)return;
    spotlight.classList.add('home-v2-personal-chase');
    const copy=spotlight.querySelector<HTMLElement>('.spotlight-copy');
    const progress=spotlight.querySelector<HTMLElement>('.set-progress');
    const art=spotlight.querySelector<HTMLElement>('.set-art-image');
-   if(art)art.setAttribute('aria-hidden','true');
+   const ownedIds=new Set(homeState?.wallet?.owned??[]);
+
+   if(art){
+    art.removeAttribute('aria-hidden');
+    art.setAttribute('aria-label',`${chase.series} cards`);
+    let rail=art.querySelector<HTMLElement>('.home-v2-chase-art');
+    if(!rail){rail=document.createElement('div');rail.className='home-v2-chase-art';art.replaceChildren(rail)}
+    const heroCards=[...chase.cards]
+     .filter(card=>card.image)
+     .sort((a,b)=>Number(ownedIds.has(b.id))-Number(ownedIds.has(a.id)))
+     .slice(0,3);
+    const signature=heroCards.map(card=>`${card.id}:${ownedIds.has(card.id)?'owned':'missing'}`).join('|');
+    if(rail.dataset.cards!==signature){
+     rail.dataset.cards=signature;
+     rail.replaceChildren();
+     heroCards.forEach((card,index)=>{
+      const img=document.createElement('img');img.src=card.image!;img.alt=card.name||`${chase.series} card`;img.loading='lazy';img.decoding='async';img.className=ownedIds.has(card.id)?'is-owned':'is-missing';img.dataset.position=String(index+1);rail!.appendChild(img);
+     });
+    }
+   }
+
    if(copy){
     setText(copy.querySelector<HTMLElement>('.pill'),chase.ownedBase?chase.remainingBase?'CLOSEST TO COMPLETE':'BASE SET COMPLETE':'START A SET');
     setText(copy.querySelector<HTMLElement>('h2'),chase.series);
