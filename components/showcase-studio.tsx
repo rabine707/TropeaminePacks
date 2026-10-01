@@ -56,6 +56,24 @@ export default function ShowcaseStudio(){
 
  function cachedImage(src:string){const existing=imageCache.current[src];if(existing)return existing;const img=new Image();img.crossOrigin='anonymous';img.decoding='async';img.onload=()=>draw();img.src=src;imageCache.current[src]=img;return img}
  function bounds(el:Element){if(el.kind==='card')return{w:el.w,h:el.h};const w=Math.max(180,el.text.length*el.size*.55);return{w,h:el.size*1.35}}
+ function rotatedHalfBounds(el:Element){const {w,h}=bounds(el),r=el.rotation*Math.PI/180,c=Math.abs(Math.cos(r)),s=Math.abs(Math.sin(r));return{x:(w*c+h*s)/2,y:(w*s+h*c)/2}}
+ function clampElementPosition(el:Element,x:number,y:number,width=dims.w,height=dims.h){const half=rotatedHalfBounds(el);return{x:half.x*2>=width?width/2:clamp(x,half.x,width-half.x),y:half.y*2>=height?height/2:clamp(y,half.y,height-half.y)}}
+ function changePreset(nextPreset:CanvasPreset){
+  if(nextPreset===preset)return;
+  const previous=sizes[preset],next=sizes[nextPreset];
+  setElements(current=>current.map(original=>{
+   let moved={...original,x:(original.x/previous.w)*next.w,y:(original.y/previous.h)*next.h} as Element;
+   if(moved.kind==='card'){
+    const maxW=Math.max(80,Math.min(next.w*.82,(next.h*.82)/1.5));
+    if(moved.w>maxW)moved={...moved,w:maxW,h:maxW*1.5};
+   }else{
+    const currentBounds=bounds(moved),scale=Math.min(1,(next.w*.9)/currentBounds.w,(next.h*.9)/currentBounds.h);
+    if(scale<1)moved={...moved,size:Math.max(18,moved.size*scale)};
+   }
+   return {...moved,...clampElementPosition(moved,moved.x,moved.y,next.w,next.h)} as Element;
+  }));
+  setPreset(nextPreset);setGuides({});setNotice(`Changed to ${sizes[nextPreset].label}. Layers were kept inside the canvas.`);
+ }
 
  function draw(){
   const canvas=canvasRef.current;if(!canvas)return;canvas.width=dims.w;canvas.height=dims.h;
@@ -81,26 +99,26 @@ export default function ShowcaseStudio(){
  function addText(){const z=Math.max(0,...elements.map(e=>e.z))+1,id=uid();setElements(v=>[...v,{id,kind:'text',text:'My current obsessions',x:dims.w/2,y:140,size:64,rotation:0,z,locked:false}]);setSelected(id)}
  function addDeco(text:string){const z=Math.max(0,...elements.map(e=>e.z))+1,id=uid();setElements(v=>[...v,{id,kind:'deco',text,x:dims.w/2,y:dims.h/2,size:72,rotation:0,z,locked:false}]);setSelected(id)}
  function removeSelected(){if(!selected)return;setElements(v=>v.filter(e=>e.id!==selected));setSelected(null)}
- function updateSelected(patch:Record<string,unknown>){if(!selected)return;setElements(v=>v.map(e=>e.id===selected?({...e,...patch} as Element):e))}
- function duplicateSelected(){if(!selectedEl)return;const id=uid(),z=Math.max(0,...elements.map(e=>e.z))+1;setElements(v=>[...v,{...selectedEl,id,x:clamp(selectedEl.x+28,0,dims.w),y:clamp(selectedEl.y+28,0,dims.h),z,locked:false} as Element]);setSelected(id)}
+ function updateSelected(patch:Record<string,unknown>){if(!selected)return;setElements(v=>v.map(e=>{if(e.id!==selected)return e;const next={...e,...patch} as Element;return{...next,...clampElementPosition(next,next.x,next.y)} as Element}))}
+ function duplicateSelected(){if(!selectedEl)return;const id=uid(),z=Math.max(0,...elements.map(e=>e.z))+1;const next={...selectedEl,id,x:selectedEl.x+28,y:selectedEl.y+28,z,locked:false} as Element;setElements(v=>[...v,{...next,...clampElementPosition(next,next.x,next.y)} as Element]);setSelected(id)}
  function sendBackward(){if(!selectedEl)return;const sorted=[...elements].sort((a,b)=>a.z-b.z),i=sorted.findIndex(e=>e.id===selectedEl.id);if(i<=0)return;const other=sorted[i-1];setElements(v=>v.map(e=>e.id===selectedEl.id?{...e,z:other.z}:e.id===other.id?{...e,z:selectedEl.z}:e))}
  function toCanvasPoint(e:React.PointerEvent<HTMLCanvasElement>){const rect=e.currentTarget.getBoundingClientRect();return{x:(e.clientX-rect.left)*(dims.w/rect.width),y:(e.clientY-rect.top)*(dims.h/rect.height)}}
  function hitTest(x:number,y:number){return [...elements].sort((a,b)=>b.z-a.z).find(el=>{const {w,h}=bounds(el);return Math.abs(x-el.x)<=w/2&&Math.abs(y-el.y)<=h/2})||null}
  function pointerDown(e:React.PointerEvent<HTMLCanvasElement>){const p=toCanvasPoint(e),hit=hitTest(p.x,p.y);setSelected(hit?.id||null);if(hit&&!hit.locked){e.currentTarget.setPointerCapture(e.pointerId);setDrag({id:hit.id,dx:p.x-hit.x,dy:p.y-hit.y})}}
  function snapPoint(el:Element,x:number,y:number){if(!snap)return{x,y,g:{}};const threshold=20;let sx=x,sy=y,g:Guides={};const candidatesX=[dims.w/2,dims.w*.05,dims.w*.95],candidatesY=[dims.h/2,dims.h*.05,dims.h*.95];elements.filter(other=>other.id!==el.id).forEach(other=>{const ob=bounds(other);candidatesX.push(other.x,other.x-ob.w/2,other.x+ob.w/2);candidatesY.push(other.y,other.y-ob.h/2,other.y+ob.h/2)});let bestX=threshold+1,bestY=threshold+1;for(const cx of candidatesX){const d=Math.abs(x-cx);if(d<bestX){bestX=d;sx=cx;g.x=cx}}for(const cy of candidatesY){const d=Math.abs(y-cy);if(d<bestY){bestY=d;sy=cy;g.y=cy}}if(bestX>threshold){sx=x;delete g.x}if(bestY>threshold){sy=y;delete g.y}return{x:sx,y:sy,g}}
- function pointerMove(e:React.PointerEvent<HTMLCanvasElement>){if(!drag)return;const p=toCanvasPoint(e);setElements(v=>v.map(el=>{if(el.id!==drag.id)return el;const next=snapPoint(el,clamp(p.x-drag.dx,0,dims.w),clamp(p.y-drag.dy,0,dims.h));setGuides(next.g);return{...el,x:next.x,y:next.y}}))}
+ function pointerMove(e:React.PointerEvent<HTMLCanvasElement>){if(!drag)return;const p=toCanvasPoint(e);setElements(v=>v.map(el=>{if(el.id!==drag.id)return el;const snapped=snapPoint(el,p.x-drag.dx,p.y-drag.dy),safe=clampElementPosition(el,snapped.x,snapped.y);setGuides(snapped.g);return{...el,...safe}}))}
  function pointerUp(){setDrag(null);setGuides({})}
 
  function applyTemplate(kind:'top6'|'hero'|'grid9'){
   const currentCards=[...canvasCards].sort((a,b)=>a.z-b.z);if(!currentCards.length){setNotice('Add the cards you want first, then choose a template to arrange them.');return}
   const updates=new Map<string,Partial<CardElement>>();
   if(kind==='hero'){
-   currentCards.forEach((el,i)=>{if(i===0)updates.set(el.id,{x:dims.w/2,y:dims.h*.43,w:430,h:645,rotation:0});else{const j=i-1,cols=Math.min(2,Math.max(1,currentCards.length-1)),rows=Math.ceil((currentCards.length-1)/cols),w=Math.min(220,dims.w/(cols+2));updates.set(el.id,{x:(j%cols+1)*dims.w/(cols+1),y:dims.h*.17+Math.floor(j/cols)*(dims.h*.66/Math.max(1,rows-1||1)),w,h:w*1.5,rotation:0})}});
+   currentCards.forEach((el,i)=>{if(i===0)updates.set(el.id,{x:dims.w/2,y:dims.h*.43,w:Math.min(430,(dims.h*.78)/1.5),h:Math.min(645,dims.h*.78),rotation:0});else{const j=i-1,cols=Math.min(2,Math.max(1,currentCards.length-1)),rows=Math.ceil((currentCards.length-1)/cols),w=Math.min(220,dims.w/(cols+2),(dims.h*.46)/1.5);updates.set(el.id,{x:(j%cols+1)*dims.w/(cols+1),y:dims.h*.17+Math.floor(j/cols)*(dims.h*.66/Math.max(1,rows-1||1)),w,h:w*1.5,rotation:0})}});
   }else{
-   const cols=kind==='grid9'?Math.min(3,currentCards.length):Math.min(2,currentCards.length),rows=Math.ceil(currentCards.length/cols),w=Math.min(kind==='grid9'?230:280,(dims.w*.72)/cols),h=w*1.5;
+   const cols=kind==='grid9'?Math.min(3,currentCards.length):Math.min(2,currentCards.length),rows=Math.ceil(currentCards.length/cols),w=Math.min(kind==='grid9'?230:280,(dims.w*.72)/cols,(dims.h*.78/rows)/1.5),h=w*1.5;
    currentCards.forEach((el,i)=>{const col=i%cols,row=Math.floor(i/cols);updates.set(el.id,{x:(col+1)*dims.w/(cols+1),y:(row+1)*dims.h/(rows+1),w,h,rotation:0})});
   }
-  setElements(v=>v.map(el=>el.kind==='card'&&updates.has(el.id)?{...el,...updates.get(el.id)!}:el));setSelected(null);setNotice(`Template arranged ${currentCards.length} card${currentCards.length===1?'':'s'} straight at 0°.`);
+  setElements(v=>v.map(el=>{if(el.kind!=='card'||!updates.has(el.id))return el;const next={...el,...updates.get(el.id)!} as CardElement;return{...next,...clampElementPosition(next,next.x,next.y)} as CardElement}));setSelected(null);setNotice(`Template arranged ${currentCards.length} card${currentCards.length===1?'':'s'} straight at 0°.`);
  }
 
  function exportPng(){const canvas=canvasRef.current;if(!canvas)return;setSelected(null);requestAnimationFrame(()=>requestAnimationFrame(()=>{try{const link=document.createElement('a');link.download=`tropeamine-showcase-${Date.now()}.png`;link.href=canvas.toDataURL('image/png');link.click();setNotice('PNG exported.')}catch{setNotice('One of the selected images could not be exported. Try another card or reload the studio.')}}))}
@@ -115,7 +133,7 @@ export default function ShowcaseStudio(){
 
   <section className="studio-center">
    <div className="studio-control-groups">
-    <div className="studio-control-group"><span className="studio-control-label">LAYOUT</span><div className="studio-toolbar studio-layout-toolbar"><div>{(Object.keys(sizes) as CanvasPreset[]).map(k=><button key={k} className={preset===k?'active':''} onClick={()=>setPreset(k)}>{sizes[k].label}</button>)}</div><div className="studio-toolbar-options"><button className={snap?'active':''} onClick={()=>setSnap(v=>!v)}>Snap {snap?'On':'Off'}</button></div></div></div>
+    <div className="studio-control-group"><span className="studio-control-label">LAYOUT</span><div className="studio-toolbar studio-layout-toolbar"><div>{(Object.keys(sizes) as CanvasPreset[]).map(k=><button key={k} className={preset===k?'active':''} onClick={()=>changePreset(k)}>{sizes[k].label}</button>)}</div><div className="studio-toolbar-options"><button className={snap?'active':''} onClick={()=>setSnap(v=>!v)}>Snap {snap?'On':'Off'}</button></div></div></div>
     <div className="studio-control-group"><span className="studio-control-label">BACKGROUND</span><div className="studio-background-options">{(Object.keys(bgs) as BgPreset[]).map(k=><button key={k} className={`background-choice ${bg===k?'active':''}`} onClick={()=>setBg(k)} aria-label={`${bgs[k].label} background`}><i className={`swatch swatch-${k}`}/><span>{bgs[k].label}</span></button>)}</div></div>
    </div>
    <div className={`canvas-wrap ${preset}`}><canvas ref={canvasRef} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp}/></div>
