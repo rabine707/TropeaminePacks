@@ -26,6 +26,13 @@ const SERIES_ORDER=['Warlock','Coven King','Dungeon Diving 101–104','Into Dark
 function one<T>(value:T|T[]|null|undefined):T|null{return Array.isArray(value)?(value[0]??null):(value??null)}
 function pct(value:number,total:number){return total?Math.round((value/total)*100):0}
 function cardNumber(value:string){const match=value.match(/\d+/);return match?Number(match[0]):9999}
+function normalizeBookLabel(value:string){
+ return value
+  .replace(/[‐‑‒–—−]/g,'-')
+  .replace(/\s*-\s*/g,'–')
+  .replace(/\s+/g,' ')
+  .trim();
+}
 
 export const metadata={
  title:'Collection Albums · Tropeamine Packs',
@@ -59,7 +66,7 @@ export default async function AlbumsPage(){
    id:String(row.id),
    name:String(character.name||'Unnamed character'),
    number:String(row.number||''),
-   book:String(row.book_range||series.title||'Series'),
+   book:normalizeBookLabel(String(row.book_range||series.title||'Series')),
    series:String(series.title||'Series'),
    author:String(series.author||''),
    art:front?cardArtUrl(String(front.id),String(front.storage_path),'browse'):undefined
