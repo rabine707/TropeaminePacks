@@ -104,7 +104,7 @@ export default function CollectionFun(){
    document.querySelectorAll<HTMLButtonElement>('.popular-grid button').forEach(button=>{
     const name=button.querySelector('strong')?.textContent?.trim()||'';
     const matching=cards.filter(card=>cardName(card)===name);
-    const isOwned=matching.some(card=>owned.has(cardId(card))||isPublicPreview(card));
+    const isOwned=matching.some(card=>owned.has(cardId(card))||owned.has(`${cardId(card)}:foil`)||isPublicPreview(card));
     button.classList.toggle('locked-character',!isOwned);
     button.disabled=!isOwned;
     button.setAttribute('aria-disabled',String(!isOwned));
@@ -122,9 +122,9 @@ export default function CollectionFun(){
    const fresh=new Set(readJson<string[]>(NEW_KEY,[]).map(String));
    document.querySelectorAll<HTMLElement>('.card-tile').forEach(tile=>{
     const card=matchCardFromTile(tile,cards);if(!card)return;
-    const id=cardId(card),isOwned=owned.has(id)||isPublicPreview(card);
+    const id=cardId(card),isOwned=owned.has(id)||owned.has(`${id}:foil`)||isPublicPreview(card);
     let newBadge=tile.querySelector<HTMLSpanElement>('.new-card-badge');
-    if(isOwned&&fresh.has(id)){
+    if(isOwned&&(fresh.has(id)||fresh.has(`${id}:foil`))){
      if(!newBadge){newBadge=document.createElement('span');newBadge.className='new-card-badge';newBadge.textContent='NEW';tile.querySelector('.art-button')?.appendChild(newBadge)}
     }else newBadge?.remove();
     let hint=tile.querySelector<HTMLDivElement>('.locked-acquire-hint');
@@ -140,7 +140,7 @@ export default function CollectionFun(){
 
   function syncFreshCounter(cards:LooseCard[],owned:Set<string>){
    const fresh=new Set(readJson<string[]>(NEW_KEY,[]).map(String));
-   const freshCount=cards.filter(card=>owned.has(cardId(card))&&fresh.has(cardId(card))).length;
+   const freshCount=cards.filter(card=>{const id=cardId(card);return (owned.has(id)||owned.has(`${id}:foil`))&&(fresh.has(id)||fresh.has(`${id}:foil`))}).length;
    const heading=[...document.querySelectorAll<HTMLElement>('.page-heading')].find(el=>el.querySelector('h1')?.textContent?.trim()==='My binder');
    const existing=document.querySelector<HTMLAnchorElement>('.fresh-pulls-pill');
    if(!heading||freshCount===0){existing?.remove();return}
@@ -241,9 +241,11 @@ export default function CollectionFun(){
    const artButton=source.closest('.card-tile .art-button');
    if(artButton){
     const tile=artButton.closest('.card-tile');if(!tile)return;
-    const {cards,owned}=stateParts();const card=matchCardFromTile(tile,cards);if(!card||!owned.has(cardId(card)))return;
+    const {cards,owned}=stateParts();const card=matchCardFromTile(tile,cards);if(!card)return;
+    const id=cardId(card);if(!owned.has(id)&&!owned.has(`${id}:foil`))return;
     const fresh=new Set(readJson<string[]>(NEW_KEY,[]).map(String));
-    if(fresh.delete(cardId(card))){writeJson(NEW_KEY,[...fresh]);window.setTimeout(sync,0)}
+    const removedBase=fresh.delete(id),removedFoil=fresh.delete(`${id}:foil`);
+    if(removedBase||removedFoil){writeJson(NEW_KEY,[...fresh]);window.setTimeout(sync,0)}
    }
   }
 
