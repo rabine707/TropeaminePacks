@@ -6,15 +6,19 @@ const STATE_KEY='tropeamine-packs-v1';
 const KNOWN_KEY='tropeamine-packs-known-owned-v1';
 const NEW_KEY='tropeamine-packs-new-cards-v1';
 const MILESTONE_KEY='tropeamine-packs-milestones-v1';
+const FILTERS_KEY='tropeamine-packs-filter-preferences-v1';
+const REMEMBERED_FILTERS=['Shelf','Rarity','Genre','Series','Edition'];
 
-type LooseCard={id?:unknown;name?:unknown;variant?:unknown;available?:unknown;adult?:unknown;image?:unknown};
+type LooseCard={id?:unknown;name?:unknown;variant?:unknown;available?:unknown;adult?:unknown;image?:unknown;series?:unknown};
 type LooseState={wallet?:{owned?:unknown};cards?:LooseCard[]};
+type FilterPreferences=Record<string,string>;
 
 function readJson<T>(key:string,fallback:T):T{
  try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw) as T:fallback}catch{return fallback}
 }
 
 function writeJson(key:string,value:unknown){try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
+function slug(value:string){return value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'')}
 
 export default function CollectionFun(){
  useEffect(()=>{
@@ -25,6 +29,7 @@ export default function CollectionFun(){
   const cardId=(card:LooseCard)=>String(card.id??'');
   const cardName=(card:LooseCard)=>String(card.name??'').trim();
   const cardVariant=(card:LooseCard)=>String(card.variant??'').trim();
+  const cardSeries=(card:LooseCard)=>String(card.series??'').trim();
   const isPublicPreview=(card:LooseCard)=>cardName(card)==='Felicity';
 
   function stateParts(){
@@ -79,6 +84,7 @@ export default function CollectionFun(){
     writeJson(NEW_KEY,[...existing]);
     const addedCards=added.map(id=>cards.find(card=>cardId(card)===id)).filter((card):card is LooseCard=>Boolean(card));
     // Cloud/local collection hydration is silent. Action-driven pack/craft UI handles celebrations.
+    void addedCards;
    }
    if(current.length!==known.length||current.some(id=>!knownSet.has(id)))writeJson(KNOWN_KEY,current);
   }
@@ -132,17 +138,99 @@ export default function CollectionFun(){
    });
   }
 
+  function syncFreshCounter(cards:LooseCard[],owned:Set<string>){
+   const fresh=new Set(readJson<string[]>(NEW_KEY,[]).map(String));
+   const freshCount=cards.filter(card=>owned.has(cardId(card))&&fresh.has(cardId(card))).length;
+   const heading=[...document.querySelectorAll<HTMLElement>('.page-heading')].find(el=>el.querySelector('h1')?.textContent?.trim()==='My binder');
+   const existing=document.querySelector<HTMLAnchorElement>('.fresh-pulls-pill');
+   if(!heading||freshCount===0){existing?.remove();return}
+   const pill=existing||document.createElement('a');
+   pill.className='fresh-pulls-pill';pill.href='/binder';pill.setAttribute('aria-label',`${freshCount} new ${freshCount===1?'card':'cards'} to inspect`);
+   pill.innerHTML=`<b>${freshCount}</b><span>NEW ${freshCount===1?'PULL':'PULLS'}<small>Tap cards to clear</small></span>`;
+   if(!existing)heading.appendChild(pill);
+  }
+
+  function syncRememberedFilters(){
+   const filters=document.querySelector<HTMLElement>('.filters');
+   if(!filters)return;
+   const preferences=readJson<FilterPreferences>(FILTERS_KEY,{});
+   for(const label of REMEMBERED_FILTERS){
+    const select=filters.querySelector<HTMLSelectElement>(`select[aria-label="${label}"]`);
+    const preferred=preferences[label];
+    if(!select||!preferred||select.value===preferred||![...select.options].some(option=>option.value===preferred))continue;
+    select.value=preferred;select.dispatchEvent(new Event('change',{bubbles:true}));
+   }
+   const active=Object.entries(preferences).filter(([label,value])=>REMEMBERED_FILTERS.includes(label)&&value&&!value.startsWith('All '));
+   let note=filters.querySelector<HTMLDivElement>('.filter-memory-note');
+   if(!active.length){note?.remove();return}
+   if(!note){note=document.createElement('div');note.className='filter-memory-note';filters.appendChild(note)}
+   note.innerHTML=`<span>✦ ${active.length} ${active.length===1?'FILTER':'FILTERS'} REMEMBERED</span><button type="button" class="filter-memory-reset">Reset</button>`;
+  }
+
+  function syncDiscoverChase(cards:LooseCard[],owned:Set<string>){
+   const discoverHeading=[...document.querySelectorAll<HTMLElement>('.page-heading')].find(el=>el.querySelector('h1')?.textContent?.trim()==='The collection');
+   const filters=document.querySelector<HTMLElement>('.filters');
+   const existing=document.querySelector<HTMLElement>('.discover-chase');
+   if(!discoverHeading||!filters){existing?.remove();return}
+   const groups=new Map<string,LooseCard[]>();
+   for(const card of cards){
+    const name=cardSeries(card);if(card.adult===true||card.available===false||!name)continue;
+    groups.set(name,[...(groups.get(name)||[]),card]);
+   }
+   const series=[...groups.entries()].map(([name,setCards])=>{
+    const base=setCards.filter(card=>owned.has(cardId(card))).length;
+    const foil=setCards.filter(card=>owned.has(`${cardId(card)}:foil`)).length;
+    const total=setCards.length;
+    const progress=total?Math.round(((base+foil)/(total*2))*100):0;
+    return {name,base,foil,total,progress};
+   }).filter(item=>item.total>0).sort((a,b)=>b.progress-a.progress||a.name.localeCompare(b.name));
+   if(!series.length){existing?.remove();return}
+   const signature=series.map(item=>`${item.name}:${item.base}:${item.foil}:${item.total}`).join('|');
+   if(existing?.dataset.signature===signature)return;
+   const section=existing||document.createElement('section');section.className='discover-chase';section.dataset.signature=signature;
+   const cardsMarkup=series.map(item=>{
+    const status=item.base===item.total&&item.foil===item.total?'MASTERED':item.base===item.total?'BASE COMPLETE':item.base===0?'START THE SET':`${item.total-item.base} BASE LEFT`;
+    return `<a class="discover-chase-card ${item.progress===100?'mastered':item.base===item.total?'base-complete':''}" href="/series/${slug(item.name)}"><div class="discover-chase-title"><strong>${escapeHtml(item.name)}</strong><span>${status}</span></div><div class="discover-chase-progress"><i style="width:${item.progress}%"></i></div><div class="discover-chase-stats"><span><b>${item.base}</b>/${item.total} Base</span><span><b>${item.foil}</b>/${item.total} Foil</span><em>${item.progress}%</em></div></a>`;
+   }).join('');
+   section.innerHTML=`<div class="discover-chase-head"><div><span>YOUR SET CHASES</span><strong>See what’s closest to complete.</strong></div><small>Base + foil progress updates with your binder.</small></div><div class="discover-chase-rail">${cardsMarkup}</div>`;
+   if(!existing)filters.parentElement?.insertBefore(section,filters);
+  }
+
+  function escapeHtml(value:string){
+   return value.replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]||char));
+  }
+
   function sync(){
    const {cards,owned}=stateParts();
    const signature=JSON.stringify({owned:[...owned].sort(),cards:cards.map(card=>`${cardId(card)}:${cardName(card)}:${cardVariant(card)}`)});
    syncNewCards(cards,owned);
    updatePopular(cards,owned);
    updateTiles(cards,owned);
+   syncFreshCounter(cards,owned);
+   syncRememberedFilters();
+   syncDiscoverChase(cards,owned);
    if(signature!==lastSignature){syncMilestones(cards,owned);lastSignature=signature}
+  }
+
+  function onChange(event:Event){
+   const source=event.target;if(!(source instanceof HTMLSelectElement)||!source.closest('.filters'))return;
+   const label=source.getAttribute('aria-label')||'';if(!REMEMBERED_FILTERS.includes(label))return;
+   const preferences=readJson<FilterPreferences>(FILTERS_KEY,{});
+   if(source.value.startsWith('All '))delete preferences[label];else preferences[label]=source.value;
+   writeJson(FILTERS_KEY,preferences);window.setTimeout(syncRememberedFilters,0);
   }
 
   function onClick(event:MouseEvent){
    const source=event.target;if(!(source instanceof Element))return;
+   const reset=source.closest('.filter-memory-reset');
+   if(reset){
+    event.preventDefault();writeJson(FILTERS_KEY,{});
+    document.querySelectorAll<HTMLSelectElement>('.filters select').forEach(select=>{
+     const all=[...select.options].find(option=>option.value.startsWith('All '));if(!all||select.value===all.value)return;
+     select.value=all.value;select.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    toast('Collection filters reset');window.setTimeout(syncRememberedFilters,0);return;
+   }
    const random=source.closest('button');
    if(random?.textContent?.includes('Random card')){
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
@@ -160,9 +248,10 @@ export default function CollectionFun(){
   }
 
   document.addEventListener('click',onClick,true);
+  document.addEventListener('change',onChange,true);
   const timer=window.setInterval(sync,750);
   sync();
-  return()=>{document.removeEventListener('click',onClick,true);window.clearInterval(timer)};
+  return()=>{document.removeEventListener('click',onClick,true);document.removeEventListener('change',onChange,true);window.clearInterval(timer)};
  },[]);
  return null;
 }
