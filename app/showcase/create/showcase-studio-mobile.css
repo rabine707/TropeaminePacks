@@ -1,0 +1,70 @@
+/* Showcase Studio phone layout — controls first, compact canvas, no horizontal page overflow. */
+@media(max-width:640px){
+  .showcase-page{min-height:0!important;overflow-x:hidden}
+  .showcase-shell-head{padding:10px 12px!important;gap:10px}
+  .showcase-shell-head div{min-width:0;justify-content:flex-end}
+  .showcase-shell-head strong{font-size:16px!important;white-space:nowrap}
+  .showcase-back{font-size:12px;white-space:nowrap}
+
+  .studio-grid{
+    width:100%;max-width:100%;padding:10px 12px 28px!important;gap:12px!important;
+    overflow:hidden;
+  }
+  /* On a phone, choosing cards comes before staring at an empty canvas. */
+  .left-panel{order:1!important}
+  .studio-center{order:2!important}
+  .right-panel{order:3!important}
+  .studio-center,.studio-panel,.studio-panel section{width:100%;max-width:100%;min-width:0}
+  .studio-panel{gap:10px}
+  .studio-panel section{padding:13px!important;border-radius:14px}
+  .studio-muted{max-width:100%;overflow-wrap:anywhere;word-break:normal}
+
+  .template-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;overflow:visible!important;gap:6px}
+  .template-grid button{min-width:0!important;padding:9px 5px!important;font-size:11px}
+
+  .card-picker{
+    display:flex!important;width:100%;max-width:100%;overflow-x:auto!important;overflow-y:hidden;
+    gap:8px;padding:2px 0 6px;scroll-snap-type:x proximity;overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+  }
+  .card-picker::-webkit-scrollbar{display:none}
+  .card-picker button{flex:0 0 74px;min-width:74px!important;max-width:74px;scroll-snap-align:start}
+  .card-picker span{width:74px!important}
+  .card-picker small{font-size:10px}
+
+  .tool-row{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .tool-row button{min-width:0;justify-content:center;padding:10px 5px!important}
+
+  .studio-toolbar{
+    position:static!important;width:100%;max-width:100%;margin:0 0 9px!important;padding:8px!important;
+    display:flex;gap:8px;overflow-x:auto!important;overflow-y:hidden;border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;background:rgba(14,10,16,.72);scrollbar-width:none;
+  }
+  .studio-toolbar::-webkit-scrollbar{display:none}
+  .studio-toolbar>div:first-child,.studio-toolbar-options{flex:0 0 auto;min-width:max-content!important}
+  .studio-toolbar button{min-height:38px}
+
+  .canvas-wrap{width:100%!important;min-height:0!important;padding:4px 0 8px;overflow:hidden}
+  .canvas-wrap canvas{
+    width:auto!important;height:auto!important;max-width:min(86vw,360px)!important;max-height:46dvh!important;
+    border-radius:12px!important;box-shadow:0 16px 45px rgba(0,0,0,.4)!important;
+  }
+  .canvas-wrap.square canvas,.canvas-wrap.landscape canvas{max-width:100%!important}
+
+  .selected-state{min-width:0}.selected-state span{min-width:0}
+  .right-panel{padding-bottom:16px!important}
+  .right-panel input,.right-panel input[type=range]{max-width:100%}
+  .export-button,.reset-button{width:100%;max-width:100%}
+
+  /* Keep edit actions in document flow so Safari chrome cannot cover them. */
+  .mobile-tool-dock{position:static!important;width:100%!important;max-width:100%!important;margin:8px 0 0!important}
+}
+
+@media(max-width:390px){
+  .showcase-shell-head strong{font-size:14px!important}
+  .showcase-back{font-size:11px}
+  .studio-grid{padding-left:9px!important;padding-right:9px!important}
+  .canvas-wrap canvas{max-width:88vw!important;max-height:43dvh!important}
+  .card-picker button{flex-basis:68px;min-width:68px!important;max-width:68px}
+  .card-picker span{width:68px!important}
+}
