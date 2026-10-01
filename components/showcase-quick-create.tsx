@@ -142,7 +142,7 @@ export default function ShowcaseQuickCreate(){
   do{ctx.font=`italic 600 ${titleSize}px Georgia,serif`;if(ctx.measureText(title).width<=dims.w*.57||titleSize<=38)break;titleSize-=2}while(titleSize>38);
   ctx.fillText(title,pad,titleY);
   ctx.textAlign='right';ctx.font=`700 ${format==='story'?27:24}px Georgia,serif`;ctx.fillStyle=activeBackground.text;ctx.fillText('TROPEAMINE PACKS',dims.w-pad,brandY);
-  ctx.fillStyle=activeBackground.muted;ctx.font='700 11px system-ui,sans-serif';ctx.letterSpacing='2px';ctx.fillText('A SHELF BEYOND THE STORY',dims.w-pad,brandY+30);ctx.letterSpacing='0px';
+  ctx.fillStyle=activeBackground.muted;ctx.font='700 11px system-ui,sans-serif';ctx.fillText('A SHELF BEYOND THE STORY',dims.w-pad,brandY+30);
   ctx.strokeStyle=hexToRgba(activeBackground.accent,.32);ctx.lineWidth=1.25;ctx.beginPath();ctx.moveTo(pad,format==='story'?170:130);ctx.lineTo(dims.w-pad,format==='story'?170:130);ctx.stroke();
  }
 
