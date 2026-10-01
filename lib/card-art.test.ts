@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createClient} from '@supabase/supabase-js';
-import {cardArtUrl, browseArtUrl, newCardArtPath} from './card-art.ts';
+import {cardArtUrl, browseArtUrl, revealArtUrl, newCardArtPath} from './card-art.ts';
 import {deliverCardArt} from './card-art-delivery.ts';
 
 const id = '11111111-1111-4111-8111-111111111111';
@@ -29,7 +29,11 @@ test('URLs are stable, revisions invalidate them, local/demo images are unchange
   assert.equal(cardArtUrl(id, path), cardArtUrl(id, path));
   assert.notEqual(cardArtUrl(id, path), cardArtUrl(id, path + '.new'));
   assert.equal(browseArtUrl(cardArtUrl(id, path)), cardArtUrl(id, path, 'browse'));
-  for (const url of ['/local.png', 'data:image/png;base64,abc', 'https://example.com/card.png']) assert.equal(browseArtUrl(url), url);
+  assert.equal(revealArtUrl(cardArtUrl(id, path)), cardArtUrl(id, path, 'reveal'));
+  for (const url of ['/local.png', 'data:image/png;base64,abc', 'https://example.com/card.png']) {
+    assert.equal(browseArtUrl(url), url);
+    assert.equal(revealArtUrl(url), url);
+  }
 });
 
 test('replacement uploads use unique revisions compatible with existing Storage path policies', () => {
@@ -56,6 +60,13 @@ test('browse uses one bounded full-card thumbnail representation and a fixed Web
   const {request, calls} = fixture({type: 'image/webp'});
   assert.equal((await request(cardArtUrl(id, path, 'browse'))).status, 200);
   assert.deepEqual(JSON.parse(String(calls[1].init?.body)).transform, {width: 560, height: 840, resize: 'contain', quality: 32});
+  assert.deepEqual(calls[2].init?.headers, {Accept: 'image/webp'});
+});
+
+test('reveal uses a sharp bounded card representation instead of the original source file', async () => {
+  const {request, calls} = fixture({type: 'image/webp'});
+  assert.equal((await request(cardArtUrl(id, path, 'reveal'))).status, 200);
+  assert.deepEqual(JSON.parse(String(calls[1].init?.body)).transform, {width: 1024, height: 1536, resize: 'contain', quality: 82});
   assert.deepEqual(calls[2].init?.headers, {Accept: 'image/webp'});
 });
 
