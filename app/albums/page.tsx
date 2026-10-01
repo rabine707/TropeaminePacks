@@ -41,10 +41,10 @@ export default async function AlbumsPage(){
    characters!inner(name,series!inner(title,author,published)),
    variants!inner(id,rating,available,card_assets(id,side,storage_path))
   `).eq('published',true).eq('variants.rating','sfw').eq('variants.available',true).order('created_at',{ascending:true}),
-  user?supabase.from('collection_items').select('card_id').eq('user_id',user.id):Promise.resolve({data:[],error:null})
+  user?supabase.from('collection_items').select('card_id').eq('user_id',user.id):Promise.resolve({data:[] as {card_id:string}[],error:null})
  ]);
 
- const owned=new Set<string>((collectionResult.data??[]).map((row:any)=>String(row.card_id)));
+ const owned=new Set<string>((collectionResult.data??[]).map(row=>String(row.card_id)));
  const hasAny=(id:string)=>owned.has(id)||owned.has(`${id}:foil`);
  const hasMaster=(id:string)=>owned.has(id)&&owned.has(`${id}:foil`);
  const cards:AlbumCard[]=[];
@@ -84,7 +84,6 @@ export default async function AlbumsPage(){
 
  const seriesAlbums=[...albums.values()];
  const totalOwned=cards.filter(card=>hasAny(card.id)).length;
- const totalMaster=cards.filter(card=>hasMaster(card.id)).length;
  const bookGroups=seriesAlbums.flatMap(album=>[...album.books.values()]);
  const bookBadges=bookGroups.filter(group=>group.length>0&&group.every(card=>hasAny(card.id))).length;
  const seriesBadges=seriesAlbums.filter(album=>album.cards.length>0&&album.cards.every(card=>hasAny(card.id))).length;
