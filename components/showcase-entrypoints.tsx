@@ -18,8 +18,8 @@ export default function ShowcaseEntrypoints(){
     a.textContent='Create Showcase';
     host.appendChild(a);
    }else{
-    a.className='showcase-home-card';
-    a.innerHTML='<span>CREATE A SHOWCASE</span><strong>Turn your collection into something worth sharing.</strong><small>Quick Create makes a polished image in seconds, or jump into Studio for full control.</small><b>Create yours →</b>';
+    a.className='collector-dashboard-card showcase-dashboard-card';
+    a.innerHTML='<span class="showcase-dashboard-icon" aria-hidden="true">✦</span><span><small>SHOWCASE</small><strong>Create & share</strong><em>Quick Create</em></span><span class="showcase-dashboard-arrow" aria-hidden="true">›</span>';
     host.appendChild(a);
    }
   };
@@ -27,8 +27,7 @@ export default function ShowcaseEntrypoints(){
    ensureLink(document.querySelector('.sidebar nav'),'nav');
    const binderHeading=[...document.querySelectorAll('.page-heading')].find(el=>el.querySelector('h1')?.textContent?.trim()==='My binder');
    if(binderHeading)ensureLink(binderHeading,'binder');
-   const dashboard=document.querySelector('.collector-dashboard');
-   if(dashboard)ensureLink(dashboard.parentElement,'home');
+   ensureLink(document.querySelector('.collector-dashboard'),'home');
   };
   sync();
   const observer=new MutationObserver(sync);observer.observe(document.body,{subtree:true,childList:true});
