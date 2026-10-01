@@ -18,7 +18,7 @@
 .home-density-v2 .collector-dashboard-card.hot{background:linear-gradient(135deg,#1d1019,#130e13);border-color:#4b2a40}
 
 .home-density-v2 .home-v2-chase-title{order:3;margin:24px 0 9px;padding-top:19px;border-top:1px solid #2e222b;align-items:end}
-.home-density-v2 .collectible-spotlight{order:4;display:grid;grid-template-columns:minmax(0,1fr) 230px minmax(220px,300px);align-items:center;gap:18px;padding:16px 17px;border-radius:14px;border:1px solid #3b2937;background:radial-gradient(circle at 62% 45%,rgba(118,42,92,.15),transparent 30%),#121014;box-shadow:none;min-height:0;overflow:hidden}
+.home-density-v2 .collectible-spotlight{order:4;display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,320px) minmax(220px,300px);align-items:center;gap:18px;padding:16px 17px;border-radius:14px;border:1px solid #3b2937;background:radial-gradient(circle at 62% 45%,rgba(118,42,92,.15),transparent 30%),#121014;box-shadow:none;min-height:0;overflow:hidden}
 .home-density-v2 .collectible-spotlight .spotlight-copy{min-width:0}
 .home-density-v2 .collectible-spotlight .spotlight-copy .pill{display:inline-flex;margin:0 0 5px;padding:4px 7px;font-size:7px;letter-spacing:1px}
 .home-density-v2 .collectible-spotlight .spotlight-copy h2{font-size:25px;line-height:1.05;margin:4px 0 2px}
@@ -28,9 +28,10 @@
 .home-density-v2 .collectible-spotlight .chase-copy{margin:0 0 10px;max-width:560px;font-size:10px;line-height:1.45;color:#b8aab3}
 .home-density-v2 .collectible-spotlight .spotlight-copy>a.button{display:inline-flex;vertical-align:middle;min-height:34px;padding:7px 11px;margin:0 6px 0 0;font-size:9px;border-radius:9px}
 .home-density-v2 .collectible-spotlight .home-v2-pack-action{background:linear-gradient(135deg,#edacd0,#d77eaf);color:#341329;border:0}
-.home-density-v2 .collectible-spotlight .set-art-image{display:flex!important;position:relative;width:100%;height:176px;min-height:0;align-items:center;justify-content:center;overflow:visible}
-.home-density-v2 .home-v2-chase-art{position:relative;width:100%;height:100%}
-.home-density-v2 .home-v2-chase-art img{position:absolute;top:50%;left:50%;width:92px;aspect-ratio:2/3;object-fit:cover;border-radius:7px;border:1px solid rgba(255,255,255,.15);box-shadow:0 13px 30px rgba(0,0,0,.48);transform-origin:center center;background:#0b090c}
+.home-density-v2 .collectible-spotlight .set-art-image{display:flex!important;position:relative;width:100%;height:190px;min-height:0;align-items:center;justify-content:center;overflow:visible;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important;filter:none!important;outline:0!important}
+.home-density-v2 .collectible-spotlight .set-art-image::before,.home-density-v2 .collectible-spotlight .set-art-image::after{display:none!important;content:none!important}
+.home-density-v2 .home-v2-chase-art{position:relative;width:min(100%,240px);height:100%;margin:0 auto}
+.home-density-v2 .home-v2-chase-art img{position:absolute;top:50%;left:50%;width:98px;aspect-ratio:2/3;object-fit:cover;border-radius:7px;border:1px solid rgba(255,255,255,.15);box-shadow:0 13px 30px rgba(0,0,0,.48);transform-origin:center center;background:#0b090c}
 .home-density-v2 .home-v2-chase-art img[data-position="1"]{z-index:3;transform:translate(-50%,-52%) scale(1.08)}
 .home-density-v2 .home-v2-chase-art img[data-position="2"]{z-index:2;transform:translate(-105%,-47%) rotate(-8deg) scale(.91)}
 .home-density-v2 .home-v2-chase-art img[data-position="3"]{z-index:2;transform:translate(5%,-47%) rotate(8deg) scale(.91)}
@@ -52,7 +53,7 @@
 
 @media(max-width:980px) and (min-width:761px){
  .home-density-v2 .collector-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
- .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,1fr) 190px;gap:14px}
+ .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,1fr) minmax(220px,280px);gap:14px}
  .home-density-v2 .collectible-spotlight .set-progress{grid-column:1/-1}
 }
 
@@ -67,16 +68,17 @@
  .home-density-v2 .collector-dashboard::-webkit-scrollbar{display:none}
  .home-density-v2 .collector-dashboard-card{scroll-snap-align:start;min-height:72px;padding:11px 12px}
  .home-density-v2 .collector-dashboard-card span strong{font-size:17px}
- .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,1fr) 142px;align-items:center;gap:8px 10px;padding:13px 14px;border-radius:13px;background:radial-gradient(circle at 82% 33%,rgba(118,42,92,.18),transparent 27%),#121014}
+ .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,.9fr) minmax(168px,1.1fr);align-items:center;gap:8px 8px;padding:13px 14px;border-radius:13px;background:radial-gradient(circle at 74% 33%,rgba(118,42,92,.18),transparent 30%),#121014}
  .home-density-v2 .collectible-spotlight .spotlight-copy{grid-column:1;grid-row:1}
  .home-density-v2 .collectible-spotlight .spotlight-copy h2{font-size:22px;white-space:normal}
  .home-density-v2 .collectible-spotlight .chase-copy{display:none}
  .home-density-v2 .collectible-spotlight .spotlight-copy>a.button{min-height:32px;padding:7px 10px}
- .home-density-v2 .collectible-spotlight .set-art-image{grid-column:2;grid-row:1;height:156px;align-self:center}
- .home-density-v2 .home-v2-chase-art img{width:72px;border-radius:6px}
- .home-density-v2 .home-v2-chase-art img[data-position="1"]{transform:translate(-50%,-52%) scale(1.06)}
- .home-density-v2 .home-v2-chase-art img[data-position="2"]{transform:translate(-103%,-46%) rotate(-8deg) scale(.88)}
- .home-density-v2 .home-v2-chase-art img[data-position="3"]{transform:translate(3%,-46%) rotate(8deg) scale(.88)}
+ .home-density-v2 .collectible-spotlight .set-art-image{grid-column:2;grid-row:1;height:176px;align-self:center;justify-self:stretch}
+ .home-density-v2 .home-v2-chase-art{width:min(100%,205px)}
+ .home-density-v2 .home-v2-chase-art img{width:82px;border-radius:6px}
+ .home-density-v2 .home-v2-chase-art img[data-position="1"]{transform:translate(-50%,-52%) scale(1.08)}
+ .home-density-v2 .home-v2-chase-art img[data-position="2"]{transform:translate(-107%,-46%) rotate(-8deg) scale(.9)}
+ .home-density-v2 .home-v2-chase-art img[data-position="3"]{transform:translate(7%,-46%) rotate(8deg) scale(.9)}
  .home-density-v2 .collectible-spotlight .set-progress{grid-column:1/-1;grid-row:2;padding:10px 11px;display:grid;grid-template-columns:1fr;gap:0}
  .home-density-v2 .collectible-spotlight .set-progress>div{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 4px}
  .home-density-v2 .collectible-spotlight .set-progress strong{font-size:19px}
@@ -90,7 +92,7 @@
  .home-density-v2 .collector-dashboard{grid-auto-columns:74vw}
  .home-density-v2 .chase-grid{grid-auto-columns:47vw}
  .home-density-v2 .home-v2-chase-title .text-link,.home-density-v2 .home-v2-fresh-title .text-link{font-size:9px}
- .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,1fr) 126px;padding:12px}
- .home-density-v2 .collectible-spotlight .set-art-image{height:146px}
- .home-density-v2 .home-v2-chase-art img{width:66px}
+ .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,.92fr) 150px;padding:12px}
+ .home-density-v2 .collectible-spotlight .set-art-image{height:164px}
+ .home-density-v2 .home-v2-chase-art img{width:76px}
 }
