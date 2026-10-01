@@ -79,7 +79,7 @@ export default async function OddsPage(){
    })}
   </div>
 
-  <section className="odds-note"><Info size={16}/><p><strong>How the math works:</strong> a specific card has a 3/{packs[0]?.cards.length||'N'}-style chance to appear among the three base pulls because those cards are sampled without replacement. The foil is then sampled separately from the full pool. Pool size can change when cards are published, unpublished, or moved between packs, so this page reads the live catalog each time it loads.</p></section>
+  <section className="odds-note"><Info size={16}/><p><strong>How the math works:</strong> with N eligible cards, a specific character has a 3/N chance to appear among the three base pulls because those cards are sampled without replacement. The foil is then sampled separately from all N eligible cards. Pool size can change when cards are published, unpublished, or moved between packs, so this page reads the live catalog each time it loads.</p></section>
 
   {(packsResult.error||membershipsResult.error||cardsResult.error)&&<p className="odds-error">Some live pack data could not be loaded. The pack-opening screen remains the source of truth for availability.</p>}
  </main>;
