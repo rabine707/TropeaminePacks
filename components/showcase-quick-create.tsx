@@ -166,22 +166,44 @@ export default function ShowcaseQuickCreate(){
  }
 
  function placements(width:number,height:number){
-  const list=chosen;
+  const list=chosen,count=list.length,result:Placement[]=[];
+  if(!count)return result;
+
   const top=height*(format==='story' ? .205 : format==='post' ? .225 : .245),bottom=height*.885;
-  const areaH=bottom-top,result:Placement[]=[];
-  if(!list.length)return result;
-  if(template==='recent'&&list.length<=6){
-   const cols=Math.min(3,list.length),rows=Math.ceil(list.length/cols),cardW=Math.min(width*.255,areaH/(rows*1.65)),cardH=cardW*1.5;
-   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
+  const areaH=bottom-top,padX=width*(format==='story'?.075:.065),usableW=width-padX*2;
+  const gapX=Math.max(30,width*.034),gapY=Math.max(30,height*.024);
+  const maxCols=Math.min(template==='grid'?4:3,count);
+  let best:{cols:number;rows:number;cardW:number}|null=null;
+
+  for(let cols=1;cols<=maxCols;cols++){
+   if(count>1&&cols===1)continue;
+   const rows=Math.ceil(count/cols);
+   const widthLimit=(usableW-gapX*(cols-1))/cols;
+   const heightLimit=(areaH-gapY*(rows-1))/rows/1.5;
+   let cardW=Math.min(widthLimit,heightLimit);
+   if(count===1)cardW=Math.min(cardW,width*.60);
+   else if(count===2)cardW=Math.min(cardW,width*.40);
+   else if(count===3)cardW=Math.min(cardW,width*.285);
+   if(cardW<=0)continue;
+   if(!best||cardW>best.cardW+1||(Math.abs(cardW-best.cardW)<=1&&cols<best.cols))best={cols,rows,cardW};
   }
-  if(template==='grid'){
-   const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols),cardW=Math.min(width*.245,(areaH/rows)/1.58),cardH=cardW*1.5;
-   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
+
+  if(!best)return result;
+  const {cols,rows,cardW}=best,cardH=cardW*1.5;
+  const totalH=rows*cardH+(rows-1)*gapY;
+  const firstY=top+(areaH-totalH)/2+cardH/2;
+  let index=0;
+
+  for(let row=0;row<rows;row++){
+   const remaining=count-index,rowCount=Math.min(cols,remaining);
+   const rowW=rowCount*cardW+(rowCount-1)*gapX;
+   const firstX=(width-rowW)/2+cardW/2;
+   for(let col=0;col<rowCount;col++){
+    const card=list[index++];
+    result.push({card,x:firstX+col*(cardW+gapX),y:firstY+row*(cardH+gapY),w:cardW,h:cardH,rotation:0});
+   }
   }
-  if(list.length===1){const cardW=Math.min(width*.52,areaH*.52);return[{card:list[0],x:width/2,y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:0}]}
-  if(list.length===2){const cardW=Math.min(width*.38,areaH*.42);list.forEach((card,i)=>result.push({card,x:width*(i ? .69 : .31),y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:0}));return result}
-  const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols),cardW=Math.min(cols===2?width*.31:width*.245,(areaH/rows)/1.62),cardH=cardW*1.5;
-  list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
+  return result;
  }
 
  function drawPosterHeader(ctx:CanvasRenderingContext2D,logo:HTMLImageElement|null){
