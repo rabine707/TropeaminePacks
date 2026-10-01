@@ -166,7 +166,7 @@ export default function ShowcaseQuickCreate(){
 
  function placements(width:number,height:number){
   const list=chosen;
-  const top=height*(format==='story'?.205:format==='post'?.225:.245),bottom=height*.885;
+  const top=height*(format==='story' ? .205 : format==='post' ? .225 : .245),bottom=height*.885;
   const areaH=bottom-top,result:Placement[]=[];
   if(!list.length)return result;
   if(template==='recent'&&list.length<=6){
@@ -178,7 +178,7 @@ export default function ShowcaseQuickCreate(){
    list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
   }
   if(list.length===1){const cardW=Math.min(width*.52,areaH*.52);return[{card:list[0],x:width/2,y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:0}]}
-  if(list.length===2){const cardW=Math.min(width*.38,areaH*.42);list.forEach((card,i)=>result.push({card,x:width*(i?.69:.31),y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:0}));return result}
+  if(list.length===2){const cardW=Math.min(width*.38,areaH*.42);list.forEach((card,i)=>result.push({card,x:width*(i ? .69 : .31),y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:0}));return result}
   const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols),cardW=Math.min(cols===2?width*.31:width*.245,(areaH/rows)/1.62),cardH=cardW*1.5;
   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
  }
