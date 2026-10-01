@@ -13,6 +13,10 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   const [loadedOriginal, setLoadedOriginal] = useState<string | null>(null);
   const browse = browseArtUrl(src);
   const imageSrc = original || failed === browse ? src : browse;
+  // Felicity's uploaded source canvas is wider than the locked 2:3 shell. A centered
+  // cover crop preserves her proportions and fills the shell without the old stretching.
+  const fillShell = /^Felicity\b/i.test(alt);
+  const fit = fillShell ? 'cover' : 'contain';
 
   useEffect(() => {
     setFailed(null);
@@ -42,14 +46,15 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
         inset: 0,
         width: '100%',
         height: '100%',
-        objectFit: 'contain',
+        objectFit: fit,
+        objectPosition: '50% 50%',
         opacity: loadedOriginal === src ? 1 : 0,
         transition: 'opacity 90ms ease-out'
       }}
     />}
     {enabled && !original && nearby && <Image key={imageSrc} src={imageSrc} alt={alt} fill unoptimized
       loading="lazy" sizes="(max-width: 600px) 45vw, 280px"
-      style={{objectFit: 'contain'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
+      style={{objectFit: fit, objectPosition: '50% 50%'}} onError={() => {if (imageSrc !== src) setFailed(browse);}}/>}
     <style jsx global>{`
       /* Pack backs are selected immediately after settlement. Hide the first image paint
          long enough for that source assignment to settle so an old color cannot flash. */
