@@ -11,13 +11,13 @@
 
   .studio-grid{
     width:100%;max-width:100%;padding:10px 12px 28px!important;gap:12px!important;
-    overflow:hidden;
+    overflow:hidden;box-sizing:border-box;
   }
   /* On a phone, choosing cards comes before staring at an empty canvas. */
   .left-panel{order:1!important}
   .studio-center{order:2!important}
   .right-panel{order:3!important}
-  .studio-center,.studio-panel,.studio-panel section{width:100%;max-width:100%;min-width:0}
+  .studio-center,.studio-panel,.studio-panel section{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
   .studio-panel{gap:10px}
   .studio-panel section{padding:13px!important;border-radius:14px}
   .studio-muted{max-width:100%;overflow-wrap:anywhere;word-break:normal}
@@ -54,12 +54,21 @@
   .background-choice .swatch{width:24px!important;height:24px!important;flex-basis:24px!important}
   .background-choice span{font-size:10px!important}
 
-  .canvas-wrap{width:100%!important;min-height:0!important;padding:4px 0 8px;overflow:hidden}
+  /* Every ratio is constrained independently so a wide landscape canvas can never push the page off-screen. */
+  .canvas-wrap{
+    width:100%!important;max-width:100%!important;min-width:0!important;min-height:0!important;
+    padding:4px 0 8px;overflow:hidden;box-sizing:border-box;display:flex;justify-content:center;align-items:center;
+  }
   .canvas-wrap canvas{
-    width:auto!important;height:auto!important;max-width:min(86vw,360px)!important;max-height:46dvh!important;
+    display:block!important;width:auto!important;height:auto!important;
+    max-width:min(calc(100vw - 24px),430px)!important;max-height:56dvh!important;
     border-radius:12px!important;box-shadow:0 16px 45px rgba(0,0,0,.4)!important;
   }
-  .canvas-wrap.square canvas,.canvas-wrap.landscape canvas{max-width:100%!important}
+  .canvas-wrap.story canvas{max-width:min(calc(100vw - 24px),430px)!important;max-height:58dvh!important}
+  .canvas-wrap.square canvas{max-width:min(calc(100vw - 24px),430px)!important;max-height:56dvh!important}
+  .canvas-wrap.landscape canvas{
+    width:min(calc(100vw - 24px),620px)!important;max-width:100%!important;height:auto!important;max-height:42dvh!important;
+  }
 
   .selected-state{min-width:0}.selected-state span{min-width:0}
   .right-panel{padding-bottom:16px!important}
@@ -76,7 +85,8 @@
   .showcase-shell-head strong{font-size:14px!important}
   .showcase-back{font-size:11px}
   .studio-grid{padding-left:9px!important;padding-right:9px!important}
-  .canvas-wrap canvas{max-width:88vw!important;max-height:43dvh!important}
+  .canvas-wrap.story canvas,.canvas-wrap.square canvas{max-width:calc(100vw - 18px)!important}
+  .canvas-wrap.landscape canvas{width:calc(100vw - 18px)!important;max-width:100%!important;max-height:38dvh!important}
   .card-picker button{flex-basis:68px;min-width:68px!important;max-width:68px}
   .card-picker span{width:68px!important}
   .background-choice{min-width:94px!important}
