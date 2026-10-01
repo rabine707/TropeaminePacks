@@ -13,6 +13,7 @@ type Placement={card:Card;x:number;y:number;w:number;h:number;rotation:number};
 type PosterCopy={eyebrow:string;title:string;subline:string;footer:string};
 
 const DRAFT_KEY='tropeamine-showcase-draft-v1';
+const LOGO_SRC='/tropeamine-logo-light.svg';
 const SERIF='"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif';
 const SANS='-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
 const templates:Record<TemplateId,{name:string;eyebrow:string;description:string;max:number;title:string;bg:[string,string];studioBg:'plum'|'midnight'|'rose'}>={
@@ -183,13 +184,18 @@ export default function ShowcaseQuickCreate(){
   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
  }
 
- function drawPosterHeader(ctx:CanvasRenderingContext2D){
+ function drawPosterHeader(ctx:CanvasRenderingContext2D,logo:HTMLImageElement|null){
   const copy=posterCopy(),pad=format==='story'?72:60,top=format==='story'?72:58,maxTitleWidth=dims.w-pad*2;
   ctx.textBaseline='middle';
   ctx.fillStyle='rgba(255,255,255,.13)';ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=2;ctx.strokeRect(28,28,dims.w-56,dims.h-56);
   ctx.fillStyle='#edb7d7';drawDiamond(ctx,pad,top,8);
   ctx.font=`700 ${format==='story'?18:16}px ${SANS}`;ctx.fillStyle='rgba(255,244,250,.78)';drawTrackedText(ctx,copy.eyebrow,pad+20,top,3.4,'left');
-  ctx.font=`700 ${format==='story'?17:15}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.72)';drawTrackedText(ctx,'TROPEAMINE PACKS',dims.w-pad,top,2.4,'right');
+  if(logo){
+   const logoW=format==='story'?214:190,logoH=logoW*(78/320);
+   ctx.save();ctx.globalAlpha=.92;ctx.drawImage(logo,dims.w-pad-logoW,top-logoH/2,logoW,logoH);ctx.restore();
+  }else{
+   ctx.font=`700 ${format==='story'?17:15}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.72)';drawTrackedText(ctx,'TROPEAMINE PACKS',dims.w-pad,top,2.4,'right');
+  }
   const titleStart=format==='story'?78:66,min=format==='square'?34:38,{size,lines}=wrapTitle(ctx,copy.title,maxTitleWidth,titleStart,min),lineHeight=size*.94;
   ctx.font=`700 ${size}px ${SERIF}`;ctx.fillStyle='#fff9f3';ctx.textAlign='left';ctx.shadowColor='rgba(0,0,0,.32)';ctx.shadowBlur=16;
   const titleY=top+(format==='story'?66:58);lines.forEach((line,index)=>ctx.fillText(line,pad,titleY+index*lineHeight));ctx.shadowBlur=0;
@@ -206,7 +212,8 @@ export default function ShowcaseQuickCreate(){
   const grad=ctx.createLinearGradient(0,0,dims.w,dims.h);grad.addColorStop(0,activeTemplate.bg[0]);grad.addColorStop(1,activeTemplate.bg[1]);ctx.fillStyle=grad;ctx.fillRect(0,0,dims.w,dims.h);
   const glow=ctx.createRadialGradient(dims.w*.84,dims.h*.12,0,dims.w*.84,dims.h*.12,dims.w*.58);glow.addColorStop(0,'rgba(240,145,203,.16)');glow.addColorStop(.45,'rgba(240,145,203,.045)');glow.addColorStop(1,'rgba(240,145,203,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,dims.w,dims.h);
   ctx.fillStyle='rgba(255,255,255,.045)';for(let i=0;i<24;i++){ctx.beginPath();ctx.arc((i*173)%dims.w,(i*281)%dims.h,1.5+(i%3),0,Math.PI*2);ctx.fill()}
-  drawPosterHeader(ctx);
+  const logo=await loadImage(LOGO_SRC).catch(()=>null);
+  drawPosterHeader(ctx,logo);
   for(const item of placements(dims.w,dims.h)){
    ctx.save();ctx.translate(item.x,item.y);ctx.rotate(item.rotation*Math.PI/180);ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=28;ctx.shadowOffsetY=15;
    const x=-item.w/2,y=-item.h/2;roundedRect(ctx,x,y,item.w,item.h,16);ctx.fillStyle='rgba(255,255,255,.11)';ctx.fill();ctx.clip();
