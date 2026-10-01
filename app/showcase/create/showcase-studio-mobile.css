@@ -1,6 +1,9 @@
 /* Showcase Studio phone layout — controls first, compact canvas, no horizontal page overflow. */
 @media(max-width:640px){
-  .showcase-page{min-height:0!important;overflow-x:hidden}
+  .showcase-page{
+    min-height:0!important;overflow-x:hidden;padding:0!important;margin:0!important;
+    width:100%!important;max-width:none!important;
+  }
   .showcase-shell-head{padding:10px 12px!important;gap:10px}
   .showcase-shell-head div{min-width:0;justify-content:flex-end}
   .showcase-shell-head strong{font-size:16px!important;white-space:nowrap}
