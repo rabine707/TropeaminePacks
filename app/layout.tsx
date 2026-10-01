@@ -5,11 +5,13 @@ import './casual-guide.css';
 import './theme-overrides.css';
 import './showcase-entrypoints.css';
 import './homepage-density.css';
+import './review-fixes.css';
 import CollectionFun from '@/components/collection-fun';
 import CasualGuide from '@/components/casual-guide';
 import RevealStabilizer from '@/components/reveal-stabilizer';
 import ShowcaseEntrypoints from '@/components/showcase-entrypoints';
 import HomepageDensity from '@/components/homepage-density';
+import ReviewFixes from '@/components/review-fixes';
 import Link from 'next/link';
 
 const siteUrl = 'https://tropeaminepacks.vercel.app';
@@ -44,5 +46,5 @@ export const metadata = {
 };
 
 export default function Layout({children}:{children:React.ReactNode}) {
- return <html lang="en"><body>{children}<footer className="site-legal-footer"><p><strong>Unofficial fan-made project.</strong> Not affiliated with or endorsed by any referenced author, publisher, or rights holder.</p><nav><Link href="/showcase/create">Showcase Studio</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/data">What Data We Collect</Link></nav></footer><CollectionFun/><CasualGuide/><RevealStabilizer/><ShowcaseEntrypoints/><HomepageDensity/></body></html>;
+ return <html lang="en"><body>{children}<footer className="site-legal-footer"><p><strong>Unofficial fan-made project.</strong> Not affiliated with or endorsed by any referenced author, publisher, or rights holder.</p><nav><Link href="/showcase/create">Showcase Studio</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/data">What Data We Collect</Link></nav></footer><CollectionFun/><CasualGuide/><RevealStabilizer/><ShowcaseEntrypoints/><HomepageDensity/><ReviewFixes/></body></html>;
 }
