@@ -10,13 +10,16 @@ type FormatId='story'|'post'|'square';
 type Step='style'|'cards'|'format'|'result';
 type SavedState={cards?:Card[];wallet?:{owned?:string[]}};
 type Placement={card:Card;x:number;y:number;w:number;h:number;rotation:number};
+type PosterCopy={eyebrow:string;title:string;subline:string;footer:string};
 
 const DRAFT_KEY='tropeamine-showcase-draft-v1';
+const SERIF='"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif';
+const SANS='-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
 const templates:Record<TemplateId,{name:string;eyebrow:string;description:string;max:number;title:string;bg:[string,string];studioBg:'plum'|'midnight'|'rose'}>={
- top6:{name:'Top 6',eyebrow:'MY SHOWCASE',description:'Loads up to 6 cards from your account Showcase. Reorder or swap before sharing.',max:6,title:'MY TOP PICKS',bg:['#230f21','#6e285d'],studioBg:'plum'},
- series:{name:'Series Spotlight',eyebrow:'ONE SERIES',description:'Choose a series, then feature up to 6 cards you own from that world.',max:6,title:'SERIES SPOTLIGHT',bg:['#111827','#31233f'],studioBg:'midnight'},
- recent:{name:'Recent Pulls',eyebrow:'JUST ADDED',description:'Loads your most recently acquired cards so you can share the latest additions.',max:6,title:'FRESH PULLS',bg:['#3b1725','#a34f72'],studioBg:'rose'},
- grid:{name:'Collection Grid',eyebrow:'BINDER GRID',description:'Show up to 12 owned cards in one clean, even grid. No ranking or hero card.',max:12,title:'MY COLLECTION',bg:['#0d121a','#283244'],studioBg:'midnight'}
+ top6:{name:'Top 6',eyebrow:'MY SHOWCASE',description:'Your account Showcase, turned into a polished six-card poster.',max:6,title:'MY TOP PICKS',bg:['#230f21','#6e285d'],studioBg:'plum'},
+ series:{name:'Series Spotlight',eyebrow:'ONE SERIES',description:'Pick one series and let that world take over the whole frame.',max:6,title:'SERIES SPOTLIGHT',bg:['#111827','#31233f'],studioBg:'midnight'},
+ recent:{name:'Recent Pulls',eyebrow:'JUST ADDED',description:'Turn your newest pulls into a fresh-drop poster for sharing.',max:6,title:'FRESH PULLS',bg:['#3b1725','#a34f72'],studioBg:'rose'},
+ grid:{name:'Collection Grid',eyebrow:'BINDER GRID',description:'A clean binder-page composition for showing more of your collection at once.',max:12,title:'MY COLLECTION',bg:['#0d121a','#283244'],studioBg:'midnight'}
 };
 
 const formats:Record<FormatId,{name:string;hint:string;w:number;h:number}>={
@@ -30,6 +33,24 @@ function baseCardId(value:string){return value.split(':')[0]||''}
 function uniqueIds(values:string[]){const seen=new Set<string>();return values.filter(value=>value&&!seen.has(value)&&Boolean(seen.add(value)))}
 function loadImage(src:string){return new Promise<HTMLImageElement>((resolve,reject)=>{const img=new Image();img.crossOrigin='anonymous';img.decoding='async';img.onload=()=>resolve(img);img.onerror=reject;img.src=src})}
 function roundedRect(ctx:CanvasRenderingContext2D,x:number,y:number,w:number,h:number,r:number){const rr=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath()}
+function trackedWidth(ctx:CanvasRenderingContext2D,text:string,tracking:number){return [...text].reduce((sum,char,index)=>sum+ctx.measureText(char).width+(index<text.length-1?tracking:0),0)}
+function drawTrackedText(ctx:CanvasRenderingContext2D,text:string,x:number,y:number,tracking:number,align:'left'|'center'|'right'='left'){
+ const chars=[...text],width=trackedWidth(ctx,text,tracking);let cursor=align==='center'?x-width/2:align==='right'?x-width:x;
+ const previous=ctx.textAlign;ctx.textAlign='left';
+ chars.forEach((char,index)=>{ctx.fillText(char,cursor,y);cursor+=ctx.measureText(char).width+(index<chars.length-1?tracking:0)});
+ ctx.textAlign=previous;
+}
+function wrapTitle(ctx:CanvasRenderingContext2D,text:string,maxWidth:number,start:number,min:number){
+ for(let size=start;size>=min;size-=2){
+  ctx.font=`700 ${size}px ${SERIF}`;
+  const words=text.trim().split(/\s+/),lines:string[]=[];let line='';
+  for(const word of words){const next=line?`${line} ${word}`:word;if(ctx.measureText(next).width<=maxWidth||!line)line=next;else{lines.push(line);line=word}}
+  if(line)lines.push(line);
+  if(lines.length<=2)return{size,lines};
+ }
+ ctx.font=`700 ${min}px ${SERIF}`;return{size:min,lines:[text]};
+}
+function drawDiamond(ctx:CanvasRenderingContext2D,x:number,y:number,size:number){ctx.save();ctx.translate(x,y);ctx.rotate(Math.PI/4);ctx.fillRect(-size/2,-size/2,size,size);ctx.restore()}
 
 export default function ShowcaseQuickCreate(){
  const canvasRef=useRef<HTMLCanvasElement>(null);
@@ -79,10 +100,7 @@ export default function ShowcaseQuickCreate(){
     setAccountShowcase(uniqueIds(showcase));
     const title=String(progressResult.data?.showcase_title||'').trim();
     if(title)setAccountShowcaseTitle(title);
-    const recent=(recentResult.data??[])
-     .map(row=>String(row.card_id||''))
-     .filter(id=>id&&!id.includes(':treatment:'))
-     .map(baseCardId);
+    const recent=(recentResult.data??[]).map(row=>String(row.card_id||'')).filter(id=>id&&!id.includes(':treatment:')).map(baseCardId);
     setRecentAcquired(uniqueIds(recent).slice(0,6));
    }catch{}
    finally{if(active)setAccountDataReady(true)}
@@ -111,9 +129,7 @@ export default function ShowcaseQuickCreate(){
 
  function chooseTemplate(id:TemplateId){
   setTemplate(id);setSearch('');setStep('cards');setNotice('');setPendingAutoSource(null);
-  if(id==='series'){
-   setSeriesFilter('');setSelected([]);setNotice('Choose a series first. We’ll load the cards you own from it.');return;
-  }
+  if(id==='series'){setSeriesFilter('');setSelected([]);setNotice('Choose a series first. We’ll load the cards you own from it.');return}
   setSeriesFilter('All series');
   if(id==='top6'||id==='recent'){
    setSelected([]);setPendingAutoSource(id);
@@ -135,6 +151,12 @@ export default function ShowcaseQuickCreate(){
   if(template==='top6'&&accountShowcaseTitle.trim())return accountShowcaseTitle.trim().toUpperCase();
   return activeTemplate.title;
  }
+ function posterCopy():PosterCopy{
+  if(template==='series')return{eyebrow:'SERIES SPOTLIGHT',title:showcaseTitle(),subline:(chosen[0]?.author||'ONE WORLD · ONE OBSESSION').toUpperCase(),footer:`${chosen.length} COLLECTED FROM THIS WORLD`};
+  if(template==='recent')return{eyebrow:'JUST PULLED',title:'FRESH PULLS',subline:'NEW ADDITIONS TO THE BINDER',footer:`${chosen.length} NEW CARD${chosen.length===1?'':'S'} · FRESH FROM MY COLLECTION`};
+  if(template==='grid')return{eyebrow:'FROM MY BINDER',title:'THE COLLECTION',subline:'A PAGE FROM MY PERSONAL ARCHIVE',footer:`${chosen.length} CARD${chosen.length===1?'':'S'} · ONE COLLECTION`};
+  return{eyebrow:'CURRENT OBSESSIONS',title:showcaseTitle(),subline:'THE CARDS I KEEP COMING BACK TO',footer:`${chosen.length} FAVORITE${chosen.length===1?'':'S'} · MY SHOWCASE`};
+ }
  function step2Copy(){
   if(template==='top6')return `Your account Showcase is loaded. Reorder it or swap cards before sharing. ${selected.length}/${activeTemplate.max} selected.`;
   if(template==='series')return seriesFilter?`${seriesFilter} only. Pick up to ${activeTemplate.max} cards and tap in the order you want them featured.`:'Choose one of your collected series below to continue.';
@@ -144,25 +166,37 @@ export default function ShowcaseQuickCreate(){
 
  function placements(width:number,height:number){
   const list=chosen;
-  const top=height*(format==='story' ? .16 : .18),bottom=height*.90;
-  const areaH=bottom-top;
-  const result:Placement[]=[];
+  const top=height*(format==='story'?.205:format==='post'?.225:.245),bottom=height*.885;
+  const areaH=bottom-top,result:Placement[]=[];
   if(!list.length)return result;
   if(template==='recent'&&list.length<=6){
    const cols=Math.min(3,list.length),rows=Math.ceil(list.length/cols),cardW=Math.min(width*.255,areaH/(rows*1.65)),cardH=cardW*1.5;
-   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);const x=(col+1)*width/(cols+1);const y=top+(row+.55)*(areaH/rows);result.push({card,x,y,w:cardW,h:cardH,rotation:(i%3-1)*4})});
-   return result;
+   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
   }
   if(template==='grid'){
-   const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols);const cardW=Math.min(width*.245,(areaH/rows)/1.58),cardH=cardW*1.5;
-   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);const x=(col+1)*width/(cols+1);const y=top+(row+.55)*(areaH/rows);result.push({card,x,y,w:cardW,h:cardH,rotation:0})});
-   return result;
+   const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols),cardW=Math.min(width*.245,(areaH/rows)/1.58),cardH=cardW*1.5;
+   list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
   }
-  if(list.length===1){const cardW=Math.min(width*.52,areaH*.52),cardH=cardW*1.5;return[{card:list[0],x:width/2,y:top+areaH*.48,w:cardW,h:cardH,rotation:0}]}
-  if(list.length===2){const cardW=Math.min(width*.38,areaH*.42);list.forEach((card,i)=>result.push({card,x:width*(i ? .69 : .31),y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:i?3:-3}));return result}
-  const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols);const cardW=Math.min(cols===2?width*.31:width*.245,(areaH/rows)/1.62),cardH=cardW*1.5;
-  list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);const x=(col+1)*width/(cols+1);const y=top+(row+.55)*(areaH/rows);result.push({card,x,y,w:cardW,h:cardH,rotation:template==='series'?(i%2?1.8:-1.8):0})});
-  return result;
+  if(list.length===1){const cardW=Math.min(width*.52,areaH*.52);return[{card:list[0],x:width/2,y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:0}]}
+  if(list.length===2){const cardW=Math.min(width*.38,areaH*.42);list.forEach((card,i)=>result.push({card,x:width*(i?.69:.31),y:top+areaH*.48,w:cardW,h:cardW*1.5,rotation:0}));return result}
+  const cols=list.length<=4?2:3,rows=Math.ceil(list.length/cols),cardW=Math.min(cols===2?width*.31:width*.245,(areaH/rows)/1.62),cardH=cardW*1.5;
+  list.forEach((card,i)=>{const col=i%cols,row=Math.floor(i/cols);result.push({card,x:(col+1)*width/(cols+1),y:top+(row+.55)*(areaH/rows),w:cardW,h:cardH,rotation:0})});return result;
+ }
+
+ function drawPosterHeader(ctx:CanvasRenderingContext2D){
+  const copy=posterCopy(),pad=format==='story'?72:60,top=format==='story'?72:58,maxTitleWidth=dims.w-pad*2;
+  ctx.textBaseline='middle';
+  ctx.fillStyle='rgba(255,255,255,.13)';ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=2;ctx.strokeRect(28,28,dims.w-56,dims.h-56);
+  ctx.fillStyle='#edb7d7';drawDiamond(ctx,pad,top,8);
+  ctx.font=`700 ${format==='story'?18:16}px ${SANS}`;ctx.fillStyle='rgba(255,244,250,.78)';drawTrackedText(ctx,copy.eyebrow,pad+20,top,3.4,'left');
+  ctx.font=`700 ${format==='story'?17:15}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.72)';drawTrackedText(ctx,'TROPEAMINE PACKS',dims.w-pad,top,2.4,'right');
+  const titleStart=format==='story'?78:66,min=format==='square'?34:38,{size,lines}=wrapTitle(ctx,copy.title,maxTitleWidth,titleStart,min),lineHeight=size*.94;
+  ctx.font=`700 ${size}px ${SERIF}`;ctx.fillStyle='#fff9f3';ctx.textAlign='left';ctx.shadowColor='rgba(0,0,0,.32)';ctx.shadowBlur=16;
+  const titleY=top+(format==='story'?66:58);lines.forEach((line,index)=>ctx.fillText(line,pad,titleY+index*lineHeight));ctx.shadowBlur=0;
+  const subY=titleY+(lines.length-1)*lineHeight+size*.78;
+  ctx.font=`700 ${format==='story'?17:15}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.62)';drawTrackedText(ctx,copy.subline,pad,subY,2.2,'left');
+  const ruleY=subY+(format==='story'?34:27);ctx.strokeStyle='rgba(237,183,215,.38)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(pad,ruleY);ctx.lineTo(dims.w-pad,ruleY);ctx.stroke();
+  ctx.fillStyle='#edb7d7';drawDiamond(ctx,dims.w-pad,ruleY,7);
  }
 
  async function renderCanvas(){
@@ -170,18 +204,19 @@ export default function ShowcaseQuickCreate(){
   canvas.width=dims.w;canvas.height=dims.h;
   const ctx=canvas.getContext('2d');if(!ctx)return;
   const grad=ctx.createLinearGradient(0,0,dims.w,dims.h);grad.addColorStop(0,activeTemplate.bg[0]);grad.addColorStop(1,activeTemplate.bg[1]);ctx.fillStyle=grad;ctx.fillRect(0,0,dims.w,dims.h);
-  ctx.fillStyle='rgba(255,255,255,.055)';for(let i=0;i<28;i++){ctx.beginPath();ctx.arc((i*173)%dims.w,(i*281)%dims.h,2+(i%4),0,Math.PI*2);ctx.fill()}
-  const pad=60;
-  ctx.fillStyle='#fff9f3';ctx.textBaseline='middle';ctx.textAlign='left';ctx.font=`700 ${format==='story'?58:50}px Georgia,serif`;ctx.fillText(showcaseTitle(),pad,format==='story'?105:92,dims.w*.58);
-  ctx.textAlign='right';ctx.font=`700 ${format==='story'?30:28}px Georgia,serif`;ctx.fillStyle='rgba(255,255,255,.92)';ctx.fillText('TROPEAMINE PACKS',dims.w-pad,format==='story'?102:90);
-  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 18px system-ui,sans-serif';ctx.fillText('COLLECT • CREATE • SHARE',dims.w-pad,format==='story'?139:127);
+  const glow=ctx.createRadialGradient(dims.w*.84,dims.h*.12,0,dims.w*.84,dims.h*.12,dims.w*.58);glow.addColorStop(0,'rgba(240,145,203,.16)');glow.addColorStop(.45,'rgba(240,145,203,.045)');glow.addColorStop(1,'rgba(240,145,203,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,dims.w,dims.h);
+  ctx.fillStyle='rgba(255,255,255,.045)';for(let i=0;i<24;i++){ctx.beginPath();ctx.arc((i*173)%dims.w,(i*281)%dims.h,1.5+(i%3),0,Math.PI*2);ctx.fill()}
+  drawPosterHeader(ctx);
   for(const item of placements(dims.w,dims.h)){
-   ctx.save();ctx.translate(item.x,item.y);ctx.rotate(item.rotation*Math.PI/180);ctx.shadowColor='rgba(0,0,0,.48)';ctx.shadowBlur=24;ctx.shadowOffsetY=13;
+   ctx.save();ctx.translate(item.x,item.y);ctx.rotate(item.rotation*Math.PI/180);ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=28;ctx.shadowOffsetY=15;
    const x=-item.w/2,y=-item.h/2;roundedRect(ctx,x,y,item.w,item.h,16);ctx.fillStyle='rgba(255,255,255,.11)';ctx.fill();ctx.clip();
    if(item.card.image){try{const img=await loadImage(item.card.image);ctx.drawImage(img,x,y,item.w,item.h)}catch{ctx.fillStyle='rgba(255,255,255,.08)';ctx.fillRect(x,y,item.w,item.h)}}
    ctx.restore();
   }
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='600 18px system-ui,sans-serif';ctx.fillText(`${chosen.length} card${chosen.length===1?'':'s'} from my collection`,dims.w/2,dims.h-48);
+  const copy=posterCopy(),footerY=dims.h-60,pad=format==='story'?72:60;
+  ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,footerY-26);ctx.lineTo(dims.w-pad,footerY-26);ctx.stroke();
+  ctx.font=`700 ${format==='story'?15:14}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.5)';drawTrackedText(ctx,copy.footer,pad,footerY,1.7,'left');
+  ctx.fillStyle='rgba(255,244,250,.78)';drawTrackedText(ctx,'COLLECT YOUR OBSESSION',dims.w-pad,footerY,1.7,'right');
  }
 
  function canvasBlob(){return new Promise<Blob|null>(resolve=>{const canvas=canvasRef.current;if(!canvas){resolve(null);return}canvas.toBlob(resolve,'image/png')})}
@@ -189,17 +224,18 @@ export default function ShowcaseQuickCreate(){
  async function shareShowcase(){const blob=await canvasBlob();if(!blob)return;const file=new File([blob],'tropeamine-showcase.png',{type:'image/png'});try{if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:'My Tropeamine Packs Showcase',files:[file]});setNotice('Shared ✨');return}}catch(err){if((err as DOMException)?.name==='AbortError')return}await savePng();setNotice('Native sharing is not available here, so the PNG was saved instead.')}
 
  function editInStudio(){
-  const source=placements(dims.w,dims.h);
-  const studioPreset=format==='square'?'square':'story';const studioW=1080,studioH=studioPreset==='square'?1080:1920;const sx=studioW/dims.w,sy=studioH/dims.h;
-  const elements=[...source.map((p,i)=>({id:uid(),kind:'card' as const,cardId:p.card.id,side:'front' as const,x:p.x*sx,y:p.y*sy,w:p.w*sx,h:p.h*sx,rotation:p.rotation,z:i+1,locked:false})),
-   {id:uid(),kind:'text' as const,text:showcaseTitle(),x:250,y:(format==='story'?105:92)*sy,size:54,rotation:0,z:50,locked:false},
-   {id:uid(),kind:'text' as const,text:'TROPEAMINE PACKS',x:880,y:(format==='story'?102:90)*sy,size:28,rotation:0,z:51,locked:true}];
+  const source=placements(dims.w,dims.h),copy=posterCopy();
+  const studioPreset=format==='square'?'square':'story',studioW=1080,studioH=studioPreset==='square'?1080:1920,sx=studioW/dims.w,sy=studioH/dims.h;
+  const elements=[...source.map((p,i)=>({id:uid(),kind:'card' as const,cardId:p.card.id,side:'front' as const,x:p.x*sx,y:p.y*sy,w:p.w*sx,h:p.h*sx,rotation:0,z:i+1,locked:false})),
+   {id:uid(),kind:'text' as const,text:copy.eyebrow,x:240,y:75*sy,size:20,rotation:0,z:48,locked:true},
+   {id:uid(),kind:'text' as const,text:copy.title,x:310,y:145*sy,size:54,rotation:0,z:49,locked:true},
+   {id:uid(),kind:'text' as const,text:'TROPEAMINE PACKS',x:865,y:75*sy,size:24,rotation:0,z:50,locked:true}];
   try{localStorage.setItem(DRAFT_KEY,JSON.stringify({preset:studioPreset,bg:activeTemplate.studioBg,elements,snap:true}))}catch{}
   window.location.href='/showcase/create';
  }
 
  if(step==='style')return <section className="quick-create-flow">
-  <div className="quick-step-head"><span>STEP 1 OF 3</span><h1>Pick a style</h1><p>Choose what you want to show. We’ll handle the layout.</p></div>
+  <div className="quick-step-head"><span>STEP 1 OF 3</span><h1>Pick a style</h1><p>Choose what you want to show. The typography, spacing, and composition are already art-directed for you.</p></div>
   <div className="quick-template-grid">{(Object.keys(templates) as TemplateId[]).map(id=>{const item=templates[id];return <button key={id} className={`quick-template-card ${id==='top6'?'featured':''}`} onClick={()=>chooseTemplate(id)}><span>{item.eyebrow}</span><div className={`quick-template-preview preview-${id}`}><i/><i/><i/><i/><i/><i/></div><strong>{item.name}</strong><small>{item.description}</small></button>})}</div>
   <a className="quick-secondary-link" href="/showcase/create">Prefer full control? Open Studio →</a>
  </section>;
@@ -214,15 +250,15 @@ export default function ShowcaseQuickCreate(){
  </section>;
 
  if(step==='format')return <section className="quick-create-flow narrow">
-  <div className="quick-step-head"><button className="quick-back" onClick={()=>setStep('cards')}>← Cards</button><span>STEP 3 OF 3</span><h1>Where are you sharing?</h1><p>Choose the crop. We’ll export at the exact size shown.</p></div>
+  <div className="quick-step-head"><button className="quick-back" onClick={()=>setStep('cards')}>← Cards</button><span>STEP 3 OF 3</span><h1>Where are you sharing?</h1><p>Choose the crop. We’ll rebuild the composition for that exact ratio.</p></div>
   <div className="quick-format-grid">{(Object.keys(formats) as FormatId[]).map(id=>{const f=formats[id];return <button key={id} className={format===id?'selected':''} onClick={()=>setFormat(id)}><div className={`format-shape ${id}`}/><strong>{f.name}</strong><small>{f.hint}</small>{format===id&&<Check size={18}/>}</button>})}</div>
   <div className="quick-sticky-actions"><button onClick={()=>setStep('result')}><Sparkles size={18}/> Create my Showcase</button></div>
  </section>;
 
  return <section className="quick-create-flow result">
-  <div className="quick-step-head"><span>DONE ✨</span><h1>Your Showcase is ready</h1><p>Full-quality card art, automatic layout, and Tropeamine branding included.</p></div>
+  <div className="quick-step-head"><span>DONE ✨</span><h1>Your Showcase is ready</h1><p>Art-directed typography, full-quality card art, and Tropeamine branding are already baked in.</p></div>
   <div className={`quick-result-frame ${format}`}><canvas ref={canvasRef}/></div>
-  <div className="quick-result-actions"><button className="primary" onClick={shareShowcase}><Share2 size={18}/> Share Showcase</button><button onClick={savePng}><Download size={18}/> Save PNG</button><button onClick={editInStudio}><WandSparkles size={18}/> Edit in Studio</button><button onClick={()=>setStep('style')}>Try another style</button></div>
+  <div className="quick-result-actions"><button className="primary" onClick={shareShowcase}><Share2 size={18}/> Share Showcase</button><button onClick={savePng}><Download size={18}/> Save PNG</button><button onClick={editInStudio}><WandSparkles size={18}/> Edit cards in Studio</button><button onClick={()=>setStep('style')}>Try another style</button></div>
   {notice&&<p className="quick-notice">{notice}</p>}
  </section>;
 }
