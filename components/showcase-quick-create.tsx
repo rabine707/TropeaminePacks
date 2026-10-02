@@ -23,10 +23,10 @@ const templates:Record<TemplateId,{name:string;eyebrow:string;description:string
  grid:{name:'Collection Grid',eyebrow:'BINDER GRID',description:'A clean binder-page composition for showing more of your collection at once.',max:12,title:'MY COLLECTION',bg:['#0d121a','#283244'],studioBg:'midnight'}
 };
 
-const formats:Record<FormatId,{name:string;hint:string;w:number;h:number}>={
- story:{name:'Story',hint:'1080 × 1920 · Instagram / TikTok',w:1080,h:1920},
- post:{name:'Post',hint:'1080 × 1350 · Instagram portrait',w:1080,h:1350},
- square:{name:'Square',hint:'1080 × 1080 · Feed / profile',w:1080,h:1080}
+const formats:Record<FormatId,{name:string;hint:string;w:number;h:number;scale:number}>={
+ story:{name:'Story',hint:'2160 × 3840 · high-res Instagram / TikTok',w:1080,h:1920,scale:2},
+ post:{name:'Post',hint:'3240 × 4050 · high-res Instagram portrait',w:1080,h:1350,scale:3},
+ square:{name:'Square',hint:'3240 × 3240 · high-res feed / profile',w:1080,h:1080,scale:3}
 };
 
 function uid(){return crypto.randomUUID()}
@@ -229,8 +229,10 @@ export default function ShowcaseQuickCreate(){
 
  async function renderCanvas(){
   const canvas=canvasRef.current;if(!canvas)return;
-  canvas.width=dims.w;canvas.height=dims.h;
+  canvas.width=dims.w*dims.scale;canvas.height=dims.h*dims.scale;
   const ctx=canvas.getContext('2d');if(!ctx)return;
+  ctx.setTransform(dims.scale,0,0,dims.scale,0,0);
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   const grad=ctx.createLinearGradient(0,0,dims.w,dims.h);grad.addColorStop(0,activeTemplate.bg[0]);grad.addColorStop(1,activeTemplate.bg[1]);ctx.fillStyle=grad;ctx.fillRect(0,0,dims.w,dims.h);
   const glow=ctx.createRadialGradient(dims.w*.84,dims.h*.12,0,dims.w*.84,dims.h*.12,dims.w*.58);glow.addColorStop(0,'rgba(240,145,203,.16)');glow.addColorStop(.45,'rgba(240,145,203,.045)');glow.addColorStop(1,'rgba(240,145,203,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,dims.w,dims.h);
   ctx.fillStyle='rgba(255,255,255,.045)';for(let i=0;i<24;i++){ctx.beginPath();ctx.arc((i*173)%dims.w,(i*281)%dims.h,1.5+(i%3),0,Math.PI*2);ctx.fill()}
@@ -249,8 +251,8 @@ export default function ShowcaseQuickCreate(){
  }
 
  function canvasBlob(){return new Promise<Blob|null>(resolve=>{const canvas=canvasRef.current;if(!canvas){resolve(null);return}canvas.toBlob(resolve,'image/png')})}
- async function savePng(){const blob=await canvasBlob();if(!blob)return;const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`tropeamine-showcase-${Date.now()}.png`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice('Showcase saved as a full-quality PNG.')}
- async function shareShowcase(){const blob=await canvasBlob();if(!blob)return;const file=new File([blob],'tropeamine-showcase.png',{type:'image/png'});try{if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:'My Tropeamine Packs Showcase',files:[file]});setNotice('Shared ✨');return}}catch(err){if((err as DOMException)?.name==='AbortError')return}await savePng();setNotice('Native sharing is not available here, so the PNG was saved instead.')}
+ async function savePng(){const blob=await canvasBlob();if(!blob)return;const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`tropeamine-showcase-${Date.now()}.png`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice(`High-resolution PNG saved at ${dims.w*dims.scale} × ${dims.h*dims.scale}.`)}
+ async function shareShowcase(){const blob=await canvasBlob();if(!blob)return;const file=new File([blob],'tropeamine-showcase.png',{type:'image/png'});try{if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:'My Tropeamine Packs Showcase',files:[file]});setNotice('Shared ✨');return}}catch(err){if((err as DOMException)?.name==='AbortError')return}await savePng();setNotice('Native sharing is not available here, so the high-resolution PNG was saved instead.')}
 
  function editInStudio(){
   const source=placements(dims.w,dims.h),copy=posterCopy();
@@ -285,7 +287,7 @@ export default function ShowcaseQuickCreate(){
  </section>;
 
  return <section className="quick-create-flow result">
-  <div className="quick-step-head"><span>DONE ✨</span><h1>Your Showcase is ready</h1><p>Art-directed typography, full-quality card art, and Tropeamine branding are already baked in.</p></div>
+  <div className="quick-step-head"><span>DONE ✨</span><h1>Your Showcase is ready</h1><p>Art-directed typography, high-resolution card art, and Tropeamine branding are already baked in.</p></div>
   <div className={`quick-result-frame ${format}`}><canvas ref={canvasRef}/></div>
   <div className="quick-result-actions"><button className="primary" onClick={shareShowcase}><Share2 size={18}/> Share Showcase</button><button onClick={savePng}><Download size={18}/> Save PNG</button><button onClick={editInStudio}><WandSparkles size={18}/> Edit cards in Studio</button><button onClick={()=>setStep('style')}>Try another style</button></div>
   {notice&&<p className="quick-notice">{notice}</p>}
