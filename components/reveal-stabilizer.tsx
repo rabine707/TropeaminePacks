@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect} from 'react';
+import {revealArtUrl} from '@/lib/card-art';
 
 const mysteryBackSources=[
   '/card-backs/162A9E6A-1EDD-4577-9146-77A182E20598.png',
@@ -17,7 +18,8 @@ const ADVANCE_GUARD_MS=300;
 
 export default function RevealStabilizer(){
   useEffect(()=>{
-    const selector='.mystery-card-art img';
+    const mysterySelector='.mystery-card-art img';
+    const packArtSelector='.cinematic-reveal .card-art img';
     let lastAdvanceAt=0;
     let forwardingStageClick=false;
 
@@ -52,8 +54,38 @@ export default function RevealStabilizer(){
       else img.addEventListener('load',show,{once:true});
     };
 
+    // Browse pages intentionally use a tiny 560x840 / low-quality derivative. Pack
+    // opening is a hero moment, so swap only images inside the reveal flow to the
+    // sharper cached 1024x1536 derivative. This preserves the browse/egress savings.
+    const upgradePackArt=(img:HTMLImageElement)=>{
+      const current=img.getAttribute('src')||'';
+      const next=revealArtUrl(current);
+      if(!current||next===current)return;
+      img.dataset.packRevealSrc=next;
+      img.removeAttribute('srcset');
+      img.setAttribute('fetchpriority','high');
+      img.decoding='async';
+      hide(img);
+      img.style.transition='opacity 120ms ease';
+      const show=()=>{
+        if((img.getAttribute('src')||'')===next)img.style.opacity='1';
+      };
+      img.addEventListener('load',show,{once:true});
+      img.setAttribute('src',next);
+      if(img.complete&&img.naturalWidth>0)requestAnimationFrame(show);
+    };
+
     const scan=(root:ParentNode=document)=>{
-      root.querySelectorAll<HTMLImageElement>(selector).forEach(stabilize);
+      root.querySelectorAll<HTMLImageElement>(mysterySelector).forEach(stabilize);
+      root.querySelectorAll<HTMLImageElement>(packArtSelector).forEach(upgradePackArt);
+    };
+
+    const scanNode=(node:HTMLElement)=>{
+      if(node instanceof HTMLImageElement){
+        if(node.matches(mysterySelector))stabilize(node);
+        if(node.matches(packArtSelector))upgradePackArt(node);
+      }
+      scan(node);
     };
 
     const hideCurrentBeforeAdvance=(event:Event)=>{
@@ -61,7 +93,7 @@ export default function RevealStabilizer(){
       if(!(target instanceof Element))return;
       const stage=target.closest('.cinematic-card-stage');
       if(!stage?.classList.contains('face-back'))return;
-      document.querySelectorAll<HTMLImageElement>(selector).forEach(hide);
+      document.querySelectorAll<HTMLImageElement>(mysterySelector).forEach(hide);
     };
 
     const isProtectedControl=(target:Element,stage:HTMLElement)=>{
@@ -136,14 +168,13 @@ export default function RevealStabilizer(){
 
     const observer=new MutationObserver(records=>{
       for(const record of records){
-        if(record.type==='attributes'&&record.target instanceof HTMLImageElement&&record.target.matches(selector)){
-          stabilize(record.target);
+        if(record.type==='attributes'&&record.target instanceof HTMLImageElement){
+          if(record.target.matches(mysterySelector))stabilize(record.target);
+          if(record.target.matches(packArtSelector))upgradePackArt(record.target);
           continue;
         }
         record.addedNodes.forEach(node=>{
-          if(!(node instanceof HTMLElement))return;
-          if(node.matches(selector))stabilize(node as HTMLImageElement);
-          scan(node);
+          if(node instanceof HTMLElement)scanNode(node);
         });
       }
     });

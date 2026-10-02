@@ -1,0 +1,102 @@
+/* Homepage app dashboard — collection first, marketing removed from Home. */
+.home-density-v2 .workspace main{display:flex;flex-direction:column}
+.home-density-v2 .demo-note,.home-density-v2 .collector-hero,.home-density-v2 .how-strip,.home-density-v2 .home-cta{display:none!important}
+
+.home-density-v2 .home-v2-dashboard-title{order:1;margin:14px 0 9px;align-items:end}
+.home-density-v2 .home-v2-dashboard-title .eyebrow,.home-density-v2 .home-v2-chase-title .eyebrow,.home-density-v2 .home-v2-fresh-title .eyebrow{margin-bottom:4px;font-size:9px;letter-spacing:1.7px}
+.home-density-v2 .home-v2-dashboard-title h2,.home-density-v2 .home-v2-chase-title h2,.home-density-v2 .home-v2-fresh-title h2{font-size:23px;line-height:1.05;margin:0}
+.home-density-v2 .home-v2-dashboard-title .text-link,.home-density-v2 .home-v2-chase-title .text-link,.home-density-v2 .home-v2-fresh-title .text-link{font-size:11px;color:#c8b8c2}
+
+.home-density-v2 .collector-dashboard{order:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0}
+.home-density-v2 .collector-dashboard-card{min-height:76px;padding:12px 13px;border-radius:13px;border:1px solid #382735;background:#121014;box-shadow:none}
+.home-density-v2 .collector-dashboard-card:hover{border-color:#73405e;background:#181117}
+.home-density-v2 .collector-dashboard-card>svg{width:18px;height:18px;color:#e982bd}
+.home-density-v2 .collector-dashboard-card>svg:last-child{color:#776b74;width:15px;height:15px}
+.home-density-v2 .collector-dashboard-card span small{font-size:8px;letter-spacing:1px;color:#b990a7}
+.home-density-v2 .collector-dashboard-card span strong{font-size:18px;line-height:1.1}
+.home-density-v2 .collector-dashboard-card span em{font-size:9px;color:#968a92}
+.home-density-v2 .collector-dashboard-card.hot{background:linear-gradient(135deg,#1d1019,#130e13);border-color:#4b2a40}
+
+.home-density-v2 .home-v2-chase-title{order:3;margin:24px 0 9px;padding-top:19px;border-top:1px solid #2e222b;align-items:end}
+.home-density-v2 .collectible-spotlight{order:4;display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,320px) minmax(220px,300px);align-items:center;gap:18px;padding:16px 17px;border-radius:14px;border:1px solid #3b2937;background:radial-gradient(circle at 62% 45%,rgba(118,42,92,.15),transparent 30%),#121014;box-shadow:none;min-height:0;overflow:hidden}
+.home-density-v2 .collectible-spotlight .spotlight-copy{min-width:0}
+.home-density-v2 .collectible-spotlight .spotlight-copy .pill{display:inline-flex;margin:0 0 5px;padding:4px 7px;font-size:7px;letter-spacing:1px}
+.home-density-v2 .collectible-spotlight .spotlight-copy h2{font-size:25px;line-height:1.05;margin:4px 0 2px}
+.home-density-v2 .collectible-spotlight .spotlight-copy>p:not(.chase-copy){margin:0 0 8px;font-size:10px;color:#a899a2}
+.home-density-v2 .collectible-spotlight .spotlight-copy .tags{gap:5px;margin:0 0 8px}
+.home-density-v2 .collectible-spotlight .spotlight-copy .tags span{padding:3px 6px;font-size:8px;background:#1c151b;border-color:#342630}
+.home-density-v2 .collectible-spotlight .chase-copy{margin:0 0 10px;max-width:560px;font-size:10px;line-height:1.45;color:#b8aab3}
+.home-density-v2 .collectible-spotlight .spotlight-copy>a.button{display:inline-flex;vertical-align:middle;min-height:34px;padding:7px 11px;margin:0 6px 0 0;font-size:9px;border-radius:9px}
+.home-density-v2 .collectible-spotlight .home-v2-pack-action{background:linear-gradient(135deg,#edacd0,#d77eaf);color:#341329;border:0}
+.home-density-v2 .collectible-spotlight .set-art-image{display:flex!important;position:relative;width:100%;height:190px;min-height:0;align-items:center;justify-content:center;overflow:visible;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important;filter:none!important;outline:0!important}
+.home-density-v2 .collectible-spotlight .set-art-image::before,.home-density-v2 .collectible-spotlight .set-art-image::after{display:none!important;content:none!important}
+.home-density-v2 .home-v2-chase-art{position:relative;width:min(100%,260px);height:100%;margin:0 auto}
+.home-density-v2 .home-v2-chase-card{position:absolute;top:50%;left:50%;display:block;width:106px;aspect-ratio:2/3;overflow:hidden;border-radius:7px;border:1px solid rgba(255,255,255,.15);box-shadow:0 15px 34px rgba(0,0,0,.5);transform-origin:center center;background:linear-gradient(145deg,#171118,#080708)}
+.home-density-v2 .home-v2-chase-card img{display:block;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 120ms ease-out}
+.home-density-v2 .home-v2-chase-card.is-loaded img{opacity:1}
+.home-density-v2 .home-v2-chase-card.is-error img{display:none}
+.home-density-v2 .home-v2-chase-card[data-position="1"]{z-index:3;transform:translate(-50%,-52%) scale(1.16)}
+.home-density-v2 .home-v2-chase-card[data-position="2"]{z-index:2;transform:translate(-101%,-47%) rotate(-8deg) scale(.94)}
+.home-density-v2 .home-v2-chase-card[data-position="3"]{z-index:2;transform:translate(1%,-47%) rotate(8deg) scale(.94)}
+.home-density-v2 .home-v2-chase-card.is-missing img{filter:grayscale(1) brightness(.34);opacity:0}
+.home-density-v2 .home-v2-chase-card.is-missing.is-loaded img{opacity:.62}
+.home-density-v2 .collectible-spotlight .set-progress{max-width:none;margin:0;padding:12px 13px;border:1px solid #30242d;border-radius:11px;background:#0d0b0e}
+.home-density-v2 .collectible-spotlight .set-progress>div{margin-bottom:7px}
+.home-density-v2 .collectible-spotlight .set-progress span{font-size:8px;letter-spacing:1px}
+.home-density-v2 .collectible-spotlight .set-progress strong{font-size:21px;line-height:1}
+.home-density-v2 .collectible-spotlight .set-progress progress{height:5px;margin:6px 0}
+.home-density-v2 .collectible-spotlight .set-progress p{margin:5px 0 0;font-size:9px;color:#a3969e}
+
+.home-density-v2 .home-v2-fresh-title{order:5;margin:24px 0 9px;padding-top:19px;border-top:1px solid #2e222b;align-items:end}
+.home-density-v2 .chase-grid{order:6;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.home-density-v2 .chase-grid .card-tile{margin:0}
+.home-density-v2 .chase-grid .tile-info{margin-top:7px}
+.home-density-v2 .chase-grid .tile-info h3{font-size:15px}
+.home-density-v2 .chase-grid .tile-info p{font-size:8px}
+.home-density-v2 .workspace main>footer{order:7;margin-top:24px}
+
+@media(max-width:980px) and (min-width:761px){
+ .home-density-v2 .collector-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,1fr) minmax(220px,280px);gap:14px}
+ .home-density-v2 .collectible-spotlight .set-progress{grid-column:1/-1}
+}
+
+@media(max-width:760px){
+ .home-density-v2 .workspace main{padding-top:0}
+ .home-density-v2 .home-v2-dashboard-title{margin:13px 0 8px;padding-right:3px}
+ .home-density-v2 .home-v2-dashboard-title h2,.home-density-v2 .home-v2-chase-title h2,.home-density-v2 .home-v2-fresh-title h2{font-size:20px}
+ .home-density-v2 .home-v2-dashboard-title .text-link{display:none}
+ .home-density-v2 .home-v2-chase-title,.home-density-v2 .home-v2-fresh-title{margin-top:20px;padding-top:17px}
+ .home-density-v2 .home-v2-chase-title .text-link,.home-density-v2 .home-v2-fresh-title .text-link{font-size:10px}
+ .home-density-v2 .collector-dashboard{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(205px,70vw);gap:8px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-inline:contain;padding:0 1px 4px;scrollbar-width:none}
+ .home-density-v2 .collector-dashboard::-webkit-scrollbar{display:none}
+ .home-density-v2 .collector-dashboard-card{scroll-snap-align:start;min-height:72px;padding:11px 12px}
+ .home-density-v2 .collector-dashboard-card span strong{font-size:17px}
+ .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,.82fr) minmax(184px,1.18fr);align-items:center;gap:8px 6px;padding:13px 14px;border-radius:13px;background:radial-gradient(circle at 74% 33%,rgba(118,42,92,.18),transparent 30%),#121014}
+ .home-density-v2 .collectible-spotlight .spotlight-copy{grid-column:1;grid-row:1}
+ .home-density-v2 .collectible-spotlight .spotlight-copy h2{font-size:22px;white-space:normal}
+ .home-density-v2 .collectible-spotlight .chase-copy{display:none}
+ .home-density-v2 .collectible-spotlight .spotlight-copy>a.button{min-height:32px;padding:7px 10px}
+ .home-density-v2 .collectible-spotlight .set-art-image{grid-column:2;grid-row:1;height:202px;align-self:center;justify-self:stretch;transform:translateX(12px)}
+ .home-density-v2 .home-v2-chase-art{width:min(100%,226px)}
+ .home-density-v2 .home-v2-chase-card{width:94px;border-radius:6px}
+ .home-density-v2 .home-v2-chase-card[data-position="1"]{transform:translate(-50%,-52%) scale(1.18)}
+ .home-density-v2 .home-v2-chase-card[data-position="2"]{transform:translate(-98%,-46%) rotate(-8deg) scale(.95)}
+ .home-density-v2 .home-v2-chase-card[data-position="3"]{transform:translate(-2%,-46%) rotate(8deg) scale(.95)}
+ .home-density-v2 .collectible-spotlight .set-progress{grid-column:1/-1;grid-row:2;padding:10px 11px;display:grid;grid-template-columns:1fr;gap:0}
+ .home-density-v2 .collectible-spotlight .set-progress>div{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 4px}
+ .home-density-v2 .collectible-spotlight .set-progress strong{font-size:19px}
+ .home-density-v2 .chase-grid{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(145px,43vw);overflow-x:auto;gap:9px;scroll-snap-type:x proximity;overscroll-behavior-inline:contain;padding:0 1px 5px;scrollbar-width:none}
+ .home-density-v2 .chase-grid::-webkit-scrollbar{display:none}
+ .home-density-v2 .chase-grid>.card-tile{scroll-snap-align:start}
+ .home-density-v2 .workspace main>footer{margin-top:20px}
+}
+
+@media(max-width:390px){
+ .home-density-v2 .collector-dashboard{grid-auto-columns:74vw}
+ .home-density-v2 .chase-grid{grid-auto-columns:47vw}
+ .home-density-v2 .home-v2-chase-title .text-link,.home-density-v2 .home-v2-fresh-title .text-link{font-size:9px}
+ .home-density-v2 .collectible-spotlight{grid-template-columns:minmax(0,.82fr) 166px;padding:12px}
+ .home-density-v2 .collectible-spotlight .set-art-image{height:188px;transform:translateX(8px)}
+ .home-density-v2 .home-v2-chase-card{width:88px}
+}

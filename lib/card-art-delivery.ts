@@ -10,7 +10,7 @@ export async function deliverCardArt(request: Request, id: string, client: Supab
   const revision = params.get('v');
   const size = params.get('size');
   if (!/^[0-9a-f-]{36}$/i.test(id) || !revision?.startsWith('sfw/') ||
-      !['original', 'browse'].includes(size ?? '') ||
+      !['original', 'browse', 'reveal'].includes(size ?? '') ||
       [...params.keys()].some(key => !['v', 'size'].includes(key)) ||
       params.getAll('v').length !== 1 || params.getAll('size').length !== 1) return fail(400);
 
@@ -26,13 +26,18 @@ export async function deliverCardArt(request: Request, id: string, client: Supab
     if (error) return fail(502);
     if (!asset) return fail(404);
 
-    const options = size === 'browse' ? {transform: {width: 560, height: 840, resize: 'contain' as const, quality: 32}} : undefined;
+    const options = size === 'browse'
+      ? {transform: {width: 560, height: 840, resize: 'contain' as const, quality: 32}}
+      : size === 'reveal'
+        ? {transform: {width: 1024, height: 1536, resize: 'contain' as const, quality: 82}}
+        : undefined;
     const signed = await client.storage.from('card-art').createSignedUrl(asset.storage_path, 120, options);
     if (signed.error || !signed.data?.signedUrl) return fail(502);
-    // Normalize browse format so the CDN cache does not vary by the visitor's Accept header.
+    // Normalize transformed formats so the CDN cache does not vary by the visitor's Accept header.
     // Original responses are copied byte-for-byte, with no image transformation.
+    const transformed = size === 'browse' || size === 'reveal';
     const image = await fetchImage(signed.data.signedUrl, {
-      cache: 'no-store', headers: {Accept: size === 'browse' ? 'image/webp' : '*/*'},
+      cache: 'no-store', headers: {Accept: transformed ? 'image/webp' : '*/*'},
       signal: AbortSignal.timeout(20_000),
     });
     const type = image.headers.get('content-type')?.split(';')[0] ?? '';

@@ -31,3 +31,39 @@
     min-width:0;
   }
 }
+
+/* Mobile collection controls should scroll rather than crush labels. */
+@media (max-width:600px){
+  .binder-tools{
+    gap:10px;
+  }
+  .binder-tools .tabs{
+    width:100%;
+    max-width:100%;
+    gap:22px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .binder-tools .tabs::-webkit-scrollbar{display:none}
+  .binder-tools .tabs button{
+    flex:0 0 auto;
+    min-width:max-content;
+  }
+  .binder-foil-toggle{
+    align-self:flex-start;
+    margin-top:0;
+  }
+
+  /* The fixed bottom nav overlays the viewport. Keep enough real document space
+     after the legal footer so every footer link can scroll fully above it. */
+  body{
+    padding-bottom:calc(132px + env(safe-area-inset-bottom));
+  }
+  .site-legal-footer{
+    margin-top:26px;
+    padding-top:20px;
+    padding-bottom:20px;
+  }
+}

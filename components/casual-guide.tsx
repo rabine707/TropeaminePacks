@@ -43,6 +43,7 @@ export default function CasualGuide(){
   {label:'Favorite a character',done:snapshot.favorites>0,href:'/discover'},
  ],[snapshot]);
  const complete=checklist.every(item=>item.done);const done=checklist.filter(item=>item.done).length;
+ const showHelpShortcut=pathname==='/packs';
  return <>
   {help&&<div className="casual-overlay" role="dialog" aria-modal="true" aria-label="How Tropeamine Packs works">
    <div className="casual-modal help-modal">
@@ -61,6 +62,6 @@ export default function CasualGuide(){
    </div>
   </div>}
 
-  <button className="how-it-works" onClick={()=>setHelp(true)}><HelpCircle size={17}/>How it works</button>
+  {showHelpShortcut&&<button className="how-it-works" onClick={()=>setHelp(true)}><HelpCircle size={17}/>How it works</button>}
  </>;
 }

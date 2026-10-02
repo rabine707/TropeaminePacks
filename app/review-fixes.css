@@ -1,0 +1,80 @@
+/* Screenshot-driven mobile cleanup. Loaded last so it can retire conflicting legacy rules safely. */
+.home-density-v2 .collector-card-stack{
+  min-height:0!important;
+  position:relative!important;
+  transform:none!important;
+}
+.home-density-v2 .collector-card-stack .hero-card{
+  left:50%!important;
+  top:50%!important;
+}
+.home-density-v2 .collector-card-stack .hero-card.center{
+  transform:translate(-50%,-50%) scale(1.02)!important;
+}
+.home-density-v2 .collector-card-stack .hero-card.left{
+  transform:translate(-101%,-48%) rotate(-10deg)!important;
+}
+.home-density-v2 .collector-card-stack .hero-card.right{
+  transform:translate(1%,-48%) rotate(10deg)!important;
+}
+
+.quests-polish .creator-quest-summary{margin-top:16px}
+.quests-polish .creator-quest-summary .section-title{margin-bottom:9px}
+.quests-polish .creator-quest-summary .quest-card{min-height:0}
+.quests-polish .creator-quest-summary .quest-card>svg{margin-bottom:10px}
+.quests-polish .creator-poll{margin-top:12px}
+.quests-polish .creator-poll .eyebrow{margin-bottom:9px}
+
+@media(max-width:760px){
+  .home-density-v2 .collector-hero{
+    gap:0!important;
+    padding-bottom:10px!important;
+  }
+  .home-density-v2 .collector-card-stack{
+    height:230px!important;
+    min-height:0!important;
+    min-width:0!important;
+    margin:-2px 0 -7px!important;
+    overflow:visible!important;
+  }
+  .home-density-v2 .collector-card-stack .hero-card{
+    width:132px!important;
+    max-width:none!important;
+  }
+  .home-density-v2 .collector-card-stack .hero-card.center{
+    width:146px!important;
+    transform:translate(-50%,-50%) scale(1)!important;
+  }
+  .home-density-v2 .collector-card-stack .hero-card.left{
+    transform:translate(-101%,-48%) rotate(-9deg)!important;
+  }
+  .home-density-v2 .collector-card-stack .hero-card.right{
+    transform:translate(1%,-48%) rotate(9deg)!important;
+  }
+  .home-density-v2 .collector-card-stack .hero-edition{bottom:0!important}
+}
+
+@media(max-width:600px){
+  /* The fixed dock clearance belongs after the legal links, not between app content and the footer. */
+  body{padding-bottom:0!important}
+  .workspace{padding-bottom:0!important}
+  .site-legal-footer{
+    margin-top:0!important;
+    padding-top:20px!important;
+    padding-bottom:calc(122px + env(safe-area-inset-bottom))!important;
+  }
+  .workspace main>footer{margin-bottom:0!important;padding-bottom:18px!important}
+
+  .quests-polish .creator-quest-summary .quest-card{padding:17px!important}
+  .quests-polish .creator-quest-summary .quest-card h3{margin-bottom:4px}
+  .quests-polish .creator-poll{padding:20px!important}
+  .quests-polish .creator-poll h2{font-size:28px!important;line-height:1.05}
+  .quests-polish .creator-poll .button-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .quests-polish .creator-poll .button{width:100%;min-width:0}
+}
+
+@media(max-width:390px){
+  .home-density-v2 .collector-card-stack{height:210px!important;margin-top:-6px!important}
+  .home-density-v2 .collector-card-stack .hero-card{width:122px!important}
+  .home-density-v2 .collector-card-stack .hero-card.center{width:136px!important}
+}
