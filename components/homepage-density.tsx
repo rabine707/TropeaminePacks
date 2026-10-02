@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect} from 'react';
+import {browseArtUrl} from '@/lib/card-art';
 
 const HOME_CLASS='home-density-v2';
 const TITLE_CLASSES=['home-v2-chase-title','home-v2-dashboard-title','home-v2-fresh-title'];
@@ -89,7 +90,20 @@ export default function HomepageDensity(){
      rail.dataset.cards=signature;
      rail.replaceChildren();
      heroCards.forEach((card,index)=>{
-      const img=document.createElement('img');img.src=card.image!;img.alt=card.name||`${chase.series} card`;img.loading='lazy';img.decoding='async';img.className=ownedIds.has(card.id)?'is-owned':'is-missing';img.dataset.position=String(index+1);rail!.appendChild(img);
+      const shell=document.createElement('span');
+      shell.className=`home-v2-chase-card ${ownedIds.has(card.id)?'is-owned':'is-missing'}`;
+      shell.dataset.position=String(index+1);
+      const img=document.createElement('img');
+      img.alt=card.name||`${chase.series} card`;
+      img.loading=index===0?'eager':'lazy';
+      img.decoding='async';
+      const reveal=()=>shell.classList.add('is-loaded');
+      img.addEventListener('load',reveal,{once:true});
+      img.addEventListener('error',()=>shell.classList.add('is-error'),{once:true});
+      img.src=browseArtUrl(card.image!);
+      shell.appendChild(img);
+      rail!.appendChild(shell);
+      if(img.complete&&img.naturalWidth)reveal();
      });
     }
    }
