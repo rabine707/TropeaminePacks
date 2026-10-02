@@ -13,11 +13,11 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   const [loadedOriginal, setLoadedOriginal] = useState<string | null>(null);
   const browse = browseArtUrl(src);
   const imageSrc = original || failed === browse ? src : browse;
-  // Front artwork should always fill the locked 2:3 card shell. Correctly sized cards
-  // are unaffected; odd source canvases (such as Ezra's current front) crop cleanly
-  // instead of leaving large black letterbox bands. Felicity keeps the same treatment
-  // on both sides because her uploaded source canvas is also wider than the shell.
-  const fillShell = /\bcard artwork$/i.test(alt) || /^Felicity\b/i.test(alt);
+  // Front artwork normally fills the locked 2:3 shell. Ezra's current front has a
+  // wider source canvas, and the cover crop reads too zoomed-in on collection tiles,
+  // so preserve the full composition for Ezra while Felicity keeps the cover crop.
+  const isEzraFront = /^Ezra\b.*\bcard artwork$/i.test(alt);
+  const fillShell = !isEzraFront && (/\bcard artwork$/i.test(alt) || /^Felicity\b/i.test(alt));
   const fit = fillShell ? 'cover' : 'contain';
 
   useEffect(() => {
