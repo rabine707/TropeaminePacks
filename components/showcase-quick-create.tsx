@@ -7,6 +7,8 @@ import {createClient} from '@/lib/supabase/client';
 
 type TemplateId='top6'|'series'|'recent'|'grid';
 type FormatId='story'|'post'|'square';
+type BackgroundId='auto'|'plum'|'midnight'|'rose'|'parchment'|'emerald'|'sapphire'|'crimson';
+type BackgroundDefinition={name:string;hint:string;colors:[string,string,string];accent:string;text:string;muted:string;studioBg:'plum'|'midnight'|'paper'|'rose'};
 type Step='style'|'cards'|'format'|'result';
 type SavedState={cards?:Card[];wallet?:{owned?:string[]}};
 type Placement={card:Card;x:number;y:number;w:number;h:number;rotation:number};
@@ -27,6 +29,16 @@ const formats:Record<FormatId,{name:string;hint:string;w:number;h:number;scale:n
  story:{name:'Story',hint:'2160 × 3840 · high-res Instagram / TikTok',w:1080,h:1920,scale:2},
  post:{name:'Post',hint:'3240 × 4050 · high-res Instagram portrait',w:1080,h:1350,scale:3},
  square:{name:'Square',hint:'3240 × 3240 · high-res feed / profile',w:1080,h:1080,scale:3}
+};
+
+const backgrounds:Record<Exclude<BackgroundId,'auto'>,BackgroundDefinition>={
+ plum:{name:'Plum Velvet',hint:'Signature Tropeamine',colors:['#160a15','#4a183f','#8a3b70'],accent:'#e6a8d1',text:'#fff8f3',muted:'rgba(255,248,243,.62)',studioBg:'plum'},
+ midnight:{name:'Midnight Ink',hint:'Dark & editorial',colors:['#06080d','#141b2a','#313a54'],accent:'#aeb9dc',text:'#fffaf5',muted:'rgba(255,250,245,.6)',studioBg:'midnight'},
+ rose:{name:'Rose Noir',hint:'Romantic & moody',colors:['#160a10','#572035','#a44f6d'],accent:'#f0b4cb',text:'#fff8f4',muted:'rgba(255,248,244,.62)',studioBg:'rose'},
+ parchment:{name:'Warm Parchment',hint:'Bookish & editorial',colors:['#b99678','#ead9c3','#c9a084'],accent:'#6f3549',text:'#2a1b1e',muted:'rgba(42,27,30,.62)',studioBg:'paper'},
+ emerald:{name:'Emerald Night',hint:'Rich & dramatic',colors:['#03100d','#0d3a2d','#236950'],accent:'#8de1b9',text:'#f5fff9',muted:'rgba(245,255,249,.62)',studioBg:'midnight'},
+ sapphire:{name:'Sapphire After Dark',hint:'Cool & cinematic',colors:['#040d18','#10365a','#2b6f9f'],accent:'#93d5ff',text:'#f5fbff',muted:'rgba(245,251,255,.62)',studioBg:'midnight'},
+ crimson:{name:'Crimson Velvet',hint:'Bold & dangerous',colors:['#160608','#541017','#a42a31'],accent:'#ffb0aa',text:'#fff8f5',muted:'rgba(255,248,245,.62)',studioBg:'rose'}
 };
 
 function uid(){return crypto.randomUUID()}
@@ -53,10 +65,23 @@ function wrapTitle(ctx:CanvasRenderingContext2D,text:string,maxWidth:number,star
 }
 function drawDiamond(ctx:CanvasRenderingContext2D,x:number,y:number,size:number){ctx.save();ctx.translate(x,y);ctx.rotate(Math.PI/4);ctx.fillRect(-size/2,-size/2,size,size);ctx.restore()}
 
+function hexToRgba(hex:string,alpha:number){const value=hex.replace('#','');const n=parseInt(value.length===3?value.split('').map(c=>c+c).join(''):value,16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${alpha})`}
+function autoBackgroundId(chosen:Card[],template:TemplateId):Exclude<BackgroundId,'auto'>{
+ const text=chosen.map(card=>`${card.series} ${card.genre} ${card.hue} ${card.tags?.join(' ')||''}`).join(' ').toLowerCase();
+ if(text.includes('lights out'))return 'sapphire';
+ if(text.includes('caught up'))return 'crimson';
+ if(text.includes('game on'))return 'emerald';
+ if(/sinners retreat|slay ride|ship happens|slaughter park|sinners reunion|slaycation/.test(text))return 'rose';
+ if(/butcher & blackbird|leather & lark|scythe & sparrow|ruinous/.test(text))return 'midnight';
+ if(/warlock|coven king/.test(text))return 'plum';
+ return ({top6:'plum',series:'midnight',recent:'rose',grid:'midnight'} as const)[template];
+}
+
 export default function ShowcaseQuickCreate(){
  const canvasRef=useRef<HTMLCanvasElement>(null);
  const [step,setStep]=useState<Step>('style');
  const [template,setTemplate]=useState<TemplateId>('top6');
+ const [background,setBackground]=useState<BackgroundId>('auto');
  const [format,setFormat]=useState<FormatId>('post');
  const [cards,setCards]=useState<Card[]>([]);
  const [owned,setOwned]=useState<string[]>([]);
@@ -126,7 +151,9 @@ export default function ShowcaseQuickCreate(){
   setPendingAutoSource(null);
  },[localDataReady,accountDataReady,pendingAutoSource,accountShowcase,recentAcquired,ownedCards]);
 
- useEffect(()=>{if(step==='result')void renderCanvas()},[step,template,format,selected,cards]);
+ const resolvedBackgroundId=background==='auto'?autoBackgroundId(chosen,template):background;
+ const activeBackground=backgrounds[resolvedBackgroundId];
+ useEffect(()=>{if(step==='result')void renderCanvas()},[step,template,format,background,selected,cards]);
 
  function chooseTemplate(id:TemplateId){
   setTemplate(id);setSearch('');setStep('cards');setNotice('');setPendingAutoSource(null);
@@ -206,12 +233,20 @@ export default function ShowcaseQuickCreate(){
   return result;
  }
 
+ function paintBackground(ctx:CanvasRenderingContext2D){
+  const [a,b,c]=activeBackground.colors;
+  const base=ctx.createLinearGradient(0,0,dims.w,dims.h);base.addColorStop(0,a);base.addColorStop(.54,b);base.addColorStop(1,c);ctx.fillStyle=base;ctx.fillRect(0,0,dims.w,dims.h);
+  const glow=ctx.createRadialGradient(dims.w*.5,dims.h*.16,0,dims.w*.5,dims.h*.16,dims.w*.8);glow.addColorStop(0,hexToRgba(activeBackground.accent,.18));glow.addColorStop(.45,hexToRgba(activeBackground.accent,.055));glow.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,dims.w,dims.h);
+  const vignette=ctx.createRadialGradient(dims.w*.5,dims.h*.48,dims.w*.2,dims.w*.5,dims.h*.48,dims.h*.72);vignette.addColorStop(.45,'rgba(0,0,0,0)');vignette.addColorStop(1,resolvedBackgroundId==='parchment'?'rgba(76,42,36,.16)':'rgba(0,0,0,.34)');ctx.fillStyle=vignette;ctx.fillRect(0,0,dims.w,dims.h);
+  ctx.fillStyle=resolvedBackgroundId==='parchment'?'rgba(74,40,45,.065)':'rgba(255,255,255,.045)';for(let i=0;i<30;i++){ctx.beginPath();ctx.arc((i*173+37)%dims.w,(i*281+61)%dims.h,1.5+(i%4),0,Math.PI*2);ctx.fill()}
+ }
+
  function drawPosterHeader(ctx:CanvasRenderingContext2D,logo:HTMLImageElement|null){
   const copy=posterCopy(),pad=format==='story'?72:60,top=format==='story'?72:58,maxTitleWidth=dims.w-pad*2;
   ctx.textBaseline='middle';
   ctx.fillStyle='rgba(255,255,255,.13)';ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=2;ctx.strokeRect(28,28,dims.w-56,dims.h-56);
-  ctx.fillStyle='#edb7d7';drawDiamond(ctx,pad,top,8);
-  ctx.font=`700 ${format==='story'?18:16}px ${SANS}`;ctx.fillStyle='rgba(255,244,250,.78)';drawTrackedText(ctx,copy.eyebrow,pad+20,top,3.4,'left');
+  ctx.fillStyle=activeBackground.accent;drawDiamond(ctx,pad,top,8);
+  ctx.font=`700 ${format==='story'?18:16}px ${SANS}`;ctx.fillStyle=activeBackground.text;drawTrackedText(ctx,copy.eyebrow,pad+20,top,3.4,'left');
   if(logo){
    const logoW=format==='story'?214:190,logoH=logoW*(78/320);
    ctx.save();ctx.globalAlpha=.92;ctx.drawImage(logo,dims.w-pad-logoW,top-logoH/2,logoW,logoH);ctx.restore();
@@ -219,12 +254,12 @@ export default function ShowcaseQuickCreate(){
    ctx.font=`700 ${format==='story'?17:15}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.72)';drawTrackedText(ctx,'TROPEAMINE PACKS',dims.w-pad,top,2.4,'right');
   }
   const titleStart=format==='story'?78:66,min=format==='square'?34:38,{size,lines}=wrapTitle(ctx,copy.title,maxTitleWidth,titleStart,min),lineHeight=size*.94;
-  ctx.font=`700 ${size}px ${SERIF}`;ctx.fillStyle='#fff9f3';ctx.textAlign='left';ctx.shadowColor='rgba(0,0,0,.32)';ctx.shadowBlur=16;
+  ctx.font=`700 ${size}px ${SERIF}`;ctx.fillStyle=activeBackground.text;ctx.textAlign='left';ctx.shadowColor='rgba(0,0,0,.32)';ctx.shadowBlur=16;
   const titleY=top+(format==='story'?66:58);lines.forEach((line,index)=>ctx.fillText(line,pad,titleY+index*lineHeight));ctx.shadowBlur=0;
   const subY=titleY+(lines.length-1)*lineHeight+size*.78;
-  ctx.font=`700 ${format==='story'?17:15}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.62)';drawTrackedText(ctx,copy.subline,pad,subY,2.2,'left');
+  ctx.font=`700 ${format==='story'?17:15}px ${SANS}`;ctx.fillStyle=activeBackground.muted;drawTrackedText(ctx,copy.subline,pad,subY,2.2,'left');
   const ruleY=subY+(format==='story'?34:27);ctx.strokeStyle='rgba(237,183,215,.38)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(pad,ruleY);ctx.lineTo(dims.w-pad,ruleY);ctx.stroke();
-  ctx.fillStyle='#edb7d7';drawDiamond(ctx,dims.w-pad,ruleY,7);
+  ctx.fillStyle=activeBackground.accent;drawDiamond(ctx,dims.w-pad,ruleY,7);
  }
 
  async function renderCanvas(){
@@ -233,9 +268,7 @@ export default function ShowcaseQuickCreate(){
   const ctx=canvas.getContext('2d');if(!ctx)return;
   ctx.setTransform(dims.scale,0,0,dims.scale,0,0);
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
-  const grad=ctx.createLinearGradient(0,0,dims.w,dims.h);grad.addColorStop(0,activeTemplate.bg[0]);grad.addColorStop(1,activeTemplate.bg[1]);ctx.fillStyle=grad;ctx.fillRect(0,0,dims.w,dims.h);
-  const glow=ctx.createRadialGradient(dims.w*.84,dims.h*.12,0,dims.w*.84,dims.h*.12,dims.w*.58);glow.addColorStop(0,'rgba(240,145,203,.16)');glow.addColorStop(.45,'rgba(240,145,203,.045)');glow.addColorStop(1,'rgba(240,145,203,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,dims.w,dims.h);
-  ctx.fillStyle='rgba(255,255,255,.045)';for(let i=0;i<24;i++){ctx.beginPath();ctx.arc((i*173)%dims.w,(i*281)%dims.h,1.5+(i%3),0,Math.PI*2);ctx.fill()}
+  paintBackground(ctx);
   const logo=await loadImage(LOGO_SRC).catch(()=>null);
   drawPosterHeader(ctx,logo);
   for(const item of placements(dims.w,dims.h)){
@@ -246,8 +279,8 @@ export default function ShowcaseQuickCreate(){
   }
   const copy=posterCopy(),footerY=dims.h-60,pad=format==='story'?72:60;
   ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,footerY-26);ctx.lineTo(dims.w-pad,footerY-26);ctx.stroke();
-  ctx.font=`700 ${format==='story'?15:14}px ${SANS}`;ctx.fillStyle='rgba(255,255,255,.5)';drawTrackedText(ctx,copy.footer,pad,footerY,1.7,'left');
-  ctx.fillStyle='rgba(255,244,250,.78)';drawTrackedText(ctx,'COLLECT YOUR OBSESSION',dims.w-pad,footerY,1.7,'right');
+  ctx.font=`700 ${format==='story'?15:14}px ${SANS}`;ctx.fillStyle=activeBackground.muted;drawTrackedText(ctx,copy.footer,pad,footerY,1.7,'left');
+  ctx.fillStyle=activeBackground.text;drawTrackedText(ctx,'COLLECT YOUR OBSESSION',dims.w-pad,footerY,1.7,'right');
  }
 
  function canvasBlob(){return new Promise<Blob|null>(resolve=>{const canvas=canvasRef.current;if(!canvas){resolve(null);return}canvas.toBlob(resolve,'image/png')})}
@@ -261,7 +294,7 @@ export default function ShowcaseQuickCreate(){
    {id:uid(),kind:'text' as const,text:copy.eyebrow,x:240,y:75*sy,size:20,rotation:0,z:48,locked:true},
    {id:uid(),kind:'text' as const,text:copy.title,x:310,y:145*sy,size:54,rotation:0,z:49,locked:true},
    {id:uid(),kind:'text' as const,text:'TROPEAMINE PACKS',x:865,y:75*sy,size:24,rotation:0,z:50,locked:true}];
-  try{localStorage.setItem(DRAFT_KEY,JSON.stringify({preset:studioPreset,bg:activeTemplate.studioBg,elements,snap:true}))}catch{}
+  try{localStorage.setItem(DRAFT_KEY,JSON.stringify({preset:studioPreset,bg:activeBackground.studioBg,elements,snap:true}))}catch{}
   window.location.href='/showcase/create';
  }
 
@@ -283,13 +316,14 @@ export default function ShowcaseQuickCreate(){
  if(step==='format')return <section className="quick-create-flow narrow">
   <div className="quick-step-head"><button className="quick-back" onClick={()=>setStep('cards')}>← Cards</button><span>STEP 3 OF 3</span><h1>Where are you sharing?</h1><p>Choose the crop. We’ll rebuild the composition for that exact ratio.</p></div>
   <div className="quick-format-grid">{(Object.keys(formats) as FormatId[]).map(id=>{const f=formats[id];return <button key={id} className={format===id?'selected':''} onClick={()=>setFormat(id)}><div className={`format-shape ${id}`}/><strong>{f.name}</strong><small>{f.hint}</small>{format===id&&<Check size={18}/>}</button>})}</div>
+  <div className="quick-background-section"><div><h2>Choose a backdrop</h2><p>Curated to stay behind the card art, not compete with it.</p></div><div className="quick-background-grid"><button className={background==='auto'?'selected':''} onClick={()=>setBackground('auto')}><span className="quick-bg-swatch bg-auto"/><strong>Auto</strong><small>Best match</small>{background==='auto'&&<Check size={16}/>}</button>{(Object.keys(backgrounds) as Exclude<BackgroundId,'auto'>[]).map(id=>{const bg=backgrounds[id];return <button key={id} className={background===id?'selected':''} onClick={()=>setBackground(id)}><span className={`quick-bg-swatch bg-${id}`}/><strong>{bg.name}</strong><small>{bg.hint}</small>{background===id&&<Check size={16}/>}</button>})}</div></div>
   <div className="quick-sticky-actions"><button onClick={()=>setStep('result')}><Sparkles size={18}/> Create my Showcase</button></div>
  </section>;
 
  return <section className="quick-create-flow result">
   <div className="quick-step-head"><span>DONE ✨</span><h1>Your Showcase is ready</h1><p>Art-directed typography, high-resolution card art, and Tropeamine branding are already baked in.</p></div>
   <div className={`quick-result-frame ${format}`}><canvas ref={canvasRef}/></div>
-  <div className="quick-result-actions"><button className="primary" onClick={shareShowcase}><Share2 size={18}/> Share Showcase</button><button onClick={savePng}><Download size={18}/> Save PNG</button><button onClick={editInStudio}><WandSparkles size={18}/> Edit cards in Studio</button><button onClick={()=>setStep('style')}>Try another style</button></div>
+  <div className="quick-result-actions"><button className="primary" onClick={shareShowcase}><Share2 size={18}/> Share Showcase</button><button onClick={savePng}><Download size={18}/> Save PNG</button><button onClick={editInStudio}><WandSparkles size={18}/> Edit cards in Studio</button><button onClick={()=>setStep('format')}>Change the mood</button><button onClick={()=>setStep('style')}>Try another style</button></div>
   {notice&&<p className="quick-notice">{notice}</p>}
  </section>;
 }
