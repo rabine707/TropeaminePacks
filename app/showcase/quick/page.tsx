@@ -2,6 +2,7 @@ import Link from 'next/link';
 import ShowcaseQuickCreate from '@/components/showcase-quick-create';
 import '../showcase.css';
 import './instagram-polish.css';
+import './quick-polish.css';
 
 export const metadata={title:'Quick Create — Tropeamine Packs'};
 

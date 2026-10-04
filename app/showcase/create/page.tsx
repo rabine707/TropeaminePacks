@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import ShowcaseStudio from '@/components/showcase-studio';
 import './showcase-studio.css';
+import './showcase-studio-mobile.css';
 
 export const metadata={title:'Showcase Studio — Tropeamine Packs'};
 
