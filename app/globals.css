@@ -800,3 +800,69 @@ input[type="checkbox"]{accent-color:#ef4da8}
 .creator-unlock,.treatment-note{color:#bda9b6}
 .creator-unlock{color:#dba3c2}
 .creator-unlock svg,.treatment-note svg{color:#d55a9b}
+
+
+/* Mobile UX hardening · iPhone-first launch pass */
+@media(max-width:600px){
+  html{min-height:100%;background:var(--bg)}
+  body{min-height:100dvh;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+  .topbar{
+    box-sizing:border-box;
+    min-height:calc(62px + env(safe-area-inset-top));
+    height:calc(62px + env(safe-area-inset-top));
+    padding-top:env(safe-area-inset-top);
+    padding-left:max(15px,env(safe-area-inset-left));
+    padding-right:max(15px,env(safe-area-inset-right));
+  }
+  .filters{top:calc(62px + env(safe-area-inset-top))}
+  .workspace{min-height:100dvh}
+  main{padding-left:max(17px,env(safe-area-inset-left));padding-right:max(17px,env(safe-area-inset-right))}
+  .sidebar{padding-left:max(8px,env(safe-area-inset-left))!important;padding-right:max(8px,env(safe-area-inset-right))!important}
+  .sidebar nav{left:max(8px,env(safe-area-inset-left))!important;right:max(8px,env(safe-area-inset-right))!important}
+
+  /* Primary mobile controls use a consistent finger-sized target. */
+  .icon-btn,.heart,.mobile-menu,.reveal-all,.detail-controls .button,
+  .request-book .button,.poll .button,.filter-more summary,.tabs button{
+    min-width:44px;min-height:44px;
+  }
+  .binder-grid .heart{min-width:44px;min-height:44px;margin-right:-6px}
+  .welcome .text-link{min-height:44px}
+  .pack-catalog-copy .button{min-height:44px}
+  .cinematic-hint{font-size:11px;line-height:1.35;letter-spacing:1.7px}
+  .reveal-all{padding:9px 16px;font-size:12px}
+
+  /* Keep dialogs and card details clear of Safari chrome and the home indicator. */
+  dialog.modal{
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 16px);
+    margin-top:max(8px,env(safe-area-inset-top));
+    margin-bottom:max(8px,env(safe-area-inset-bottom));
+    overscroll-behavior:contain;
+  }
+  .modal.wide:has(.cinematic-reveal){
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px);
+  }
+  .fullscreen-card{padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+  .cinematic-reveal{min-height:min(72dvh,680px)}
+  .cinematic-card-stage{width:min(280px,70vw,calc((100dvh - 245px) * .6667))}
+  .cinematic-reveal-controls{min-height:76px}
+}
+
+/* Narrow-phone stress pass: avoid squeezing pack art and controls into desktop proportions. */
+@media(max-width:360px){
+  main{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+  .welcome h1{font-size:clamp(38px,12vw,46px)}
+  .balances{gap:8px}
+  .sidebar .nav-link{font-size:8px!important}
+  .pack-catalog-card{grid-template-columns:1fr}
+  .pack-catalog-art{min-height:210px;border-right:0;border-bottom:1px solid #3b4334}
+  .pack-catalog-copy{padding:16px}
+  .pack-catalog-copy h2{font-size:24px}
+  .cinematic-card-stage{width:min(248px,72vw,calc((100dvh - 235px) * .6667))}
+  .cinematic-reveal>h1{white-space:normal;height:auto;min-height:42px;line-height:1.05}
+  .cinematic-reveal>h1+p{white-space:normal;height:auto;min-height:22px;text-align:center}
+}
+
+/* Avoid hover-only motion on touch devices. */
+@media(hover:none) and (pointer:coarse){
+  .art-button:hover,.collector-dashboard-card:hover,.pack-display:hover .pack-art{transform:none}
+}
