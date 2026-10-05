@@ -13,9 +13,17 @@ import ShowcaseEntrypoints from '@/components/showcase-entrypoints';
 import HomepageDensity from '@/components/homepage-density';
 import ReviewFixes from '@/components/review-fixes';
 import Link from 'next/link';
+import type { Viewport } from 'next';
 
 const siteUrl = 'https://tropeaminepacks.vercel.app';
 const shareImage = '/opengraph-image';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#09080c',
+};
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
