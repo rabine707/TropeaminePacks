@@ -27,7 +27,7 @@ export async function deliverCardArt(request: Request, id: string, client: Supab
     if (!asset) return fail(404);
 
     const options = size === 'browse'
-      ? {transform: {width: 560, height: 840, resize: 'contain' as const, quality: 32}}
+      ? {transform: {width: 768, height: 1152, resize: 'contain' as const, quality: 82}}
       : size === 'reveal'
         ? {transform: {width: 1024, height: 1536, resize: 'contain' as const, quality: 82}}
         : undefined;
