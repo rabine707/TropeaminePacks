@@ -91,3 +91,11 @@
   .card-picker span{width:68px!important}
   .background-choice{min-width:94px!important}
 }
+
+/* iPhone safe-area and touch-target hardening */
+@media(max-width:640px){
+ .showcase-page{min-height:100dvh!important;padding-left:env(safe-area-inset-left)!important;padding-right:env(safe-area-inset-right)!important;padding-bottom:env(safe-area-inset-bottom)!important}
+ .showcase-shell-head{padding-top:max(10px,env(safe-area-inset-top))!important;padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important}
+ .template-grid button,.tool-row button,.studio-toolbar button,.background-choice,.export-button,.reset-button,.showcase-back{min-height:44px!important}
+ .studio-control-label{font-size:10px!important}
+}
