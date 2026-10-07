@@ -108,7 +108,7 @@ export default function CollectionFun(){
     button.classList.toggle('locked-character',!isOwned);
     button.disabled=!isOwned;
     button.setAttribute('aria-disabled',String(!isOwned));
-    button.title=isOwned?`Open ${name}`:'Collect this card to unlock details';
+    button.removeAttribute('title');
     const badge=button.querySelector<HTMLSpanElement>('.popular-lock-state');
     if(!isOwned){
      if(!badge){
@@ -134,7 +134,7 @@ export default function CollectionFun(){
      if(hint.textContent!==nextText)hint.textContent=nextText;
     }else hint?.remove();
     const heart=tile.querySelector<HTMLButtonElement>('.heart');
-    if(heart&&!isOwned){heart.title='Add to wishlist';heart.setAttribute('aria-label',`Add ${cardName(card)} to wishlist`)}
+    if(heart&&!isOwned){heart.removeAttribute('title');heart.setAttribute('aria-label',`Add ${cardName(card)} to wishlist`)}
    });
   }
 
