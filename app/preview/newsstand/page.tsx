@@ -3,7 +3,7 @@ import {createClient} from '@/lib/supabase/server';
 import './newsstand.css';
 
 export const metadata = {
-  title: 'Tropeamine — Newsstand preview',
+  title: 'Tropeamine — Modern bookshop preview',
   robots: {index: false, follow: false},
 };
 
