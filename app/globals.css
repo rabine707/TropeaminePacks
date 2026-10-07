@@ -866,3 +866,17 @@ input[type="checkbox"]{accent-color:#ef4da8}
 @media(hover:none) and (pointer:coarse){
   .art-button:hover,.collector-dashboard-card:hover,.pack-display:hover .pack-art{transform:none}
 }
+
+
+/* Tap-first interaction contract: touch devices never depend on hover feedback. */
+@media (hover:none) and (pointer:coarse){
+  a:hover,button:hover,.nav-link:hover,.text-link:hover,.icon-btn:hover,.button:hover,
+  .card-tile:hover,.art-button:hover,.collector-dashboard-card:hover,.quest-card:hover,
+  .treatment-option:hover,.cinematic-card-stage:hover,.pack-display:hover .pack-art{
+    transform:none!important;
+  }
+  .card-tile:hover,.binder-grid .card-tile:hover,.quest-card:hover,.treatment-option:hover:not(:disabled){
+    box-shadow:inherit;
+  }
+  .physical-card{touch-action:manipulation}
+}

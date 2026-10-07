@@ -60,11 +60,19 @@ export default function TreatmentCard({treatment, label, children}: {
     tabIndex={0} role="group" aria-label={`${label}, ${treatment} finish. Drag sideways or use arrow keys to move the light.`}
     onPointerDown={event => {
       if (!event.isPrimary || event.button !== 0) return;
+      if (event.pointerType === 'touch') {
+        // Touch is tap-first: a single tap places the foil light immediately.
+        // No long press or pointer capture is required.
+        const box = event.currentTarget.getBoundingClientRect();
+        move((event.clientX-box.left)/box.width*2-1, (event.clientY-box.top)/box.height*2-1);
+        return;
+      }
       pointer.current = event.pointerId;
       event.currentTarget.setPointerCapture(event.pointerId);
       track(event);
     }}
     onPointerMove={track} onPointerUp={event => {
+      if (event.pointerType === 'touch') return;
       if (pointer.current !== event.pointerId) return;
       if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
       reset();
