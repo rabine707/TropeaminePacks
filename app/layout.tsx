@@ -1,4 +1,5 @@
 import './globals.css';
+import './seo.css';
 import './collection-locks.css';
 import './collection-fun.css';
 import './casual-guide.css';
@@ -15,7 +16,7 @@ import ReviewFixes from '@/components/review-fixes';
 import Link from 'next/link';
 import type { Viewport } from 'next';
 
-const siteUrl = 'https://tropeaminepacks.vercel.app';
+import {siteUrl} from '@/lib/seo';
 const shareImage = '/opengraph-image';
 
 export const viewport: Viewport = {

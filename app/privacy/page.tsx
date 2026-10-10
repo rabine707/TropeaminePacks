@@ -1,3 +1,5 @@
+export const metadata=canonicalMetadata('/privacy');
+import {canonicalMetadata} from '@/lib/seo';
 import {LegalShell} from '@/components/legal-shell';
 export default function Privacy(){return <LegalShell title="Privacy Policy" kicker="YOUR DATA">
 <p>This policy explains information handled by Tropeamine Packs and how it is used. A shorter summary is available on the <a href="/data">What Data We Collect</a> page.</p>

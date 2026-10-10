@@ -1,0 +1,7 @@
+.collection-introduction{max-width:960px;margin:32px auto;padding:24px;color:var(--text,#eee7ed);line-height:1.7;border-top:1px solid var(--border,#493044)}
+.collection-introduction h2{font-family:Georgia,serif;font-size:clamp(1.4rem,3vw,2rem);line-height:1.25}
+.collection-introduction p{max-width:75ch}
+.collection-introduction nav{display:flex;flex-wrap:wrap;gap:8px 24px}
+.collection-introduction nav a{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:4px}
+.collection-introduction nav a:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+@media(min-width:1000px){.collection-introduction{margin-left:calc(240px + 3vw);margin-right:3vw}}

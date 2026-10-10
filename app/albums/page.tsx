@@ -1,3 +1,4 @@
+import {canonicalMetadata} from '@/lib/seo';
 import Link from 'next/link';
 import {ArrowLeft,BookOpen,Check,Lock,Medal,Sparkles,Trophy} from 'lucide-react';
 import {createClient} from '@/lib/supabase/server';
@@ -34,7 +35,7 @@ function normalizeBookLabel(value:string){
   .trim();
 }
 
-export const metadata={
+export const metadata={...canonicalMetadata('/albums'),
  title:'Collection Albums · Tropeamine Packs',
  description:'Complete book and series albums, unlock badges, and chase master sets.'
 };

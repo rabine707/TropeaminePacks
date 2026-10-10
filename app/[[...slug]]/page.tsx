@@ -1,6 +1,14 @@
 import AccountCollectionShell from '@/components/account-collection-shell';
 import {createClient} from '@/lib/supabase/server';
 import {notFound,redirect} from 'next/navigation';
+import {canonicalMetadata, privateMetadata, publicPaths} from '@/lib/seo';
+import CollectionIntroduction from '@/components/collection-introduction';
+
+export async function generateMetadata({params}:{params:Promise<{slug?:string[]}>}) {
+ const {slug=[]}=await params;
+ const path=slug.length?`/${slug.join('/')}`:'/';
+ return publicPaths.some(publicPath=>publicPath===path)?canonicalMetadata(path):privateMetadata;
+}
 
 export default async function Page({params}:{params:Promise<{slug?:string[]}>}){
  const {slug=[]}=await params;
@@ -19,5 +27,5 @@ export default async function Page({params}:{params:Promise<{slug?:string[]}>}){
   notFound();
  }
 
- return <AccountCollectionShell isAdmin={isAdmin}/>;
+ return <><AccountCollectionShell isAdmin={isAdmin}/>{slug.length===0&&<CollectionIntroduction/>}</>;
 }
