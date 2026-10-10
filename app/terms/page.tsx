@@ -1,3 +1,5 @@
+export const metadata=canonicalMetadata('/terms');
+import {canonicalMetadata} from '@/lib/seo';
 import {LegalShell} from '@/components/legal-shell';
 export default function Terms(){return <LegalShell title="Terms of Service" kicker="THE FINE PRINT">
 <h2>1. About Tropeamine Packs</h2><p>Tropeamine Packs is an unofficial, fan-made digital collecting project. It is not affiliated with, endorsed by, sponsored by, or authorized by the authors, publishers, studios, licensors, or other rights holders associated with the books, characters, series, titles, trademarks, or other third-party intellectual property referenced on the site.</p>

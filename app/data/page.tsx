@@ -1,3 +1,5 @@
+export const metadata=canonicalMetadata('/data');
+import {canonicalMetadata} from '@/lib/seo';
 import {LegalShell} from '@/components/legal-shell';
 export default function Data(){return <LegalShell title="What Data We Collect" kicker="PLAIN-ENGLISH DATA GUIDE">
 <p>This is the quick version of what Tropeamine Packs currently knows about a signed-in collector and why.</p>
