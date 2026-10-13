@@ -39,7 +39,7 @@ function starterState(){
  };
 }
 
-function normalizedOwned(ids:string[]){return [...new Set(ids)].sort()}
+function normalizedOwned(ids:string[]){return [...new Set(ids)]}
 function one<T>(value:T|T[]|null|undefined):T|null{return Array.isArray(value)?(value[0]??null):(value??null)}
 function hueFor(value:string){const hues=['olive','wine','violet','blue','copper'];let hash=0;for(const ch of value)hash=(hash*31+ch.charCodeAt(0))>>>0;return hues[hash%hues.length]}
 function rarityLabel(value:string):Card['rarity']{
@@ -159,7 +159,7 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
   const [profileResult,walletResult,collectionResult]=await Promise.all([
    client.from('profiles').select('display_name,username,avatar_url,adult_content_enabled,adult_age_confirmed_at').eq('id',nextUser.id).maybeSingle(),
    client.from('wallets').select('ink,shards').eq('user_id',nextUser.id).maybeSingle(),
-   client.from('collection_items').select('card_id,quantity').eq('user_id',nextUser.id)
+   client.from('collection_items').select('card_id,quantity').eq('user_id',nextUser.id).order('acquired_at',{ascending:true})
   ]);
   if(!active)return;
   const cloudProfile=(profileResult.data??{display_name:null,username:null,avatar_url:null,adult_content_enabled:false,adult_age_confirmed_at:null}) as CloudProfile;

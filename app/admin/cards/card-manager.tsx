@@ -473,28 +473,28 @@ export default function CardManager({ email }: { email: string }) {
   const filteredSavedDrafts = savedDraftQueue.filter(row => queueFilter === 'all' || queueStatus(row).key === queueFilter)
   const totalQueue = preloadedQueue.length + savedDraftQueue.length
 
-  const inputStyle = { width: '100%', background: '#151914', border: '1px solid #3a4234', color: '#eeeede', borderRadius: 6, padding: '11px 12px' }
-  const labelStyle = { display: 'grid', gap: 6, fontSize: 12, color: '#aeb6a4' }
-  const artBoxStyle = { border: '1px solid #30362d', borderRadius: 8, background: '#151914', padding: 12, display: 'grid', gap: 10 }
+  const inputStyle = { width: '100%', background: 'var(--tp-raised)', border: '1px solid var(--tp-line)', color: 'var(--tp-text)', borderRadius: 6, padding: '11px 12px' }
+  const labelStyle = { display: 'grid', gap: 6, fontSize: 12, color: 'var(--tp-muted)' }
+  const artBoxStyle = { border: '1px solid var(--tp-line)', borderRadius: 8, background: 'var(--tp-raised)', padding: 12, display: 'grid', gap: 10 }
   const queueButtonStyle = { minHeight: 32, padding: '6px 10px', fontSize: 11 }
 
   return (
-    <main style={{ maxWidth: 1180, paddingTop: 36, paddingBottom: 60 }}>
+    <main className="admin-page" style={{ maxWidth: 1180, paddingTop: 36, paddingBottom: 60 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: 28 }}>
         <div>
           <p className="eyebrow">TROPEAMINE PACKS · ADMIN</p>
           <h1 style={{ marginBottom: 8 }}>Card Manager</h1>
           <p style={{ marginBottom: 0 }}>Create new cards or edit the live catalog without making duplicates.</p>
         </div>
-        <div style={{ textAlign: 'right', fontSize: 12, color: '#8f9888' }}><div>{email}</div><Link className="text-link" href="/">Back to site</Link></div>
+        <div style={{ textAlign: 'right', fontSize: 12, color: 'var(--tp-muted)' }}><div>{email}</div><Link className="text-link" href="/">Back to site</Link></div>
       </div>
 
-      <section style={{ border: '1px solid #3a4234', background: '#171b16', borderRadius: 10, padding: 18, marginBottom: 22 }}>
+      <section style={{ border: '1px solid var(--tp-line)', background: 'var(--tp-surface)', borderRadius: 10, padding: 18, marginBottom: 22 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'end', flexWrap: 'wrap' }}>
           <div>
             <p className="eyebrow" style={{ marginBottom: 5 }}>DRAFT QUEUE</p>
             <h2 style={{ fontSize: 23, margin: 0 }}>Cards waiting on art</h2>
-            <small style={{ color: '#8f9888' }}>{totalQueue} unfinished {totalQueue === 1 ? 'card' : 'cards'} · published cards disappear automatically</small>
+            <small style={{ color: 'var(--tp-muted)' }}>{totalQueue} unfinished {totalQueue === 1 ? 'card' : 'cards'} · published cards disappear automatically</small>
           </div>
           <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
             {(['all', 'needs-art', 'ready'] as QueueFilter[]).map(filter => (
@@ -507,7 +507,7 @@ export default function CardManager({ email }: { email: string }) {
         </div>
 
         {loading ? <p style={{ marginTop: 14 }}>Loading drafts…</p> : filteredPreloads.length === 0 && filteredSavedDrafts.length === 0 ? (
-          <div style={{ marginTop: 14, padding: 16, border: '1px dashed #3a4234', borderRadius: 8, color: '#8f9888', fontSize: 12 }}>
+          <div style={{ marginTop: 14, padding: 16, border: '1px dashed var(--tp-line)', borderRadius: 8, color: 'var(--tp-muted)', fontSize: 12 }}>
             {queueFilter === 'ready' ? 'No drafts currently have both images ready.' : 'Nothing in this draft view right now.'}
           </div>
         ) : (
@@ -516,11 +516,11 @@ export default function CardManager({ email }: { email: string }) {
               const status = queueStatus(row)
               const statusColor = status.key === 'ready' ? '#a8c99f' : '#d0bc78'
               return (
-                <div key={`saved-${row.id}`} style={{ border: '1px solid #30362d', borderRadius: 8, padding: '12px 13px', background: '#151914' }}>
+                <div key={`saved-${row.id}`} style={{ border: '1px solid var(--tp-line)', borderRadius: 8, padding: '12px 13px', background: 'var(--tp-raised)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                     <div style={{ minWidth: 220 }}>
-                      <strong style={{ display: 'block', fontFamily: 'Georgia, serif', fontSize: 17 }}>{row.characters?.name || 'Unnamed character'}</strong>
-                      <span style={{ display: 'block', color: '#919b89', fontSize: 11 }}>{row.characters?.series?.title || 'Series'} · {row.card_sets?.code || row.card_sets?.title || 'Set'} {row.number ? `· #${row.number}` : ''}</span>
+                      <strong style={{ display: 'block', fontFamily: 'DM Sans, Arial, sans-serif', fontSize: 17 }}>{row.characters?.name || 'Unnamed character'}</strong>
+                      <span style={{ display: 'block', color: 'var(--tp-muted)', fontSize: 11 }}>{row.characters?.series?.title || 'Series'} · {row.card_sets?.code || row.card_sets?.title || 'Set'} {row.number ? `· #${row.number}` : ''}</span>
                       <span style={{ display: 'block', color: statusColor, fontSize: 10, marginTop: 4 }}>{status.label}</span>
                     </div>
                     <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
@@ -532,11 +532,11 @@ export default function CardManager({ email }: { email: string }) {
               )
             })}
             {filteredPreloads.map(item => (
-              <div key={`preload-${item.characterName}`} style={{ border: '1px solid #30362d', borderRadius: 8, padding: '12px 13px', background: '#151914' }}>
+              <div key={`preload-${item.characterName}`} style={{ border: '1px solid var(--tp-line)', borderRadius: 8, padding: '12px 13px', background: 'var(--tp-raised)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                   <div style={{ minWidth: 220 }}>
                     <strong style={{ display: 'block', fontFamily: 'Georgia, serif', fontSize: 17 }}>{item.characterName}</strong>
-                    <span style={{ display: 'block', color: '#919b89', fontSize: 11 }}>{item.seriesTitle} · {item.setCode} {item.cardNumber ? `· #${item.cardNumber}` : ''}</span>
+                    <span style={{ display: 'block', color: 'var(--tp-muted)', fontSize: 11 }}>{item.seriesTitle} · {item.setCode} {item.cardNumber ? `· #${item.cardNumber}` : ''}</span>
                     <span style={{ display: 'block', color: '#d0bc78', fontSize: 10, marginTop: 4 }}>Needs front + back art · preloaded</span>
                   </div>
                   <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
@@ -552,7 +552,7 @@ export default function CardManager({ email }: { email: string }) {
 
       {editing && <div aria-hidden="true" onClick={busy ? undefined : loadSavedNewDraft} style={{ position: 'fixed', inset: 0, background: 'rgba(7,9,7,.78)', backdropFilter: 'blur(3px)', zIndex: 80 }} />}
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, .75fr)', gap: 24, alignItems: 'start' }}>
-        <form onSubmit={saveCard} style={editing ? { position: 'fixed', zIndex: 90, top: '4vh', left: '50%', transform: 'translateX(-50%)', width: 'min(920px, calc(100vw - 24px))', maxHeight: '92vh', overflowY: 'auto', border: '1px solid #81744d', background: '#191c18', borderRadius: 12, padding: 24, boxShadow: '0 24px 80px rgba(0,0,0,.55)' } : { border: '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 24 }}>
+        <form onSubmit={saveCard} style={editing ? { position: 'fixed', zIndex: 90, top: '4vh', left: '50%', transform: 'translateX(-50%)', width: 'min(920px, calc(100vw - 24px))', maxHeight: '92vh', overflowY: 'auto', border: '1px solid var(--tp-gold)', background: 'var(--tp-surface)', borderRadius: 12, padding: 24, boxShadow: '0 24px 80px rgba(0,0,0,.55)' } : { border: '1px solid var(--tp-line)', background: 'var(--tp-surface)', borderRadius: 10, padding: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 12 }}>
             <div>
               <p className="eyebrow" style={{ marginBottom: 7 }}>{editing ? (draft.published ? 'EDITING LIVE CARD' : 'EDITING DRAFT CARD') : 'NEW CATALOG ENTRY'}</p>
@@ -577,39 +577,39 @@ export default function CardManager({ email }: { email: string }) {
 
           <label style={{ ...labelStyle, marginTop: 14 }}>Description *<textarea style={{ ...inputStyle, minHeight: 110, resize: 'vertical' }} value={draft.description} onChange={e => update('description', e.target.value)} placeholder="Short card/character description" /></label>
 
-          <fieldset style={{ marginTop: 16, border: '1px solid #30362d', borderRadius: 8, padding: 14 }}>
+          <fieldset style={{ marginTop: 16, border: '1px solid var(--tp-line)', borderRadius: 8, padding: 14 }}>
             <legend style={{ padding: '0 7px', color: '#d0bc78', fontSize: 12 }}>Pack availability</legend>
-            <div style={{ color: '#8f9888', fontSize: 11, marginBottom: 10 }}>Choose every pack this card can appear in. Cards can belong to more than one pack.</div>
-            {packs.length === 0 ? <small style={{ color: '#8f9888' }}>No packs available.</small> : <div style={{ display: 'grid', gap: 8 }}>
+            <div style={{ color: 'var(--tp-muted)', fontSize: 11, marginBottom: 10 }}>Choose every pack this card can appear in. Cards can belong to more than one pack.</div>
+            {packs.length === 0 ? <small style={{ color: 'var(--tp-muted)' }}>No packs available.</small> : <div style={{ display: 'grid', gap: 8 }}>
               {packs.map(pack => <label key={pack.id} style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 12, color: '#c7cdbd' }}><input type="checkbox" checked={selectedPackIds.includes(pack.id)} onChange={e => togglePack(pack.id, e.target.checked)} />{pack.name}</label>)}
             </div>}
           </fieldset>
 
           <div style={{ marginTop: 18 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'end', marginBottom: 10 }}>
-              <div><strong style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 400 }}>Card art</strong><div style={{ color: '#8f9888', fontSize: 11 }}>JPG, PNG, or WebP · max 20 MB each</div></div>
+              <div><strong style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 400 }}>Card art</strong><div style={{ color: 'var(--tp-muted)', fontSize: 11 }}>JPG, PNG, or WebP · max 20 MB each</div></div>
               {(frontFile || backFile) && <button className="text-link" type="button" onClick={() => editing ? restoreExistingArt() : clearArt()} disabled={busy}>{editing ? 'Undo art changes' : 'Clear art'}</button>}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <label style={artBoxStyle}>
                 <span style={{ fontSize: 12, color: '#c7cdbd' }}>Front card art</span>
-                {frontPreview ? <img src={frontPreview} alt="Front card preview" style={{ width: '100%', height: 220, objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ height: 220, border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No front image yet</div>}
+                {frontPreview ? <img src={frontPreview} alt="Front card preview" style={{ width: '100%', height: 220, objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ height: 220, border: '1px dashed var(--tp-line)', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No front image yet</div>}
                 <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => chooseArt('front', e)} disabled={busy} />
                 <small style={{ color: '#889181' }}>{frontFile ? frontFile.name : editing?.assets.front ? 'Existing front art — choose a file to replace it' : 'Choose front art'}</small>
               </label>
               <label style={artBoxStyle}>
                 <span style={{ fontSize: 12, color: '#c7cdbd' }}>Back / profile art</span>
-                {backPreview ? <img src={backPreview} alt="Back card preview" style={{ width: '100%', height: 220, objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ height: 220, border: '1px dashed #3a4234', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No back image yet</div>}
+                {backPreview ? <img src={backPreview} alt="Back card preview" style={{ width: '100%', height: 220, objectFit: 'contain', borderRadius: 6, background: '#0f120f' }} /> : <div style={{ height: 220, border: '1px dashed var(--tp-line)', borderRadius: 6, display: 'grid', placeItems: 'center', color: '#707a6b', fontSize: 12 }}>No back image yet</div>}
                 <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => chooseArt('back', e)} disabled={busy} />
                 <small style={{ color: '#889181' }}>{backFile ? backFile.name : editing?.assets.back ? 'Existing back art — choose a file to replace it' : 'Choose back art'}</small>
               </label>
             </div>
           </div>
 
-          <label style={{ display: 'flex', gap: 9, alignItems: 'center', marginTop: 16, fontSize: 12, color: '#aeb6a4' }}>
+          <label style={{ display: 'flex', gap: 9, alignItems: 'center', marginTop: 16, fontSize: 12, color: 'var(--tp-muted)' }}>
             <input type="checkbox" checked={draft.published} onChange={e => update('published', e.target.checked)} /> Publish immediately
           </label>
-          {!draft.published && editing && <small style={{ display: 'block', color: '#8f9888', marginTop: 6 }}>Leave this off while art is unfinished. Turn it on when the card is complete; after saving, it will disappear from the Draft Queue.</small>}
+          {!draft.published && editing && <small style={{ display: 'block', color: 'var(--tp-muted)', marginTop: 6 }}>Leave this off while art is unfinished. Turn it on when the card is complete; after saving, it will disappear from the Draft Queue.</small>}
 
           {error && <p style={{ color: '#e6a6a6', marginTop: 16, marginBottom: 0 }}>{error}</p>}
           {message && <p style={{ color: '#b9d8ae', marginTop: 16, marginBottom: 0 }}>{message}</p>}
@@ -620,7 +620,7 @@ export default function CardManager({ email }: { email: string }) {
           </div>
         </form>
 
-        <section style={{ border: '1px solid #30362d', background: '#191c18', borderRadius: 10, padding: 20 }}>
+        <section style={{ border: '1px solid var(--tp-line)', background: 'var(--tp-surface)', borderRadius: 10, padding: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 16 }}>
             <div><p className="eyebrow" style={{ marginBottom: 6 }}>CATALOG</p><h2 style={{ fontSize: 24, margin: 0 }}>Recent cards</h2></div>
             <button className="button outline" type="button" onClick={() => void refreshCards()} disabled={loading || busy} style={{ minHeight: 34, padding: '7px 10px' }}>Refresh</button>
@@ -628,11 +628,11 @@ export default function CardManager({ email }: { email: string }) {
           {loading ? <p>Loading catalog…</p> : rows.length === 0 ? <p>No cards yet.</p> : (
             <div style={{ display: 'grid', gap: 9 }}>
               {rows.map(row => (
-                <div key={row.id} style={{ border: editing?.cardId === row.id ? '1px solid #81744d' : '1px solid #2d342a', borderRadius: 7, padding: '11px 12px', background: '#151914' }}>
+                <div key={row.id} style={{ border: editing?.cardId === row.id ? '1px solid var(--tp-gold)' : '1px solid var(--tp-line)', borderRadius: 7, padding: '11px 12px', background: 'var(--tp-raised)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'start' }}>
                     <div>
                       <strong style={{ display: 'block', fontFamily: 'Georgia, serif', fontSize: 17 }}>{row.characters?.name || 'Unnamed character'}</strong>
-                      <span style={{ display: 'block', color: '#919b89', fontSize: 11 }}>{row.characters?.series?.title || 'Series'} · {row.card_sets?.code || row.card_sets?.title || 'Set'} {row.number ? `· #${row.number}` : ''}</span>
+                      <span style={{ display: 'block', color: 'var(--tp-muted)', fontSize: 11 }}>{row.characters?.series?.title || 'Series'} · {row.card_sets?.code || row.card_sets?.title || 'Set'} {row.number ? `· #${row.number}` : ''}</span>
                       <span style={{ display: 'block', color: row.published ? '#a8c99f' : '#c9bc91', fontSize: 10, marginTop: 4 }}>{row.published ? 'Published' : queueStatus(row).label}{row.variants?.[0]?.rarity ? ` · ${row.variants[0].rarity}` : ''}</span>
                     </div>
                     <button className="button outline" type="button" disabled={busy} onClick={() => void editCard(row.id)} style={{ minHeight: 32, padding: '6px 10px', fontSize: 11 }}>{editing?.cardId === row.id ? 'Editing' : 'Edit'}</button>

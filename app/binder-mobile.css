@@ -1,0 +1,67 @@
+/* Binder-only mobile refinement. Keep the shared collection renderer and state. */
+.binder-status-filter { display: none; }
+@media (max-width: 600px) {
+  .binder-mobile .page-heading {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 18px 0 16px;
+    padding: 0;
+  }
+  .binder-mobile .page-heading > div { grid-column: 1 / -1; }
+  .binder-mobile .page-heading .eyebrow { margin-bottom: 8px; }
+  .binder-mobile .page-heading h1 { margin-bottom: 8px; }
+  /* These same totals remain immediately below in the three edition counters. */
+  .binder-mobile .page-heading > div > p:last-child:not(.eyebrow) { display: none; }
+  .binder-mobile .page-heading > .button {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px;
+    font-size: 12px;
+  }
+  .binder-mobile .page-heading .fresh-pulls-pill {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: 6px 12px;
+  }
+  .binder-mobile .binder-view-switch { margin: 0 0 12px; }
+  .binder-mobile .binder-view-switch button { min-height: 44px; }
+  .binder-mobile .binder-edition-stats { gap: 8px; margin: 0 0 12px; }
+  .binder-mobile .binder-edition-stats > span { min-width: 0; padding: 10px 8px; }
+  .binder-mobile .binder-tools {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 8px;
+    margin: 0 0 12px;
+  }
+  .binder-mobile .binder-tools .tabs {
+    /* Retire the legacy mobile display:flex!important rule. */
+    display: none !important;
+  }
+  .binder-mobile .binder-status-filter { display: grid; gap: 4px; min-width: 0; }
+  .binder-mobile .binder-status-filter > span { font-size: 12px; color: var(--muted); }
+  .binder-mobile .binder-status-filter select {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+  }
+  .binder-mobile .binder-foil-toggle {
+    justify-self: end;
+    align-self: end;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .binder-mobile .filters { margin: 0 0 14px; }
+  .binder-mobile .binder-frame { margin-top: 0; }
+  .binder-mobile .binder-label { padding: 10px 0; }
+}

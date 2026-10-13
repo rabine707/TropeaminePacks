@@ -41,6 +41,8 @@ export default function CollectionFun(){
   }
 
   function matchCardFromTile(tile:Element,cards:LooseCard[]){
+   const id=tile.getAttribute('data-card-id');
+   if(id)return cards.find(card=>cardId(card)===id);
    const name=tile.querySelector('h3')?.textContent?.trim()||'';
    const variant=tile.querySelector('.tile-info p')?.textContent?.trim()||'';
    return cards.find(card=>cardName(card)===name&&(!variant||cardVariant(card)===variant))||cards.find(card=>cardName(card)===name);

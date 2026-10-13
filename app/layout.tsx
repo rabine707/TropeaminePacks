@@ -6,6 +6,8 @@ import './theme-overrides.css';
 import './showcase-entrypoints.css';
 import './homepage-density.css';
 import './review-fixes.css';
+import './binder-mobile.css';
+import './redesign-v1.css';
 import CollectionFun from '@/components/collection-fun';
 import CasualGuide from '@/components/casual-guide';
 import RevealStabilizer from '@/components/reveal-stabilizer';
