@@ -11,3 +11,6 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 .vercel/
+
+# Local Supabase CLI metadata
+supabase/.temp/

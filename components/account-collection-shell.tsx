@@ -35,7 +35,7 @@ type CloudWallet={ink:number;shards:number};
 function starterState(){
  return {
   wallet:{ink:350,shards:20,owned:['war-1','war-2','war-3']},
-  favorites:[],cards:initialCards,requests:initialRequests,votes:[],claimed:[],discovered:false,opened:0,reports:[],adultOptIn:false,theme:'Midnight',poll:'',questTitle:'Who should get the next foil edition?',featured:'Warlock'
+  favorites:[],cards:initialCards,requests:initialRequests,votes:[],claimed:[],discovered:false,opened:0,reports:[],adultOptIn:false,theme:'Midnight',poll:'',questTitle:'',featured:'Warlock'
  };
 }
 
@@ -177,6 +177,8 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
   try{localStorage.setItem(LOCAL_KEY,JSON.stringify(merged))}catch{}
   setHydrated(true);
  })();return()=>{active=false}},[client]);
+
+ useEffect(()=>{const refresh=()=>{if(!user)return;void client.from('wallets').select('ink,shards').eq('user_id',user.id).maybeSingle().then(({data})=>{if(data)setWallet({ink:Number(data.ink),shards:Number(data.shards)})})};window.addEventListener('tropeamine-wallet',refresh);window.addEventListener('focus',refresh);return()=>{window.removeEventListener('tropeamine-wallet',refresh);window.removeEventListener('focus',refresh)}},[client,user]);
 
  const metaName=String(user?.user_metadata?.full_name||user?.user_metadata?.name||'').trim();
  const savedName=(profile?.display_name||'').trim();

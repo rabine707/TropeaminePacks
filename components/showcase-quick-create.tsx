@@ -1,4 +1,6 @@
 'use client';
+import {communityAction} from '@/lib/community-client';
+import {exportWithReward,downloadPng} from '@/lib/studio-export';
 
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Check,Download,Share2,Sparkles,WandSparkles} from 'lucide-react';
@@ -285,7 +287,12 @@ export default function ShowcaseQuickCreate(){
  }
 
  function canvasBlob(){return new Promise<Blob|null>(resolve=>{const canvas=canvasRef.current;if(!canvas){resolve(null);return}canvas.toBlob(resolve,'image/png')})}
- async function savePng(){const blob=await canvasBlob();if(!blob)return;const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`tropeamine-showcase-${Date.now()}.png`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice(`High-resolution PNG saved at ${dims.w*dims.scale} × ${dims.h*dims.scale}.`)}
+ async function savePng(){try{
+ await renderCanvas();
+ const result=await exportWithReward(async()=>{const blob=await canvasBlob();if(!blob)throw new Error('Export failed');return blob},downloadPng,()=>communityAction('export_begin',{format,cards:chosen.map(c=>c.id)}),token=>communityAction('export_complete',{token}));
+ setNotice(`High-resolution PNG handed to your browser.${result.awarded?' +100 Ink added!':result.rewardError?' Sign in or try again later for mission credit.':''} Tag @tropeamine.shop if you share.`);
+ }catch{setNotice('The PNG could not be exported. Please try again.')}}
+
  async function shareShowcase(){const blob=await canvasBlob();if(!blob)return;const file=new File([blob],'tropeamine-showcase.png',{type:'image/png'});try{if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:'My Tropeamine Packs Showcase',files:[file]});setNotice('Shared ✨');return}}catch(err){if((err as DOMException)?.name==='AbortError')return}await savePng();setNotice('Native sharing is not available here, so the high-resolution PNG was saved instead.')}
 
  function editInStudio(){

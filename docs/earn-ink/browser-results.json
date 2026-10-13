@@ -1,0 +1,19 @@
+{
+  "viewport": {
+    "viewport": 390,
+    "scroll": 390
+  },
+  "errors": [],
+  "checks": [
+    "daily claim",
+    "existing first/six milestones",
+    "private character submission",
+    "approved Requests rendering",
+    "poll reward and vote change",
+    "admin inbox authorization",
+    "Story 1080×1920 export",
+    "Square 1080×1080 export",
+    "Landscape 1200×630 export",
+    "first download +100 Ink and repeat downloads +0"
+  ]
+}

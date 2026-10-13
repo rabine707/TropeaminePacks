@@ -1,0 +1,104 @@
+.community-missions section {
+  margin-block: 30px;
+}
+.community-missions .form {
+  margin-top: 20px;
+  max-width: 720px;
+}
+.community-missions .button-row {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.community-missions .quest-card small {
+  display: block;
+  color: var(--muted);
+  margin: 12px 0;
+}
+.community-missions .mission-notice {
+  border-color: #9d7650;
+}
+.community-missions .showcase-slot-editor {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+.community-missions label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.community-missions input,
+.community-missions select,
+.community-missions textarea {
+  width: 100%;
+  min-width: 0;
+}
+.community-missions li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-block: 7px;
+  overflow-wrap: anywhere;
+}
+.community-missions ul {
+  list-style: none;
+  padding: 0;
+}
+.community-missions .request-book {
+  flex-wrap: wrap;
+}
+.community-admin {
+  max-width: 1180px;
+  margin: auto;
+  padding: 32px;
+}
+.submission-notes {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.community-missions .suggestion-matches {
+  border-left: 2px solid #ad8566;
+  padding-left: 16px;
+}
+.community-missions summary {
+  cursor: pointer;
+}
+.community-missions .quest-action {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.community-missions .character-votes > div {
+  flex-wrap: wrap;
+}
+@media (max-width: 650px) {
+  .community-admin {
+    padding: 20px 16px;
+  }
+  .community-missions .showcase-slot-editor {
+    grid-template-columns: 1fr 1fr;
+  }
+  .community-missions .section-title {
+    align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+  }
+  .community-missions .button-row .button {
+    white-space: normal;
+    min-height: 44px;
+  }
+  .community-missions .quest-grid {
+    grid-template-columns: 1fr;
+  }
+  .community-missions h1 {
+    font-size: clamp(32px, 9vw, 48px);
+  }
+  .community-missions .panel {
+    padding: 20px;
+  }
+  .community-missions input,
+  .community-missions textarea,
+  .community-missions select {
+    font-size: 16px;
+  }
+}

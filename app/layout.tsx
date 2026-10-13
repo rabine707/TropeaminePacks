@@ -1,4 +1,5 @@
 import './globals.css';
+import './community-missions.css';
 import './collection-locks.css';
 import './collection-fun.css';
 import './casual-guide.css';
