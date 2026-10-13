@@ -43,6 +43,7 @@ body { background:var(--tp-background); color:var(--tp-text); }
 .app .panel,.app .quest-card,.app .request-card,.app .binder-completion-card,.app .binder-series-rail button { background:var(--tp-surface); border-color:var(--tp-line); border-radius:14px; }
 .app .modal { background:var(--tp-background); color:var(--tp-text); border-color:var(--tp-line); border-radius:20px; }
 .app .rarity { color:var(--tp-gold); }
+.app .binder-craft-button { width:100%; margin-top:12px; padding:8px; font-size:12px; line-height:1.4; white-space:normal; }
 .app .binder-foil-toggle { background:var(--tp-gold); color:var(--tp-ink); border-color:var(--tp-gold); }
 .app .binder-foil-toggle[aria-pressed=false] { background:var(--tp-raised); color:var(--tp-text); border-color:var(--tp-line); }
 .app .bottom-nav { background:var(--tp-surface); border-color:var(--tp-line); }

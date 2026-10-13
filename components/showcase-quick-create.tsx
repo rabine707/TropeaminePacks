@@ -3,6 +3,7 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Check,Download,Share2,Sparkles,WandSparkles} from 'lucide-react';
 import type {Card} from '@/lib/catalog';
+import {ownedCharacterIds} from '@/lib/binder';
 import {createClient} from '@/lib/supabase/client';
 
 type TemplateId='top6'|'series'|'recent'|'grid';
@@ -104,7 +105,7 @@ export default function ShowcaseQuickCreate(){
    if(raw){
     const parsed=JSON.parse(raw) as SavedState;
     setCards(Array.isArray(parsed.cards)?parsed.cards:[]);
-    setOwned(Array.isArray(parsed.wallet?.owned)?parsed.wallet!.owned!.filter(id=>!id.includes(':')):[]);
+    setOwned(Array.isArray(parsed.wallet?.owned)?ownedCharacterIds(parsed.wallet!.owned!):[]);
    }
   }catch{}
   setLocalDataReady(true);

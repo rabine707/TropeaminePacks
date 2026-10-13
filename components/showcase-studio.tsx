@@ -3,6 +3,7 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Copy,Download,Image as ImageIcon,Layers,Lock,Plus,RotateCcw,RotateCw,Sparkles,Trash2,Type,Undo2,Unlock} from 'lucide-react';
 import type {Card} from '@/lib/catalog';
+import {ownedCharacterIds} from '@/lib/binder';
 
 type CanvasPreset='story'|'square'|'landscape';
 type BgPreset='plum'|'midnight'|'paper'|'rose';
@@ -45,7 +46,7 @@ export default function ShowcaseStudio(){
  useEffect(()=>{
   try{
    const raw=localStorage.getItem('tropeamine-packs-v1');
-   if(raw){const parsed=JSON.parse(raw) as SavedState;setCards(Array.isArray(parsed.cards)?parsed.cards:[]);setOwned(Array.isArray(parsed.wallet?.owned)?parsed.wallet!.owned!.filter(id=>!id.includes(':')):[]);setAdultOptIn(Boolean(parsed.adultOptIn))}
+   if(raw){const parsed=JSON.parse(raw) as SavedState;setCards(Array.isArray(parsed.cards)?parsed.cards:[]);setOwned(Array.isArray(parsed.wallet?.owned)?ownedCharacterIds(parsed.wallet!.owned!):[]);setAdultOptIn(Boolean(parsed.adultOptIn))}
    const draftRaw=localStorage.getItem(DRAFT_KEY);
    if(draftRaw){const draft=JSON.parse(draftRaw) as Draft;if(draft?.preset&&draft?.bg&&Array.isArray(draft.elements)){setPreset(draft.preset);setBg(draft.bg);setElements(draft.elements);setSnap(draft.snap!==false);setNotice('Your last showcase draft was restored.')}}
   }catch{}
