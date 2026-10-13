@@ -1,7 +1,8 @@
+import {pageMetadata} from '@/lib/site-metadata';
 import Link from 'next/link';
 import './showcase.css';
 
-export const metadata={title:'Create a Showcase — Tropeamine Packs'};
+export const metadata=pageMetadata('Create a Showcase','Turn the cards you own into something worth sharing. Choose Quick Create or Showcase Studio.','/showcase',true);
 
 export default function ShowcaseHomePage(){
  return <main className="showcase-hub-page">
