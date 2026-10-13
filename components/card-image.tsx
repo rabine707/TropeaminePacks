@@ -17,7 +17,8 @@ export default function CardImage({src, alt, original = false, enabled = true}: 
   // wider source canvas, and the cover crop reads too zoomed-in on collection tiles,
   // so preserve the full composition for Ezra while Felicity keeps the cover crop.
   const isEzraFront = /^Ezra\b.*\bcard artwork$/i.test(alt);
-  const fillShell = !isEzraFront && (/\bcard artwork$/i.test(alt) || /^Felicity\b/i.test(alt));
+  // Dossier backs must remain fully visible, including Felicity's wider back.
+  const fillShell = !isEzraFront && /\bcard artwork$/i.test(alt);
   const fit = fillShell ? 'cover' : 'contain';
 
   useEffect(() => {

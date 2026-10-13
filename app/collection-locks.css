@@ -1,13 +1,13 @@
-.art-button:not(:has(.owned-badge)){
+.art-button:not(:has(.owned-badge)):not([data-public-preview=true]){
   cursor:not-allowed;
   pointer-events:none;
   transform:none!important;
 }
-.art-button:not(:has(.owned-badge)) .card-art{
+.art-button:not(:has(.owned-badge)):not([data-public-preview=true]) .card-art{
   filter:grayscale(1) brightness(.22) contrast(.82);
   opacity:.96;
 }
-.art-button:not(:has(.owned-badge))::after{
+.art-button:not(:has(.owned-badge)):not([data-public-preview=true])::after{
   content:'';
   position:absolute;
   inset:4%;
@@ -19,7 +19,7 @@
   border:1px solid #d85a9c66;
   box-shadow:inset 0 0 65px #000f;
 }
-.art-button:not(:has(.owned-badge))::before{
+.art-button:not(:has(.owned-badge)):not([data-public-preview=true])::before{
   content:'UNDISCOVERED';
   position:absolute;
   left:50%;
@@ -37,8 +37,8 @@
   white-space:nowrap;
   box-shadow:0 4px 18px #000a;
 }
-.art-button:not(:has(.owned-badge)):hover{transform:none}
+.art-button:not(:has(.owned-badge)):not([data-public-preview=true]):hover{transform:none}
 @media (max-width:600px){
-  .art-button:not(:has(.owned-badge))::after{inset:3%;background-size:54% auto}
-  .art-button:not(:has(.owned-badge))::before{bottom:9%;font-size:8px;letter-spacing:1px;padding:4px 8px}
+  .art-button:not(:has(.owned-badge)):not([data-public-preview=true])::after{inset:3%;background-size:54% auto}
+  .art-button:not(:has(.owned-badge)):not([data-public-preview=true])::before{bottom:9%;font-size:8px;letter-spacing:1px;padding:4px 8px}
 }
