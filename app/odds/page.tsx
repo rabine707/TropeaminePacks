@@ -1,3 +1,4 @@
+import {pageMetadata} from '@/lib/site-metadata';
 import Link from 'next/link';
 import {ArrowLeft,BookOpen,Diamond,Info,Layers,Sparkles} from 'lucide-react';
 import {createClient} from '@/lib/supabase/server';
@@ -9,10 +10,7 @@ type PackOdds={id:string;slug:string;name:string;cards:LiveCard[]};
 function one<T>(value:T|T[]|null|undefined):T|null{return Array.isArray(value)?(value[0]??null):(value??null)}
 function formatPct(value:number){return `${(value*100).toFixed(value<.1?2:1)}%`}
 
-export const metadata={
- title:'Pack Odds · Tropeamine Packs',
- description:'See the live pack pools and current Tropeamine Packs pull odds.'
-};
+export const metadata=pageMetadata('Pack Odds','See the live card pools and current pull odds for Tropeamine digital packs.','/odds',true);
 
 export default async function OddsPage(){
  const supabase=await createClient();

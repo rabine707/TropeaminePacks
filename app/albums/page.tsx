@@ -1,3 +1,4 @@
+import {pageMetadata} from '@/lib/site-metadata';
 import Link from 'next/link';
 import {ArrowLeft,BookOpen,Check,Lock,Medal,Sparkles,Trophy} from 'lucide-react';
 import {createClient} from '@/lib/supabase/server';
@@ -34,10 +35,7 @@ function normalizeBookLabel(value:string){
   .trim();
 }
 
-export const metadata={
- title:'Collection Albums · Tropeamine Packs',
- description:'Complete book and series albums, unlock badges, and chase master sets.'
-};
+export const metadata=pageMetadata('Collection Albums','Explore book and series albums and track your character collection.','/albums',true);
 
 export default async function AlbumsPage(){
  const supabase=await createClient();

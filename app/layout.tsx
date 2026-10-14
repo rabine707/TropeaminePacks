@@ -1,3 +1,4 @@
+import './fonts.css';
 import './globals.css';
 import './collection-locks.css';
 import './collection-fun.css';
@@ -17,7 +18,8 @@ import ReviewFixes from '@/components/review-fixes';
 import Link from 'next/link';
 import type { Viewport } from 'next';
 
-const siteUrl = 'https://tropeaminepacks.vercel.app';
+import {SITE_URL,SITE_DESCRIPTION} from '@/lib/site-metadata';
+const siteUrl = SITE_URL;
 const shareImage = '/opengraph-image';
 
 export const viewport: Viewport = {
@@ -31,10 +33,10 @@ export const metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Tropeamine Packs — A shelf beyond the story',
   applicationName: 'Tropeamine Packs',
-  description: 'Collect the characters you love. Open packs, complete your binder, and shape the next chapter.',
+  description: SITE_DESCRIPTION,
   openGraph: {
     title: 'Tropeamine Packs',
-    description: 'Collect the characters you love. Open packs, complete your binder, and shape the next chapter.',
+    description: SITE_DESCRIPTION,
     url: '/',
     type: 'website',
     siteName: 'Tropeamine Packs',
@@ -49,10 +51,10 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Tropeamine Packs',
-    description: 'Collect the characters you love. Open packs, complete your binder, and shape the next chapter.',
+    description: SITE_DESCRIPTION,
     images: [shareImage],
   },
-  icons: { icon: '/icon' },
+  icons: { icon: '/icon', apple:'/apple-icon' },
 };
 
 export default function Layout({children}:{children:React.ReactNode}) {

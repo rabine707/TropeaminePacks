@@ -1,0 +1,15 @@
+{
+  "checkedRoutes": 10,
+  "googleFontRequests": 0,
+  "localFonts": [
+    "/fonts/dm-sans-latin-wght-normal.woff2",
+    "/fonts/manrope-latin-wght-normal.woff2"
+  ],
+  "mobile": {
+    "viewport": 390,
+    "document": 390
+  },
+  "appleIcon": "180×180 PNG",
+  "sitemap": "public routes and published series; no private account/editor routes",
+  "pageErrors": []
+}

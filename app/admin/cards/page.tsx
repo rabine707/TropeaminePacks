@@ -1,8 +1,10 @@
+import {pageMetadata} from '@/lib/site-metadata';
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import CardManager from './card-manager'
 
+export const metadata=pageMetadata('Card manager','Manage published and draft Tropeamine character cards.','/admin/cards',false);
 export default async function AdminCardsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -1,8 +1,9 @@
+import {pageMetadata} from '@/lib/site-metadata';
 import Link from 'next/link';
 import UpdatePasswordForm from '@/components/update-password-form';
 import {createClient} from '@/lib/supabase/server';
 
-export const metadata={title:'Update password · Tropeamine Packs',robots:{index:false,follow:false}};
+export const metadata=pageMetadata('Update password','Choose a new password for your Tropeamine account.','/account/update-password',false);
 
 export default async function UpdatePasswordPage() {
   const supabase=await createClient();

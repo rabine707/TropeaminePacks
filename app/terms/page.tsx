@@ -1,4 +1,6 @@
+import {pageMetadata} from '@/lib/site-metadata';
 import {LegalShell} from '@/components/legal-shell';
+export const metadata=pageMetadata('Terms of Service','Read the terms for Tropeamine Packs accounts, fan-made character artwork, and virtual Ink, Shards, and cards.','/terms',true);
 export default function Terms(){return <LegalShell title="Terms of Service" kicker="THE FINE PRINT">
 <h2>1. About Tropeamine Packs</h2><p>Tropeamine Packs is an unofficial, fan-made digital collecting project. It is not affiliated with, endorsed by, sponsored by, or authorized by the authors, publishers, studios, licensors, or other rights holders associated with the books, characters, series, titles, trademarks, or other third-party intellectual property referenced on the site.</p>
 <h2>2. Fan art and intellectual property</h2><p>Character cards and artwork on Tropeamine Packs are unofficial fan interpretations created for this project and are not official depictions or licensed artwork unless a specific item expressly says otherwise. Tropeamine Packs does not claim ownership of the underlying third-party characters, stories, series, titles, trademarks, or other intellectual property. Those rights remain with their respective owners. References to third-party works do not imply permission, sponsorship, endorsement, or affiliation.</p>
