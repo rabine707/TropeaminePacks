@@ -1,8 +1,9 @@
 'use client';
 
 import {useEffect,useMemo,useState} from 'react';
-import {CheckCircle2,Diamond,Droplets,LogOut,Moon} from 'lucide-react';
+import {CheckCircle2,Diamond,Droplets,LogOut} from 'lucide-react';
 import type {User} from '@supabase/supabase-js';
+import Link from 'next/link';
 import CollectionApp from '@/components/collection-app';
 import {initialCards,initialRequests,type Card} from '@/lib/catalog';
 import {createClient} from '@/lib/supabase/client';
@@ -136,7 +137,6 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
  const [wallet,setWallet]=useState<CloudWallet|null>(null);
  const [editingAccount,setEditingAccount]=useState(false);
  const [accountMessage,setAccountMessage]=useState('');
- const [matureBusy,setMatureBusy]=useState(false);
  const client=useMemo(()=>createClient(),[]);
 
  useEffect(()=>{setLoadingPraise(LOADING_PRAISE[Math.floor(Math.random()*LOADING_PRAISE.length)])},[]);
@@ -164,7 +164,7 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
   if(!active)return;
   const cloudProfile=(profileResult.data??{display_name:null,username:null,avatar_url:null,adult_content_enabled:false,adult_age_confirmed_at:null}) as CloudProfile;
   setProfile(cloudProfile);
-  const allowAdult=Boolean(cloudProfile.adult_content_enabled&&cloudProfile.adult_age_confirmed_at);
+  const allowAdult=false; // Non-explicit beta, regardless of an older mature-content preference.
   const liveCardsResult=await loadLiveCards(client,allowAdult).then(cards=>({cards,error:null as Error|null})).catch(error=>({cards:[] as Card[],error:error instanceof Error?error:new Error('Catalog unavailable')}));
   if(!active)return;
   if(liveCardsResult.cards.length)local={...local,cards:liveCardsResult.cards};
@@ -185,7 +185,6 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
  const accountName=(savedName&&savedName!=='Collector'?savedName:metaName)||savedName||user?.email?.split('@')[0]||'Reader';
  const avatar=profile?.avatar_url||String(user?.user_metadata?.avatar_url||user?.user_metadata?.picture||'');
  const initials=accountName.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('').toUpperCase()||'R';
- const matureEnabled=Boolean(profile?.adult_content_enabled&&profile?.adult_age_confirmed_at);
 
  async function saveAccount(e:React.FormEvent<HTMLFormElement>){
   e.preventDefault();if(!user)return;
@@ -196,23 +195,6 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
   const {data,error}=await client.from('profiles').update({display_name,username,updated_at:new Date().toISOString()}).eq('id',user.id).select('display_name,username,avatar_url,adult_content_enabled,adult_age_confirmed_at').single();
   if(error){setAccountMessage(error.code==='23505'?'That username is already taken.':'Could not save account settings.');return}
   setProfile(data as CloudProfile);setAccountMessage('Saved');setEditingAccount(false);
- }
-
- async function setMatureContent(enabled:boolean){
-  if(!user||matureBusy)return;
-  if(enabled&&!profile?.adult_age_confirmed_at){
-   const confirmed=window.confirm('Mature Content (18+) may include nudity, sexual themes, and other adult material. By enabling this setting, you confirm that you are 18 years of age or older.');
-   if(!confirmed)return;
-  }
-  setMatureBusy(true);setAccountMessage('Saving content preference…');
-  const confirmedAt=enabled?(profile?.adult_age_confirmed_at||new Date().toISOString()):profile?.adult_age_confirmed_at??null;
-  const {data,error}=await client.from('profiles').update({adult_content_enabled:enabled,adult_age_confirmed_at:confirmedAt,updated_at:new Date().toISOString()}).eq('id',user.id).select('display_name,username,avatar_url,adult_content_enabled,adult_age_confirmed_at').single();
-  if(error){setAccountMessage('Could not save Mature Content preference.');setMatureBusy(false);return}
-  setProfile(data as CloudProfile);
-  writeLocalAdultPreference(enabled);
-  setAccountMessage(enabled?'Mature Content enabled for this account.':'Mature Content disabled.');
-  setMatureBusy(false);
-  window.location.reload();
  }
 
  async function linkGoogle(){setAccountMessage('Opening Google…');const {error}=await client.auth.linkIdentity({provider:'google',options:{redirectTo:window.location.href}});if(error)setAccountMessage(error.message)}
@@ -228,11 +210,8 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
     <div className="cloud-wallet"><span><Droplets size={15}/><strong>{wallet?.ink.toLocaleString()??'—'}</strong><small>Ink</small></span><span><Diamond size={15}/><strong>{wallet?.shards.toLocaleString()??'—'}</strong><small>Shards</small></span></div>
     <div className="cloud-sync"><CheckCircle2 size={14}/> Binder synced to cloud</div>
     {profile?.username&&<small className="cloud-username">@{profile.username}</small>}
-    <div className="cloud-mature-setting">
-     <div><Moon size={15}/><span><strong>Mature Content (18+)</strong><small>Show adult-themed card editions on this account.</small></span></div>
-     <button type="button" className={matureEnabled?'is-on':''} disabled={matureBusy} onClick={()=>void setMatureContent(!matureEnabled)} aria-pressed={matureEnabled}>{matureEnabled?'ON':'OFF'}</button>
-    </div>
-    {profile?.adult_age_confirmed_at&&<small className="cloud-mature-note">Age confirmation saved to this account. You can turn Mature Content off at any time.</small>}
+    <p className="cloud-mature-note">Non-explicit beta · accounts 13+. Explicit editions are unavailable.</p>
+    <Link href="/account/privacy" className="text-link">Privacy & account</Link>
     {editingAccount?<form className="cloud-account-form" onSubmit={saveAccount}><label>Display name<input name="display_name" defaultValue={accountName} maxLength={80} required/></label><label>Username<input name="username" defaultValue={profile?.username||''} placeholder="your_username" minLength={3} maxLength={30} pattern="[a-zA-Z0-9_]+" required/></label><small>Usernames are public-facing. Your Google email stays private.</small><div><button type="submit">Save settings</button><button type="button" onClick={()=>setEditingAccount(false)}>Cancel</button></div></form>:<button onClick={()=>{setEditingAccount(true);setAccountMessage('')}}>Account settings</button>}
     {accountMessage&&<small className="cloud-account-message">{accountMessage}</small>}<div className="cloud-identities"><small>SIGN-IN METHODS</small><span><CheckCircle2 size={13}/> Email {user.email?'connected':'unavailable'}</span><span>{identities.includes('google')?<><CheckCircle2 size={13}/> Google linked</>:<button type="button" onClick={linkGoogle}>Link Google account</button>}</span></div>
     <small className="cloud-wallet-note">Your email is private. Linked sign-in methods access the same Tropeamine collection.</small>

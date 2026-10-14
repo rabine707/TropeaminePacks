@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import {ArrowRight,Diamond,Layers,Library,Sparkles} from 'lucide-react';
 import type {ReactNode} from 'react';
+import {CONTENT_NOTICE} from '@/lib/account-policy';
 
 type Props = {
   signedIn: boolean;
@@ -18,6 +19,7 @@ export default function RedesignHome({signedIn,total,base,foil,featured,onVisitF
       <p className="eyebrow">TROPEAMINE PACKS</p>
       <h1>{signedIn?'Welcome to your collection':'Your next obsession'}</h1>
       <p>Collect the characters. Keep the stories.</p>
+      <p className="beta-content-notice">Beta · accounts 13+. {CONTENT_NOTICE} <Link href="/contact">Send feedback →</Link></p>
     </header>
     <section className="redesign-featured-pack" aria-labelledby="featured-pack-title">
       <img src="/packs/haremlit-1-pack-official.webp" alt="HaremLit 1 booster pack artwork" width={230} height={345} fetchPriority="high"/>

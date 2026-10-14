@@ -1,9 +1,11 @@
 import {pageMetadata} from '@/lib/site-metadata';
 import {LegalShell} from '@/components/legal-shell';
 export const metadata=pageMetadata('What Data We Collect','A plain-English guide to Tropeamine account data, collections, browser storage, and service providers.','/data',true);
-export default function Data(){return <LegalShell title="What Data We Collect" kicker="PLAIN-ENGLISH DATA GUIDE" updated="October 13, 2026">
+export default function Data(){return <LegalShell title="What Data We Collect" kicker="PLAIN-ENGLISH DATA GUIDE" updated="October 14, 2026">
 <p>This is the quick version of what Tropeamine Packs currently knows about a signed-in collector and why.</p>
 <h2>Account identity</h2><p><strong>May include:</strong> Google/Supabase account ID, email address, name/display name and profile picture. <strong>Why:</strong> signing you in and connecting your collection to the right account.</p>
+<h2>Account policy</h2><p><strong>Includes:</strong> your declared age range (13–17 or 18+), policy version, and acknowledgment time. <strong>Why:</strong> applying the 13+ account policy without asking for a full birthday or identity document. Account-policy and temporary under-13 blocking cookies support the registration flow.</p>
+<p>If a signed-in account reports being under 13, a restricted-access record includes its account identifier, reason and report time so a creator can review and handle removal. The public profile is hidden; privacy, support and deletion remain accessible.</p>
 <h2>Tropeamine profile</h2><p><strong>May include:</strong> username, display name, avatar, bio, pronouns, favorite series and whether your profile is public. <strong>Why:</strong> account and community/profile features. Optional fields are only used when you provide or enable them.</p>
 <h2>Your collection</h2><p><strong>Includes:</strong> cards/editions owned, quantities and acquisition times, favorites, showcase cards, badges and claimed rewards. <strong>Why:</strong> making your binder and collection persist between devices.</p>
 <h2>Virtual currency</h2><p><strong>Includes:</strong> Ink and Shard balances plus a ledger of changes and reasons. <strong>Why:</strong> opening packs, crafting and keeping the in-app economy consistent.</p>
@@ -12,6 +14,7 @@ export default function Data(){return <LegalShell title="What Data We Collect" k
 <h2>Cookies and typography</h2><p>Authentication uses session cookies. The site's DM Sans and Manrope font files are served by Tropeamine, without a Google Fonts request from your browser. The site does not currently add advertising trackers or session-replay software.</p>
 <h2>Infrastructure data</h2><p>Supabase and Vercel may process ordinary authentication, request, security and technical information needed to run and protect the service. Tropeamine does not treat Google sign-in as permission to read unrelated Google services.</p>
 <h2>Guest demo packs</h2><p>If you open a free demo pack while signed out, the pulls are for demonstration and are not saved into a Tropeamine account or binder.</p>
+<h2>Your choices</h2><p>Use <a href="/account/privacy">Privacy & account</a> to change public profile visibility, remove your community content, or delete your account. <a href="/contact">Contact us</a> for access, correction, privacy, or artwork-rights questions. Provider backups and copies stored outside Tropeamine may not disappear immediately.</p>
 <h2>What we do not currently ask for</h2><p>Tropeamine does not currently ask you to provide a home address, phone number, government ID, bank account, credit-card number, Gmail contents, Google Drive files, contacts or Google Photos library as part of normal collection use.</p>
 <p className="legal-callout">This page describes the current implementation. If Tropeamine adds new account, analytics, payment, advertising or community features, this disclosure and the Privacy Policy should be updated before those features are relied on.</p>
 </LegalShell>}
