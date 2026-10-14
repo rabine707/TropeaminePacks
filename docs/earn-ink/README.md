@@ -59,3 +59,18 @@ Screenshots and browser results are stored in this folder. They show the actual 
 To reproduce the browser fixture (local only), start `node scripts/community-fixture.mjs`, run Next with `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54329 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=fixture-only npm run dev`, then run `node scripts/community-browser-check.mjs` with Playwright installed. `TROPEAMINE_PLAYWRIGHT_MODULE` and `TROPEAMINE_CHROMIUM` can point to an existing local Playwright module/browser. The script uses synthetic auth sessions, not a production login, and seeds a synthetic Studio composition with a real local card-back image.
 
 The browser check also exercises restoration of an existing Studio draft. Studio now waits for draft restoration before exporting or auto-saving, avoiding an empty-draft overwrite during early hydration/Strict Mode effect replay. Export rendering waits for referenced images and omits editor guides/selection borders.
+
+
+## Daily collector poll rotation
+
+Apply `20261014025341_daily_collector_poll_rotation.sql` after the original Earn Ink migration. This follow-up keeps existing manual polls, votes, rewards and balances intact. It adds a unique daily date on the existing poll table and private rotation configuration/templates. No remote migration or deployment was performed during implementation.
+
+In **Admin → Community inbox → Creator polls**, use **Start daily rotation**. Rotation starts paused after migration. The first start anchors the seven-question cycle to that UTC day. Pause closes today's automatic poll; resume restores the same poll and claims, without creating a second reward opportunity. Manual polls remain available independently.
+
+Questions cover collector style, reading habits, favorite card details, pack rituals, binder organization, fictional character energy and showcases. The editable preset picker uses the same conversation topics; it no longer offers requests for books, casts or artwork.
+
+The first public/Earn Ink/admin visit of a UTC day materializes one poll through the server RPC. No cron, browser-selected question, client clock or secret client key is involved. Missed days aren't backfilled. Questions repeat after seven days, but each new day gets its own poll ID, votes and once-only 25 Ink reward. Vote changes never repay. At midnight UTC, expired daily polls are archived and the next snapshot is created. Earn Ink refreshes on focus and every minute. No streak is required.
+
+Only today's automatic poll appears publicly; prior results stay in the authorized admin inbox. Existing manual poll visibility is preserved. Admins can close/archive and clarify today's question/options; the server fixes automatic polls' deadline at the next UTC midnight and rejects reopening old days. Editing automatic snapshots does not edit the fixed future rotation templates; template changes currently require code/migration review.
+
+Security: private config/helper/core functions cannot be called directly by anon/authenticated roles. Existing admin checks, option foreign keys, atomic wallet/ledger writes and unique poll reward claims are retained. An advisory transaction lock and unique date index prevent simultaneous visits from creating duplicate polls. Local PGlite tests verify permissions, duplicate reads/votes, pause/resume, UTC rollover, next-week rewards, enforced deadlines, historic vote retention and compatibility with legacy manual polls. Actual production migration review/application remains required.

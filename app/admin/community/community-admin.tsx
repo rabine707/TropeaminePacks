@@ -20,6 +20,7 @@ type Poll = {
   title: string;
   state: string;
   closes_at: string | null;
+  rotation_day?: string | null;
   options: { id: string; label: string; votes: number }[];
 };
 export default function CommunityAdmin() {
@@ -29,6 +30,7 @@ export default function CommunityAdmin() {
     [status, setStatus] = useState("all"),
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false),
+    [rotationEnabled, setRotationEnabled] = useState(false),
     [newQuestion, setNewQuestion] = useState(""),
     [newOptions, setNewOptions] = useState(""),
     [newState, setNewState] = useState("draft"),
@@ -38,6 +40,7 @@ export default function CommunityAdmin() {
       const result = await communityAction("admin_inbox");
       setSubmissions(result.submissions as Submission[]);
       setPolls(result.polls as Poll[]);
+      setRotationEnabled(Boolean((result.rotation as { enabled?: boolean } | undefined)?.enabled));
     } catch (e) {
       setNotice((e as Error).message);
     }
@@ -182,6 +185,19 @@ export default function CommunityAdmin() {
           <h2>Creator polls</h2>
           <span className="muted">Votes and rewards survive edits</span>
         </div>
+        <div className="panel">
+          <h3>Daily collector conversation</h3>
+          <p>One question a day about reading, collecting, and fictional favorites.
+            Separate from requests for new books, characters, or artwork.</p>
+          <p className="footnote">Seven questions rotate in order. Resets at midnight UTC.
+            Voting earns 25 Ink once per daily poll. Previous results stay in this inbox.
+            A new poll appears on the first visit of the day; missed days aren’t backfilled.</p>
+          <p role="status">Rotation: {rotationEnabled ? "on" : "paused"}</p>
+          <button type="button" disabled={busy} className="button gold"
+            onClick={() => run("admin_rotation", { enabled: !rotationEnabled })}>
+            {rotationEnabled ? "Pause daily rotation" : "Start daily rotation"}
+          </button>
+        </div>
         <form
           className="panel form"
           onSubmit={(e) => {
@@ -265,6 +281,7 @@ export default function CommunityAdmin() {
               });
             }}
           >
+            {p.rotation_day && <p className="eyebrow">Daily rotation · {p.rotation_day} · midnight UTC reset</p>}
             <label>
               Question
               <input

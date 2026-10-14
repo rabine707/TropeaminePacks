@@ -1,33 +1,80 @@
-/** Editable starting points for new polls; never seed or publish database records. */
+/** Collector conversation starters, separate from requests for future content. */
 export const CREATOR_POLL_PRESETS = [
   {
-    id: "next-obsession",
-    question: "What should we collect next?",
-    options: ["Sports romance", "Dark romance", "Fantasy romance", "Cozy fantasy", "LitRPG & progression fantasy"],
+    "id": "collector-style",
+    "question": "What kind of collector are you?",
+    "options": [
+      "One favorite, all the editions",
+      "The whole fictional cast",
+      "Whatever matches my current read",
+      "Rare pulls are my weakness",
+      "A little bit of everything"
+    ]
   },
   {
-    id: "cast-spotlight",
-    question: "Which fictional cast deserves more of the spotlight?",
-    options: ["Warlock", "Coven King", "Into Darkness", "Ruinous Love", "Slaycation", "Off-Campus"],
+    "id": "reading-ritual",
+    "question": "How do you usually meet your next obsession?",
+    "options": [
+      "Reading on my phone or Kindle",
+      "An audiobook in my headphones",
+      "A paperback with tabs everywhere",
+      "Reading and listening together",
+      "A friend who won’t stop talking about them"
+    ]
   },
   {
-    id: "artwork-vibe",
-    question: "What kind of character artwork would you love to collect?",
-    options: ["Cozy nights in", "Dressed up & dangerous", "Everyday off-duty moments", "Epic fantasy scenes", "Playful & flirty portraits"],
+    "id": "favorite-detail",
+    "question": "What makes a character card an instant favorite?",
+    "options": [
+      "A likeness that feels right",
+      "An outfit straight from the story",
+      "An expression full of personality",
+      "Details only a fellow fan would notice",
+      "The whole card just hits"
+    ]
   },
   {
-    id: "portrait-moment",
-    question: "Which character moment belongs in your binder?",
-    options: ["A quiet reading break", "A confident walk toward you", "A relaxed seat by the window", "A mischievous over-the-shoulder glance", "A dramatic mid-action moment"],
+    "id": "pack-ritual",
+    "question": "What’s your pack-opening ritual?",
+    "options": [
+      "Slow reveal. Let me savor it.",
+      "Straight to the foil",
+      "Open everything, then admire",
+      "Send my favorite pull to a friend",
+      "One pack before I get back to my book"
+    ]
   },
   {
-    id: "collection-priority",
-    question: "What makes a character card an instant favorite?",
-    options: ["A likeness that feels right", "An outfit straight from the story", "A memorable setting", "An expression full of personality", "Details only a fellow fan would notice"],
+    "id": "binder-style",
+    "question": "How do you like to organize your binder?",
+    "options": [
+      "By series",
+      "By favorite character",
+      "By color and mood",
+      "By rarity or finish",
+      "Organized chaos"
+    ]
   },
   {
-    id: "studio-style",
-    question: "What’s your favorite way to show off your collection?",
-    options: ["One favorite in the spotlight", "A whole fictional cast", "A matching color palette", "A moodboard of my current obsessions", "A showcase of my rarest pulls"],
+    "id": "fictional-type",
+    "question": "Which character energy gets you every time?",
+    "options": [
+      "The grumpy one with a soft spot",
+      "The chaotic charmer",
+      "The quietly devoted protector",
+      "The clever troublemaker",
+      "The sunshine with a backbone"
+    ]
   },
+  {
+    "id": "showcase-style",
+    "question": "What belongs at the center of your showcase?",
+    "options": [
+      "My current fictional obsession",
+      "The whole found family",
+      "My favorite couple",
+      "My rarest pull",
+      "A rotating cast of favorites"
+    ]
+  }
 ] as const;
