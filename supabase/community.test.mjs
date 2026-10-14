@@ -16,7 +16,7 @@ const cards = Array.from(
   { length: 6 },
   (_, i) => `10000000-0000-4000-8000-00000000000${i + 1}`,
 );
-async function fixture(blueprint = false) {
+async function fixture(blueprint = false, rotation = false) {
   const db = new PGlite();
   await db.exec(
     `create role anon;create role authenticated;create schema auth;create schema storage;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to anon,authenticated;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);`,
@@ -42,6 +42,7 @@ async function fixture(blueprint = false) {
     insert into quest_progress(user_id,quest_id,period_key,claimed_at) values('${other}','40000000-0000-4000-8000-000000000001',to_char(now() at time zone 'UTC','YYYY-MM-DD'),now());`);
   }
   await db.exec(migration);
+  if (rotation) await db.exec(await readFile(new URL("./migrations/20261014025341_daily_collector_poll_rotation.sql", import.meta.url), "utf8"));
   if (!blueprint) {
     for (const id of cards)
       await db.query("insert into cards(id) values($1)", [id]);
@@ -569,4 +570,80 @@ test("private helpers and direct inserts cannot forge rewards; favorites persist
   } finally {
     await db.close();
   }
+});
+
+
+test("daily rotation is admin-controlled, atomic, UTC-bound and preserves history and rewards", async () => {
+  const db = await fixture(false, true);
+  try {
+    assert.equal((await action(db, "public")).polls.length, 0);
+    await assert.rejects(() => action(db, "admin_rotation", { enabled: true }), /Admin/);
+    await assert.rejects(() => db.query("select mission_private.ensure_daily_poll()"), /permission/);
+    await assert.rejects(() => db.query("select mission_private.action_before_rotation('public','{}')"), /permission/);
+    await assert.rejects(() => db.query("select * from mission_private.poll_rotation"), /permission/);
+    await as(db, admin);
+    await assert.rejects(() => action(db, "admin_rotation", { enabled: "false" }), /Choose/);
+    await action(db, "admin_rotation", { enabled: true });
+    await as(db, null);
+    const reads = await Promise.all(Array.from({ length: 8 }, () => action(db, "public")));
+    const p = reads[0].polls[0];
+    assert.equal(p.title, "What kind of collector are you?");
+    assert.equal(p.daily, true);
+    assert.ok(reads.every(r => r.polls.length === 1 && r.polls[0].id === p.id));
+    assert.equal(p.options.length, 5);
+    assert.equal(new Date(p.closes_at).getUTCHours(), 0);
+    assert.ok(!JSON.stringify(reads).includes("anchor_day"));
+    await assert.rejects(() => action(db, "poll_vote", { poll: p.id, option: p.options[0].id }), /Sign in/);
+    await as(db, user);
+    const votes = await Promise.all(p.options.map(o => action(db, "poll_vote", { poll: p.id, option: o.id })));
+    assert.equal(votes.reduce((sum, v) => sum + v.awarded, 0), 25);
+    await as(db, admin);
+    await action(db, "admin_rotation", { enabled: false });
+    await as(db, user);
+    await assert.rejects(() => action(db, "poll_vote", { poll: p.id, option: p.options[0].id }), /closed/);
+    await as(db, admin);
+    await action(db, "admin_rotation", { enabled: true });
+    await as(db, user);
+    assert.equal((await action(db, "poll_vote", { poll: p.id, option: p.options[0].id })).awarded, 0);
+    // Simulate a midnight transition with last day's snapshot and stable anchor.
+    await root(db, "update creator_polls set rotation_day=rotation_day-1,closes_at=now()-interval '1 second' where rotation_day is not null; update mission_private.poll_rotation set anchor_day=anchor_day-1;set timezone='America/Los_Angeles';");
+    await as(db, user);
+    const next = (await action(db, "public")).polls[0];
+    assert.notEqual(next.id, p.id);
+    assert.equal(next.title, "How do you usually meet your next obsession?");
+    assert.equal((await action(db, "poll_vote", { poll: next.id, option: next.options[0].id })).awarded, 25);
+    await assert.rejects(() => action(db, "poll_vote", { poll: p.id, option: p.options[0].id }), /closed/);
+    await as(db, admin);
+    await assert.rejects(() => action(db, "admin_poll", { id: p.id, title: p.title, state: "open" }), /today/);
+    await action(db, "admin_poll", { id: next.id, title: next.title, state: "open", closes_at: "2099-01-01T00:00" });
+    const inbox = await action(db, "admin_inbox");
+    assert.equal(inbox.rotation.enabled, true);
+    assert.equal(inbox.polls.length, 2);
+    assert.equal(inbox.polls.find(x => x.id === next.id).closes_at, next.closes_at);
+    assert.equal(inbox.polls.find(x => x.id === p.id).options.reduce((n, o) => n + o.votes, 0), 1);
+    // Same question seven days later is a new daily poll, with its own reward.
+    await root(db, "update creator_polls set rotation_day=rotation_day-7,closes_at=now()-interval '1 second' where rotation_day is not null; update mission_private.poll_rotation set anchor_day=anchor_day-7;");
+    await as(db, user);
+    const week = (await action(db, "public")).polls[0];
+    assert.equal(week.title, next.title);
+    assert.notEqual(week.id, next.id);
+    assert.equal((await action(db, "poll_vote", { poll: week.id, option: week.options[0].id })).awarded, 25);
+    assert.equal((await action(db, "status")).wallet.ink, 175);
+  } finally { await db.close(); }
+});
+
+test("rotation migration preserves manual and legacy poll rows in the blueprint schema", async () => {
+  const db = await fixture(true, true);
+  try {
+    await as(db, admin);
+    await action(db, "admin_poll", { title: "A manual creator question", state: "open", options: ["First", "Second"] });
+    await action(db, "admin_rotation", { enabled: true });
+    assert.equal((await action(db, "public")).polls.length, 3);
+    await root(db, "select 1");
+    assert.equal((await db.query("select * from poll_votes")).rows.length, 1);
+    assert.equal((await db.query("select * from mission_claims")).rows.length, 0);
+    assert.equal((await db.query("select * from currency_ledger")).rows.length, 0);
+    assert.equal((await db.query("select ink from wallets where user_id=$1", [user])).rows[0].ink, 100);
+    assert.equal((await db.query("select * from creator_polls where rotation_day is null")).rows.length, 2);
+  } finally { await db.close(); }
 });

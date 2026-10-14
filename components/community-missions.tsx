@@ -17,6 +17,7 @@ type Poll = {
   state: string;
   closes_at: string | null;
   reward_enabled: boolean;
+  daily?: boolean;
   vote?: string;
   claimed?: boolean;
   options: Option[];
@@ -321,12 +322,14 @@ export default function CommunityMissions({
           return (
             <article key={p.id} className="panel">
               <p className="eyebrow">
-                FROM THE CREATOR · {open ? "OPEN" : "CLOSED"}
+                {p.daily ? "DAILY COLLECTOR CONVERSATION" : "FROM THE CREATOR"} · {open ? "OPEN" : "CLOSED"}
               </p>
               <h3>{p.title}</h3>
               <p>
                 {open
-                  ? "Your vote helps choose what gets made next. Change it until closing."
+                  ? p.daily
+                    ? "A tiny collector question. Pick your answer and change it until midnight UTC."
+                    : "Your vote helps choose what gets made next. Change it until closing."
                   : "Voting has closed. Thanks for shaping the shelf."}
               </p>
               <div className="button-row">
@@ -354,6 +357,7 @@ export default function CommunityMissions({
                     ? "25 Ink claimed"
                     : "25 Ink for your first vote"
                   : "Community poll"}
+                {p.daily ? " · New question daily at 00:00 UTC" : ""}
                 {p.closes_at
                   ? ` · Closes ${new Date(p.closes_at).toLocaleString()}`
                   : " · Open until the creator closes it"}

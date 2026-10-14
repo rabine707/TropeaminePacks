@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { CREATOR_POLL_PRESETS } from "@/lib/creator-poll-presets";
 import { communityAction } from "@/lib/community-client";
 type Submission = {
   id: string;
@@ -19,6 +20,7 @@ type Poll = {
   title: string;
   state: string;
   closes_at: string | null;
+  rotation_day?: string | null;
   options: { id: string; label: string; votes: number }[];
 };
 export default function CommunityAdmin() {
@@ -27,12 +29,18 @@ export default function CommunityAdmin() {
     [category, setCategory] = useState("all"),
     [status, setStatus] = useState("all"),
     [notice, setNotice] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [rotationEnabled, setRotationEnabled] = useState(false),
+    [newQuestion, setNewQuestion] = useState(""),
+    [newOptions, setNewOptions] = useState(""),
+    [newState, setNewState] = useState("draft"),
+    [newClosingTime, setNewClosingTime] = useState("");
   const load = useCallback(async () => {
     try {
       const result = await communityAction("admin_inbox");
       setSubmissions(result.submissions as Submission[]);
       setPolls(result.polls as Poll[]);
+      setRotationEnabled(Boolean((result.rotation as { enabled?: boolean } | undefined)?.enabled));
     } catch (e) {
       setNotice((e as Error).message);
     }
@@ -177,6 +185,19 @@ export default function CommunityAdmin() {
           <h2>Creator polls</h2>
           <span className="muted">Votes and rewards survive edits</span>
         </div>
+        <div className="panel">
+          <h3>Daily collector conversation</h3>
+          <p>One question a day about reading, collecting, and fictional favorites.
+            Separate from requests for new books, characters, or artwork.</p>
+          <p className="footnote">Seven questions rotate in order. Resets at midnight UTC.
+            Voting earns 25 Ink once per daily poll. Previous results stay in this inbox.
+            A new poll appears on the first visit of the day; missed days aren’t backfilled.</p>
+          <p role="status">Rotation: {rotationEnabled ? "on" : "paused"}</p>
+          <button type="button" disabled={busy} className="button gold"
+            onClick={() => run("admin_rotation", { enabled: !rotationEnabled })}>
+            {rotationEnabled ? "Pause daily rotation" : "Start daily rotation"}
+          </button>
+        </div>
         <form
           className="panel form"
           onSubmit={(e) => {
@@ -195,23 +216,47 @@ export default function CommunityAdmin() {
         >
           <h3>Create a poll</h3>
           <label>
+            Start with a preset (optional)
+            <select
+              disabled={busy}
+              value=""
+              onChange={(e) => {
+                const preset = CREATOR_POLL_PRESETS.find((p) => p.id === e.target.value);
+                if (!preset) return;
+                setNewQuestion(preset.question);
+                setNewOptions(preset.options.join("\n"));
+                setNewState("draft");
+                setNewClosingTime("");
+              }}
+            >
+              <option value="">Choose a starting point…</option>
+              {CREATOR_POLL_PRESETS.map((p) => (
+                <option key={p.id} value={p.id}>{p.question}</option>
+              ))}
+            </select>
+          </label>
+          <p className="footnote">
+            Presets fill the form. Edit anything before creating your poll.
+            Loading a preset sets it to draft; choose open when you’re ready.
+          </p>
+          <label>
             Question
-            <input name="title" required maxLength={150} />
+            <input name="title" required maxLength={150} value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} />
           </label>
           <label>
             Options · one per line
-            <textarea name="options" required maxLength={2000} />
+            <textarea name="options" required maxLength={2000} rows={6} value={newOptions} onChange={(e) => setNewOptions(e.target.value)} />
           </label>
           <label>
             State
-            <select name="state">
+            <select name="state" value={newState} onChange={(e) => setNewState(e.target.value)}>
               <option>draft</option>
               <option>open</option>
             </select>
           </label>
           <label>
             Closing time (optional, UTC)
-            <input type="datetime-local" name="closes_at" />
+            <input type="datetime-local" name="closes_at" value={newClosingTime} onChange={(e) => setNewClosingTime(e.target.value)} />
           </label>
           <button disabled={busy} className="button gold">
             Create poll · 25 Ink per collector
@@ -236,6 +281,7 @@ export default function CommunityAdmin() {
               });
             }}
           >
+            {p.rotation_day && <p className="eyebrow">Daily rotation · {p.rotation_day} · midnight UTC reset</p>}
             <label>
               Question
               <input
