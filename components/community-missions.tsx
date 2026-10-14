@@ -301,7 +301,7 @@ export default function CommunityMissions({
           </button>
         </form>
         <p className="footnote">
-          Send as many sincere ideas as you like. Suggestions stay private until
+          Send up to 10 ideas per hour and 30 per UTC day. Suggestions stay private until
           approved for public voting. A suggestion is not a promise of
           production. Daily rewards reset at {DAILY_RESET}.
         </p>

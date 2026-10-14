@@ -8,7 +8,7 @@
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test lib/economy.test.ts lib/requests.test.ts lib/card-art.test.ts lib/binder.test.ts lib/auth-navigation.test.ts lib/studio-export.test.ts",
-    "test:schema": "node --test supabase/schema.test.mjs supabase/community.test.mjs"
+    "test:schema": "node --test supabase/schema.test.mjs supabase/community.test.mjs supabase/request-limits.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
