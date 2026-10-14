@@ -10,17 +10,12 @@ import {cardArtUrl} from '@/lib/card-art';
 
 const LOCAL_KEY='tropeamine-packs-v1';
 
-const LOADING_PRAISE=[
- 'Look at you, waiting so patiently…',
- 'So patient. You deserve a reward.',
- 'That’s it. Just a little longer…',
- 'Doing so well. Almost there…',
- 'You’ve been so good. Your reward is loading…',
- 'Patience looks good on you.',
- 'There you go. You earned this.',
- 'Someone deserves a little Tropeamine…',
- 'Oh, you really want it, don’t you?',
- 'Eager, aren’t we?'
+const LOADING_MESSAGES=[
+ 'Every character has a story worth discovering.',
+ 'Inspired by stories. Created for collectors.',
+ 'Your next favorite character is waiting.',
+ 'Some characters stay with us long after the last page.',
+ 'One interpretation. Endless imaginations.'
 ];
 
 type CloudProfile={
@@ -129,7 +124,7 @@ async function loadLiveCards(client:ReturnType<typeof createClient>,allowAdult=f
 
 export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean}){
  const [hydrated,setHydrated]=useState(false);
- const [loadingPraise,setLoadingPraise]=useState(LOADING_PRAISE[0]);
+ const [loadingMessage,setLoadingMessage]=useState(LOADING_MESSAGES[0]);
  const [user,setUser]=useState<User|null>(null);
  const [profile,setProfile]=useState<CloudProfile|null>(null);
  const [identities,setIdentities]=useState<string[]>([]);
@@ -139,7 +134,7 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
  const [matureBusy,setMatureBusy]=useState(false);
  const client=useMemo(()=>createClient(),[]);
 
- useEffect(()=>{setLoadingPraise(LOADING_PRAISE[Math.floor(Math.random()*LOADING_PRAISE.length)])},[]);
+ useEffect(()=>{setLoadingMessage(LOADING_MESSAGES[Math.floor(Math.random()*LOADING_MESSAGES.length)])},[]);
  useEffect(()=>{let active=true;(async()=>{
   const {data:{user:nextUser}}=await client.auth.getUser();
   if(!active)return;
@@ -218,7 +213,13 @@ export default function AccountCollectionShell({isAdmin=false}:{isAdmin?:boolean
  async function linkGoogle(){setAccountMessage('Opening Google…');const {error}=await client.auth.linkIdentity({provider:'google',options:{redirectTo:window.location.href}});if(error)setAccountMessage(error.message)}
  async function signOut(){writeLocalAdultPreference(false);await client.auth.signOut();window.location.href='/'}
 
- if(!hydrated)return <main className="empty"><p className="eyebrow">TROPEAMINE PACKS</p><h1>{loadingPraise}</h1></main>;
+ if(!hydrated)return <main className="empty tropeamine-mission-loading" role="status" aria-live="polite">
+   <p className="eyebrow">TROPEAMINE PACKS</p>
+   <p className="mission-loading-intro">Where book lovers and card collectors meet.</p>
+   <h1>Collect the characters.<span>Discover the stories.</span></h1>
+   <p className="mission-loading-message">{loadingMessage}</p>
+   <div className="mission-loading-progress" aria-hidden="true"><span/></div>
+  </main>;
  return <div className={`${user?'cloud-authenticated':''} ${isAdmin?'creator-admin':'creator-reader'}`}>
   <CollectionApp signedIn={Boolean(user)} cloudWallet={wallet||undefined} onCraftCard={async cardId=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_missing_card',{target_card_id:cardId});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}} onOpenPack={async packSlug=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('open_pack_v2',{pack_slug:packSlug});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const pulls=(Array.isArray(row?.pulls)?row.pulls:[]).map((pull:any)=>({id:String(pull?.id??''),duplicate:Boolean(pull?.duplicate),foil:Boolean(pull?.foil)})).filter((pull:{id:string})=>pull.id);if(pulls.length!==4||!pulls[3]?.foil)throw new Error('Pack settlement returned an invalid result.');const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0),pulls};setWallet({ink:next.ink,shards:next.shards});return next}} onCraftTreatment={async(cardId,treatment,cost)=>{if(!user)throw new Error('Sign in required');const {data,error}=await client.rpc('craft_card_treatment',{target_card_id:cardId,treatment_id:treatment,shard_cost:cost});if(error)throw error;const row=Array.isArray(data)?data[0]:data;const next={ink:Number(row?.ink??0),shards:Number(row?.shards??0)};setWallet(next);return next}}/>
   {user&&<details className="cloud-account-menu">

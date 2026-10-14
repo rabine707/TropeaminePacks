@@ -144,3 +144,28 @@ body { background:var(--tp-background); color:var(--tp-text); }
   .app .button { transition:none; }
   .app .button:hover { transform:none; }
 }
+
+/* Brand mission appears only while account/catalog data is actually loading. */
+main.tropeamine-mission-loading {
+  box-sizing:border-box;
+  width:min(100%,720px);
+  min-height:65dvh;
+  padding:clamp(64px,14vh,150px) 24px 80px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:12px;
+}
+.tropeamine-mission-loading .eyebrow { color:#ef9bc8; margin:0; }
+.tropeamine-mission-loading .mission-loading-intro { font-size:clamp(14px,2.7vw,18px); color:#e4b1cc; margin:12px 0 8px; }
+main.tropeamine-mission-loading h1 { font-size:clamp(32px,6vw,54px); line-height:1.16; color:#f8e9f2; margin:0; }
+.tropeamine-mission-loading h1 span { display:block; color:#ef9bc8; }
+.tropeamine-mission-loading .mission-loading-message { font-size:14px; color:#cfb7c7; margin:14px 0 6px; }
+.tropeamine-mission-loading .mission-loading-progress { width:min(260px,72vw); height:3px; background:#4a3546; border-radius:99px; overflow:hidden; }
+.tropeamine-mission-loading .mission-loading-progress span { display:block; width:38%; height:100%; background:#ef9bc8; border-radius:99px; animation:mission-progress 1.6s ease-in-out infinite alternate; }
+.redesign-home .redesign-mission-intro { font-size:13px; color:#d9a3be; margin-top:4px; }
+@keyframes mission-progress { from { transform:translateX(-100%); } to { transform:translateX(270%); } }
+@media(prefers-reduced-motion:reduce) { .tropeamine-mission-loading .mission-loading-progress span { animation:none; width:100%; } }
