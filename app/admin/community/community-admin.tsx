@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { CREATOR_POLL_PRESETS } from "@/lib/creator-poll-presets";
 import { communityAction } from "@/lib/community-client";
 type Submission = {
   id: string;
@@ -27,7 +28,11 @@ export default function CommunityAdmin() {
     [category, setCategory] = useState("all"),
     [status, setStatus] = useState("all"),
     [notice, setNotice] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [newQuestion, setNewQuestion] = useState(""),
+    [newOptions, setNewOptions] = useState(""),
+    [newState, setNewState] = useState("draft"),
+    [newClosingTime, setNewClosingTime] = useState("");
   const load = useCallback(async () => {
     try {
       const result = await communityAction("admin_inbox");
@@ -195,23 +200,47 @@ export default function CommunityAdmin() {
         >
           <h3>Create a poll</h3>
           <label>
+            Start with a preset (optional)
+            <select
+              disabled={busy}
+              value=""
+              onChange={(e) => {
+                const preset = CREATOR_POLL_PRESETS.find((p) => p.id === e.target.value);
+                if (!preset) return;
+                setNewQuestion(preset.question);
+                setNewOptions(preset.options.join("\n"));
+                setNewState("draft");
+                setNewClosingTime("");
+              }}
+            >
+              <option value="">Choose a starting point…</option>
+              {CREATOR_POLL_PRESETS.map((p) => (
+                <option key={p.id} value={p.id}>{p.question}</option>
+              ))}
+            </select>
+          </label>
+          <p className="footnote">
+            Presets fill the form. Edit anything before creating your poll.
+            Loading a preset sets it to draft; choose open when you’re ready.
+          </p>
+          <label>
             Question
-            <input name="title" required maxLength={150} />
+            <input name="title" required maxLength={150} value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} />
           </label>
           <label>
             Options · one per line
-            <textarea name="options" required maxLength={2000} />
+            <textarea name="options" required maxLength={2000} rows={6} value={newOptions} onChange={(e) => setNewOptions(e.target.value)} />
           </label>
           <label>
             State
-            <select name="state">
+            <select name="state" value={newState} onChange={(e) => setNewState(e.target.value)}>
               <option>draft</option>
               <option>open</option>
             </select>
           </label>
           <label>
             Closing time (optional, UTC)
-            <input type="datetime-local" name="closes_at" />
+            <input type="datetime-local" name="closes_at" value={newClosingTime} onChange={(e) => setNewClosingTime(e.target.value)} />
           </label>
           <button disabled={busy} className="button gold">
             Create poll · 25 Ink per collector
