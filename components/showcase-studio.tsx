@@ -2,6 +2,8 @@
 
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Copy,Download,Image as ImageIcon,Layers,Lock,Plus,RotateCcw,RotateCw,Sparkles,Trash2,Type,Undo2,Unlock} from 'lucide-react';
+import {communityAction} from '@/lib/community-client';
+import {exportWithReward,pngBlob,downloadPng} from '@/lib/studio-export';
 import type {Card} from '@/lib/catalog';
 import {ownedCharacterIds} from '@/lib/binder';
 
@@ -27,6 +29,7 @@ export default function ShowcaseStudio(){
  const canvasRef=useRef<HTMLCanvasElement>(null);
  const imageCache=useRef<Record<string,HTMLImageElement>>({});
  const [preset,setPreset]=useState<CanvasPreset>('story');
+ const [draftReady,setDraftReady]=useState(false);
  const [bg,setBg]=useState<BgPreset>('plum');
  const [cards,setCards]=useState<Card[]>([]);
  const [owned,setOwned]=useState<string[]>([]);
@@ -48,11 +51,11 @@ export default function ShowcaseStudio(){
    const raw=localStorage.getItem('tropeamine-packs-v1');
    if(raw){const parsed=JSON.parse(raw) as SavedState;setCards(Array.isArray(parsed.cards)?parsed.cards:[]);setOwned(Array.isArray(parsed.wallet?.owned)?ownedCharacterIds(parsed.wallet!.owned!):[]);setAdultOptIn(Boolean(parsed.adultOptIn))}
    const draftRaw=localStorage.getItem(DRAFT_KEY);
-   if(draftRaw){const draft=JSON.parse(draftRaw) as Draft;if(draft?.preset&&draft?.bg&&Array.isArray(draft.elements)){setPreset(draft.preset);setBg(draft.bg);setElements(draft.elements);setSnap(draft.snap!==false);setNotice('Your last showcase draft was restored.')}}
-  }catch{}
+   if(draftRaw){const draft=JSON.parse(draftRaw) as Draft;if(sizes[draft?.preset]&&bgs[draft?.bg]&&Array.isArray(draft.elements)){setPreset(draft.preset);setBg(draft.bg);setElements(draft.elements);setSnap(draft.snap!==false);setNotice('Your last showcase draft was restored.')}}
+  }catch{}finally{setDraftReady(true)}
  },[]);
 
- useEffect(()=>{try{localStorage.setItem(DRAFT_KEY,JSON.stringify({preset,bg,elements,snap} satisfies Draft))}catch{}},[preset,bg,elements,snap]);
+ useEffect(()=>{if(!draftReady)return;try{localStorage.setItem(DRAFT_KEY,JSON.stringify({preset,bg,elements,snap} satisfies Draft))}catch{}},[preset,bg,elements,snap,draftReady]);
  useEffect(()=>{draw()},[elements,bg,preset,cards,selected,guides]);
 
  function cachedImage(src:string){const existing=imageCache.current[src];if(existing)return existing;const img=new Image();img.crossOrigin='anonymous';img.decoding='async';img.onload=()=>draw();img.src=src;imageCache.current[src]=img;return img}
@@ -76,7 +79,7 @@ export default function ShowcaseStudio(){
   setPreset(nextPreset);setGuides({});setNotice(`Changed to ${sizes[nextPreset].label}. Layers were kept inside the canvas.`);
  }
 
- function draw(){
+ function draw(exporting=false){
   const canvas=canvasRef.current;if(!canvas)return;canvas.width=dims.w;canvas.height=dims.h;
   const ctx=canvas.getContext('2d');if(!ctx)return;
   const grad=ctx.createLinearGradient(0,0,dims.w,dims.h);grad.addColorStop(0,bgs[bg].a);grad.addColorStop(1,bgs[bg].b);ctx.fillStyle=grad;ctx.fillRect(0,0,dims.w,dims.h);
@@ -90,9 +93,9 @@ export default function ShowcaseStudio(){
    if(src){const img=cachedImage(src);if(img.complete&&img.naturalWidth)ctx.drawImage(img,-el.w/2,-el.h/2,el.w,el.h);else{ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(-el.w/2,-el.h/2,el.w,el.h)}}else{ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(-el.w/2,-el.h/2,el.w,el.h)}
    ctx.restore();
   }
-  if(guides.x!==undefined){ctx.strokeStyle='rgba(255,190,230,.9)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(guides.x,0);ctx.lineTo(guides.x,dims.h);ctx.stroke()}
-  if(guides.y!==undefined){ctx.strokeStyle='rgba(255,190,230,.9)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,guides.y);ctx.lineTo(dims.w,guides.y);ctx.stroke()}
-  const active=elements.find(e=>e.id===selected);
+  if(!exporting&&guides.x!==undefined){ctx.strokeStyle='rgba(255,190,230,.9)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(guides.x,0);ctx.lineTo(guides.x,dims.h);ctx.stroke()}
+  if(!exporting&&guides.y!==undefined){ctx.strokeStyle='rgba(255,190,230,.9)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,guides.y);ctx.lineTo(dims.w,guides.y);ctx.stroke()}
+  const active=exporting?null:elements.find(e=>e.id===selected);
   if(active){const {w,h}=bounds(active);ctx.save();ctx.translate(active.x,active.y);ctx.rotate(active.rotation*Math.PI/180);ctx.strokeStyle=active.locked?'rgba(255,205,120,.95)':'rgba(255,255,255,.95)';ctx.lineWidth=Math.max(2,dims.w/500);ctx.setLineDash(active.locked?[5,6]:[12,8]);ctx.strokeRect(-w/2,-h/2,w,h);ctx.restore()}
  }
 
@@ -122,7 +125,20 @@ export default function ShowcaseStudio(){
   setElements(v=>v.map(el=>{if(el.kind!=='card'||!updates.has(el.id))return el;const next={...el,...updates.get(el.id)!} as CardElement;return{...next,...clampElementPosition(next,next.x,next.y)} as CardElement}));setSelected(null);setNotice(`Template arranged ${currentCards.length} card${currentCards.length===1?'':'s'} straight at 0°.`);
  }
 
- function exportPng(){const canvas=canvasRef.current;if(!canvas)return;setSelected(null);requestAnimationFrame(()=>requestAnimationFrame(()=>{try{const link=document.createElement('a');link.download=`tropeamine-showcase-${Date.now()}.png`;link.href=canvas.toDataURL('image/png');link.click();setNotice('PNG exported.')}catch{setNotice('One of the selected images could not be exported. Try another card or reload the studio.')}}))}
+ const exporting=useRef(false);
+ async function exportPng(){
+  const canvas=canvasRef.current;if(!canvas||!draftReady||exporting.current)return;
+  exporting.current=true;setSelected(null);setGuides({});
+  try{
+   await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+   const cardIds=[...new Set(canvasCards.map(c=>c.cardId))];
+   for(const id of cardIds){const card=cards.find(c=>c.id===id);for(const el of canvasCards.filter(c=>c.cardId===id)){const src=el.side==='back'?card?.back:card?.image;if(src)await cachedImage(src).decode()}}
+   draw(true);
+   const result=await exportWithReward(()=>pngBlob(canvas),downloadPng,()=>communityAction('export_begin',{format:preset,cards:cardIds}),token=>communityAction('export_complete',{token}));
+   setNotice(`PNG handed to your browser.${result.awarded?' +100 Ink added!':result.rewardError?' Download ready; sign in or try again later for mission credit.':''} Sharing it? Tag @tropeamine.shop.`);
+  }catch{setNotice('The PNG could not be exported. Try another card or reload the studio.')}finally{exporting.current=false}
+ }
+
  function clearCanvas(){setElements([]);setSelected(null);try{localStorage.removeItem(DRAFT_KEY)}catch{}setNotice('Canvas cleared.')}
 
  return <div className="studio-grid">
@@ -138,12 +154,12 @@ export default function ShowcaseStudio(){
     <div className="studio-control-group"><span className="studio-control-label">BACKGROUND</span><div className="studio-background-options">{(Object.keys(bgs) as BgPreset[]).map(k=><button key={k} className={`background-choice ${bg===k?'active':''}`} onClick={()=>setBg(k)} aria-label={`${bgs[k].label} background`}><i className={`swatch swatch-${k}`}/><span>{bgs[k].label}</span></button>)}</div></div>
    </div>
    <div className={`canvas-wrap ${preset}`}><canvas ref={canvasRef} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp}/></div>
-   <div className="mobile-tool-dock"><button onClick={addText}><Type/>Text</button><button disabled={!selectedEl||selectedEl.locked} onClick={()=>updateSelected({rotation:0})}><RotateCcw/><span>0°</span></button><button onClick={exportPng}><Download/>Export</button></div>
+   <div className="mobile-tool-dock"><button onClick={addText}><Type/>Text</button><button disabled={!selectedEl||selectedEl.locked} onClick={()=>updateSelected({rotation:0})}><RotateCcw/><span>0°</span></button><button disabled={!draftReady} onClick={exportPng}><Download/>Export</button></div>
   </section>
 
   <aside className="studio-panel right-panel">
    <section><h2><Layers size={16}/> Selected layer</h2>{selectedEl?<><div className="selected-state"><span>{selectedEl.kind==='card'?(cards.find(c=>c.id===selectedEl.cardId)?.name||'Card'):selectedEl.kind==='text'?'Text':'Decoration'}</span>{selectedEl.locked&&<b><Lock size={12}/> Locked</b>}</div><label className="slider-control"><span className="slider-heading"><span>Rotation</span><output>{Math.round(selectedEl.rotation)}°</output></span><input type="range" min="-30" max="30" step="1" disabled={selectedEl.locked} value={selectedEl.rotation} onChange={e=>updateSelected({rotation:Number(e.target.value)})}/></label>{selectedEl.kind==='card'&&<><div className="tool-row"><button disabled={selectedEl.locked} onClick={()=>updateSelected({side:selectedEl.side==='front'?'back':'front'})}><RotateCw size={15}/>Flip</button></div><label className="slider-control"><span className="slider-heading"><span>Size</span><output>{Math.round(selectedEl.w)} px</output></span><input type="range" min="140" max="520" step="1" disabled={selectedEl.locked} value={selectedEl.w} onChange={e=>{const w=Number(e.target.value);updateSelected({w,h:w*1.5})}}/></label></>}{selectedEl.kind!=='card'&&<><label>Text<input disabled={selectedEl.locked} value={selectedEl.text} onChange={e=>updateSelected({text:e.target.value})}/></label><label className="slider-control"><span className="slider-heading"><span>Size</span><output>{Math.round(selectedEl.size)} px</output></span><input type="range" min="28" max="140" step="1" disabled={selectedEl.locked} value={selectedEl.size} onChange={e=>updateSelected({size:Number(e.target.value)})}/></label></>}<div className="tool-row"><button onClick={()=>updateSelected({locked:!selectedEl.locked})}>{selectedEl.locked?<><Unlock size={15}/>Unlock</>:<><Lock size={15}/>Lock</>}</button><button onClick={duplicateSelected}><Copy size={15}/>Duplicate</button><button disabled={selectedEl.locked} onClick={()=>updateSelected({rotation:0})}><RotateCcw size={15}/>Straighten 0°</button><button disabled={selectedEl.locked} onClick={()=>updateSelected({z:Math.max(0,...elements.map(e=>e.z))+1})}>Bring front</button><button disabled={selectedEl.locked} onClick={sendBackward}>Send back</button><button className="danger" onClick={removeSelected}><Trash2 size={15}/>Delete</button></div></>:<p className="studio-muted">Tap an item on the canvas to edit it.</p>}</section>
-   <section><h2><Sparkles size={16}/> Export</h2><p className="studio-muted">Exports at the full social size, not the smaller preview size. Your draft saves automatically on this device.</p><button className="export-button" onClick={exportPng}><Download size={18}/>Save PNG</button><button className="reset-button" onClick={clearCanvas}><Undo2 size={16}/>Clear canvas</button></section>
+   <section><h2><Sparkles size={16}/> Export</h2><p className="studio-muted">Exports at the full social size, not the smaller preview size. Your draft saves automatically on this device.</p><button className="export-button" disabled={!draftReady} onClick={exportPng}><Download size={18}/>Save PNG</button><button className="reset-button" onClick={clearCanvas}><Undo2 size={16}/>Clear canvas</button></section>
    {notice&&<p className="studio-notice">{notice}</p>}
   </aside>
  </div>

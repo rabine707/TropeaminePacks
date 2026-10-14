@@ -1,3 +1,6 @@
+-- Normalized bootstrap blueprint; not the deployed production schema.
+-- Earn Ink compatibility extension: migrations/20261013215224_earn_ink_community_missions.sql
+-- Never run this bootstrap file against the existing production database.
 -- Inkbound production schema blueprint. Not applied to a remote project.
 -- Run in a new Supabase project after review. Economy writes are server-only.
 begin;
