@@ -17,7 +17,7 @@ export default function RedesignHome({signedIn,total,base,foil,featured,onVisitF
     <header className="redesign-home-heading">
       <p className="eyebrow">TROPEAMINE PACKS</p>
       <h1>{signedIn?'Welcome to your collection':'Your next obsession'}</h1>
-      <p>Collect the characters. Keep the stories.</p>
+      <p>Collect the characters. Discover the stories.</p><p className="redesign-mission-intro">Where book lovers and card collectors meet.</p>
     </header>
     <section className="redesign-featured-pack" aria-labelledby="featured-pack-title">
       <img src="/packs/haremlit-1-pack-official.webp" alt="HaremLit 1 booster pack artwork" width={230} height={345} fetchPriority="high"/>
