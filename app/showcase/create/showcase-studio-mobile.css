@@ -32,7 +32,7 @@
   }
   .card-picker::-webkit-scrollbar{display:none}
   .card-picker button{flex:0 0 74px;min-width:74px!important;max-width:74px;scroll-snap-align:start}
-  .card-picker span{width:74px!important}
+  .card-picker button>span{width:74px!important}
   .card-picker small{font-size:10px}
 
   .tool-row{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
@@ -88,7 +88,7 @@
   .canvas-wrap.story canvas,.canvas-wrap.square canvas{max-width:calc(100vw - 18px)!important}
   .canvas-wrap.landscape canvas{width:calc(100vw - 18px)!important;max-width:100%!important;max-height:38dvh!important}
   .card-picker button{flex-basis:68px;min-width:68px!important;max-width:68px}
-  .card-picker span{width:68px!important}
+  .card-picker button>span{width:68px!important}
   .background-choice{min-width:94px!important}
 }
 

@@ -62,8 +62,9 @@ begin
 end $$;
 revoke all on function mission_private.action(text,jsonb) from public;
 grant execute on function mission_private.action(text,jsonb) to anon,authenticated;
-create or replace function public.community_action(op text,payload jsonb default '{}')
-returns jsonb language sql security invoker set search_path='' as $$ select mission_private.action(op,payload) $$;
+-- The existing public entry point already delegates to mission_private.action.
+-- Preserve it: newer wrappers also enforce account policy and withdrawn-content
+-- filtering. Replacing it would discard those checks on a fresh ordered install.
 revoke all on function public.community_action(text,jsonb) from public;
 grant execute on function public.community_action(text,jsonb) to anon,authenticated;
 

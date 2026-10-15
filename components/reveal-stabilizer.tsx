@@ -1,7 +1,6 @@
 'use client';
 
 import {useEffect} from 'react';
-import {revealArtUrl} from '@/lib/card-art';
 
 const mysteryBackSources=[
   '/card-backs/162A9E6A-1EDD-4577-9146-77A182E20598.png',
@@ -54,36 +53,15 @@ export default function RevealStabilizer(){
       else img.addEventListener('load',show,{once:true});
     };
 
-    // Browse pages intentionally use a tiny 560x840 / low-quality derivative. Pack
-    // opening is a hero moment, so swap only images inside the reveal flow to the
-    // sharper cached 1024x1536 derivative. This preserves the browse/egress savings.
-    const upgradePackArt=(img:HTMLImageElement)=>{
-      const current=img.getAttribute('src')||'';
-      const next=revealArtUrl(current);
-      if(!current||next===current)return;
-      img.dataset.packRevealSrc=next;
-      img.removeAttribute('srcset');
-      img.setAttribute('fetchpriority','high');
-      img.decoding='async';
-      hide(img);
-      img.style.transition='opacity 120ms ease';
-      const show=()=>{
-        if((img.getAttribute('src')||'')===next)img.style.opacity='1';
-      };
-      img.addEventListener('load',show,{once:true});
-      img.setAttribute('src',next);
-      if(img.complete&&img.naturalWidth>0)requestAnimationFrame(show);
-    };
-
     const scan=(root:ParentNode=document)=>{
       root.querySelectorAll<HTMLImageElement>(mysterySelector).forEach(stabilize);
-      root.querySelectorAll<HTMLImageElement>(packArtSelector).forEach(upgradePackArt);
+      root.querySelectorAll<HTMLImageElement>(packArtSelector).forEach(stabilize);
     };
 
     const scanNode=(node:HTMLElement)=>{
       if(node instanceof HTMLImageElement){
         if(node.matches(mysterySelector))stabilize(node);
-        if(node.matches(packArtSelector))upgradePackArt(node);
+        if(node.matches(packArtSelector))stabilize(node);
       }
       scan(node);
     };
@@ -170,7 +148,7 @@ export default function RevealStabilizer(){
       for(const record of records){
         if(record.type==='attributes'&&record.target instanceof HTMLImageElement){
           if(record.target.matches(mysterySelector))stabilize(record.target);
-          if(record.target.matches(packArtSelector))upgradePackArt(record.target);
+          if(record.target.matches(packArtSelector))stabilize(record.target);
           continue;
         }
         record.addedNodes.forEach(node=>{

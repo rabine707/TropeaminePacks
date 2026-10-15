@@ -7,14 +7,14 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test lib/economy.test.ts lib/requests.test.ts lib/card-art.test.ts lib/binder.test.ts lib/auth-navigation.test.ts lib/studio-export.test.ts",
-    "test:schema": "node --test supabase/schema.test.mjs supabase/community.test.mjs supabase/request-limits.test.mjs"
+    "test": "node --experimental-strip-types --test lib/economy.test.ts lib/requests.test.ts lib/card-art.test.ts lib/binder.test.ts lib/auth-navigation.test.ts lib/studio-export.test.ts lib/account-policy.test.ts",
+    "test:schema": "node --test supabase/schema.test.mjs supabase/community.test.mjs supabase/account-safety.test.mjs supabase/request-limits.test.mjs supabase/beta-request-limits.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
     "lucide-react": "0.468.0",
-    "next": "16.3.6",
+    "next": "16.3.8",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
