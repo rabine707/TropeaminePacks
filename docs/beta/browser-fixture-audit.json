@@ -1,0 +1,486 @@
+[
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_status"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/accept_account_policy"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/rest/v1/creator_roles"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_status"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/remove_my_community_content"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_status"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_policy_ready"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/v1/user"
+  },
+  {
+    "method": "POST",
+    "path": "/rest/v1/rpc/account_deletion_preflight"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/v1/logout"
+  },
+  {
+    "method": "DELETE",
+    "path": "/auth/v1/admin/users/00000000-0000-4000-8000-000000000001"
+  }
+]

@@ -14,6 +14,7 @@ export const PUBLIC_ROUTES = [
   "/terms",
   "/privacy",
   "/data",
+  "/contact",
 ] as const;
 export function pageMetadata(
   title: string,

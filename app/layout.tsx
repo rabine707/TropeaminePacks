@@ -10,6 +10,8 @@ import './homepage-density.css';
 import './review-fixes.css';
 import './binder-mobile.css';
 import './redesign-v1.css';
+import './account-safety.css';
+import {SUPPORT_EMAIL} from '@/lib/account-policy';
 import CollectionFun from '@/components/collection-fun';
 import CasualGuide from '@/components/casual-guide';
 import RevealStabilizer from '@/components/reveal-stabilizer';
@@ -59,5 +61,5 @@ export const metadata = {
 };
 
 export default function Layout({children}:{children:React.ReactNode}) {
- return <html lang="en"><body>{children}<footer className="site-legal-footer"><p><strong>Unofficial fan-made project.</strong> Not affiliated with or endorsed by any referenced author, publisher, or rights holder.</p><nav><Link href="/albums">Collection Albums</Link><Link href="/odds">Pack Odds</Link><Link href="/showcase/create">Showcase Studio</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/data">What Data We Collect</Link></nav></footer><CollectionFun/><CasualGuide/><RevealStabilizer/><ShowcaseEntrypoints/><HomepageDensity/><ReviewFixes/></body></html>;
+ return <html lang="en"><body>{children}<footer className="site-legal-footer"><p><strong>Unofficial fan-made beta · accounts 13+.</strong> Not affiliated with or endorsed by any referenced author, publisher, or rights holder.</p><nav aria-label="Site information"><Link href="/albums">Collection Albums</Link><Link href="/odds">Pack Odds</Link><Link href="/showcase/create">Showcase Studio</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/data">What Data We Collect</Link><Link href="/account/privacy">Privacy & account</Link><Link href="/contact">Contact & feedback</Link></nav><p><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p></footer><CollectionFun/><CasualGuide/><RevealStabilizer/><ShowcaseEntrypoints/><HomepageDensity/><ReviewFixes/></body></html>;
 }
