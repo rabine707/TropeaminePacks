@@ -1,0 +1,27 @@
+dialog.modal.creator-add-card{width:min(760px,calc(100vw - 32px));padding:24px;max-height:90dvh;color:var(--text,#eee8eb)}
+dialog.modal.creator-add-card h2{margin:8px 0 6px}
+.creator-intro{color:var(--muted,#b9b0b7);margin:0 0 18px}
+.creator-fields{border:0;padding:0;margin:0;min-width:0;display:grid;gap:14px}
+.creator-fields .form-grid{gap:16px}
+dialog.modal.creator-add-card label{min-width:0}
+dialog.modal.creator-add-card input,dialog.modal.creator-add-card select,dialog.modal.creator-add-card textarea{width:100%;min-width:0;box-sizing:border-box}
+.creator-known{font-size:13px;color:var(--muted,#b9b0b7);margin:-6px 0 0}
+.creator-art-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.creator-art-upload{border:1px solid #55404e;border-radius:12px;padding:14px;display:grid;gap:10px;background:#ffffff03}
+.creator-art-preview{height:100px;display:flex;align-items:center;justify-content:center;color:#c48aa8;background:#09080c66;border-radius:6px;overflow:hidden}
+.creator-art-preview img{width:100%;height:100%;object-fit:contain}
+.creator-art-upload input{padding:6px;font-size:12px}
+dialog.modal.creator-add-card input[type=file]::file-selector-button{background:#523044;color:#f7eff4}
+.creator-art-upload small{overflow-wrap:anywhere;color:#b9b0b7}
+.creator-advanced{border-top:1px solid #55404e;padding-top:16px}
+.creator-advanced summary,.creator-drafts summary{cursor:pointer;font-weight:600;padding:5px 0}
+.creator-advanced summary span{font-size:12px;color:#b9b0b7;font-weight:400;margin-left:10px}
+.creator-advanced>div{display:grid;gap:16px;padding-top:14px}
+.creator-save-row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:22px}
+dialog.modal.creator-add-card button:disabled{opacity:.55;cursor:wait}
+.creator-message{border:1px solid #bb6c8e;padding:12px;border-radius:8px}
+.creator-saved{display:grid;justify-items:start;gap:8px;padding:20px 0}
+.creator-saved h3,.creator-saved p{margin:0 0 8px}
+.creator-drafts{border-top:1px solid #55404e;margin-top:24px;padding-top:16px;overflow-wrap:anywhere}
+.creator-drafts small{display:block;font-size:11px;color:#b9b0b7}
+@media(max-width:600px){dialog.modal.creator-add-card{padding:24px 18px}dialog.modal.creator-add-card .form-grid{grid-template-columns:1fr}.creator-art-grid{gap:10px}.creator-art-upload{padding:10px}.creator-art-preview{height:120px}.creator-save-row{align-items:stretch;flex-direction:column}.creator-save-row .button{width:100%;justify-content:center}.creator-advanced summary span{display:block;margin:6px 0 0}}
