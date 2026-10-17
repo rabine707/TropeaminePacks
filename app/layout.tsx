@@ -11,6 +11,7 @@ import './review-fixes.css';
 import './binder-mobile.css';
 import './redesign-v1.css';
 import './account-safety.css';
+import './creator-add-card.css';
 import {SUPPORT_EMAIL} from '@/lib/account-policy';
 import CollectionFun from '@/components/collection-fun';
 import CasualGuide from '@/components/casual-guide';
